@@ -6,6 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
+    /* NEW — Smooth scrolling */
+    html {
+      scroll-behavior: smooth;
+    }
+
     :root {
       --primary: #3B82F6;        /* Royal blue */
       --primary-light: #60A5FA;  /* Soft blue */
@@ -97,6 +102,9 @@
     ============================ */
     section {
       padding: 80px 0;
+
+      /* NEW — Prevent scroll from going behind navbar */
+      scroll-margin-top: 100px;
     }
 
     .container {
@@ -440,7 +448,6 @@
       background: rgba(15, 23, 42, 0.7);
     }
 
-    /* Fake “photo look” backgrounds (you can replace with real images later) */
     .dest-toronto   { background-image: linear-gradient(135deg, #0EA5E9, #1D4ED8); }
     .dest-la        { background-image: linear-gradient(135deg, #FB923C, #F97316); }
     .dest-miami     { background-image: linear-gradient(135deg, #F97316, #EC4899); }
@@ -552,7 +559,7 @@
 
     @media (max-width: 720px) {
       .nav-links {
-        display: none; /* simple version: hide links on very small screens */
+        display: none; 
       }
 
       .hero-actions {
@@ -565,13 +572,9 @@
 
 <body>
 
-<!-- ===========================
-       NAVIGATION BAR
-============================== -->
 <header>
   <div class="nav">
     <div class="nav-left">
-      <!-- Make sure logo.png is in the same folder as index.html -->
       <img src="logo.png" alt="FlyLoop Logo" />
       <div class="nav-title">
         <span>FLYLOOP</span>
@@ -588,9 +591,6 @@
   </div>
 </header>
 
-<!-- ===========================
-         HERO
-============================== -->
 <section id="hero">
   <div class="container hero-layout">
     <div>
@@ -637,9 +637,6 @@
   </div>
 </section>
 
-<!-- ===========================
-         HOW IT WORKS
-============================== -->
 <section id="how">
   <div class="container two-col">
     <div>
@@ -653,3 +650,288 @@
         <li>Redeem trips inside your member dashboard</li>
       </ul>
     </div>
+
+    <div class="highlight-box">
+      <div class="highlight-title">For portfolio / concept demo</div>
+      <p>
+        This website shows how a subscription travel model could look from a
+        customer’s perspective: membership tiers, destinations, and booking
+        flows — without needing a real booking engine yet.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- The rest of your sections (pricing, destinations, faq, contact, footer) continue here -->
+
+  <!-- ===========================
+         PRICING
+============================== -->
+<section id="pricing" class="pricing-section">
+  <div class="container">
+    <h2>Choose Your Plan</h2>
+    <p style="color: var(--muted); max-width: 520px;">
+      These plans are example tiers for a Canadian-based subscription model.
+      You can adjust pricing, destinations, or rules later when turning this
+      into a real product.
+    </p>
+
+    <div class="pricing-grid">
+
+      <div class="plan-card">
+        <div class="plan-tag">Starter</div>
+        <h3>Basic Loop</h3>
+        <div class="plan-price">$49 <span>/ month</span></div>
+        <ul class="plan-list">
+          <li>1 local trip per year</li>
+          <li>Destinations: Montréal, Québec City, Vancouver</li>
+          <li>2–3 nights, handpicked hotels</li>
+          <li>Ideal for first-time travelers</li>
+        </ul>
+        <div class="plan-cta">
+          <a href="#contact" class="btn-outline">Join Basic Waitlist</a>
+        </div>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-tag">Most popular</div>
+        <h3>Standard Loop</h3>
+        <div class="plan-price">$99 <span>/ month</span></div>
+        <ul class="plan-list">
+          <li>2 trips per year</li>
+          <li>Destinations: Toronto, LA, Miami, Vancouver, Montréal</li>
+          <li>3–4 nights, flexible dates</li>
+          <li>Best balance between value and freedom</li>
+        </ul>
+        <div class="plan-cta">
+          <a href="#contact" class="btn-primary">Join Standard Waitlist</a>
+        </div>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-tag">For explorers</div>
+        <h3>Premium Loop</h3>
+        <div class="plan-price">$149 <span>/ month</span></div>
+        <ul class="plan-list">
+          <li>2–3 trips per year</li>
+          <li>All Standard destinations + Cancun & Havana</li>
+          <li>Boutique or upgraded hotels when available</li>
+          <li>Priority access to new routes</li>
+        </ul>
+        <div class="plan-cta">
+          <a href="#contact" class="btn-outline">Join Premium Waitlist</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+         INCLUDED
+============================== -->
+<section id="included">
+  <div class="container">
+    <h2>What’s Included</h2>
+    <p style="color: var(--muted); max-width: 520px;">
+      Every trip is designed to feel complete and stress-free. Below is what’s
+      included in a typical FlyLoop subscription model.
+    </p>
+
+    <div class="included-grid">
+      <div class="included-card">
+        <h3>✈️ Flights</h3>
+        <p>Round-trip flights from your home city to your destination.</p>
+      </div>
+      <div class="included-card">
+        <h3>🏨 Hotels</h3>
+        <p>2–4 nights in vetted hotels with safe and central locations.</p>
+      </div>
+      <div class="included-card">
+        <h3>🚐 Transfers</h3>
+        <p>Basic airport-hotel transfers or clear transit instructions.</p>
+      </div>
+      <div class="included-card">
+        <h3>🧭 Itineraries</h3>
+        <p>Curated suggestions so you don’t waste time planning.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+         DESTINATIONS
+============================== -->
+<section id="destinations">
+  <div class="container">
+    <h2>Available Destinations</h2>
+    <p style="color: var(--muted); max-width: 520px;">
+      These are example destinations this concept service could cover from
+      Canada. Tiers indicate which plans might unlock each city.
+    </p>
+
+    <div class="dest-grid">
+
+      <div class="dest-card">
+        <div class="dest-photo dest-toronto">
+          <span class="dest-photo-label">City • Standard / Premium</span>
+        </div>
+        <div class="dest-body">
+          <h3>Toronto</h3>
+          <p>Canada’s largest city and central travel hub.</p>
+          <div class="dest-tier">Hub city • Flexible</div>
+        </div>
+      </div>
+
+      <div class="dest-card">
+        <div class="dest-photo dest-la">
+          <span class="dest-photo-label">Sun • Standard / Premium</span>
+        </div>
+        <div class="dest-body">
+          <h3>Los Angeles</h3>
+          <p>Beaches, palm trees, warm weather — classic west coast escape.</p>
+          <div class="dest-tier">Standard & Premium Loop</div>
+        </div>
+      </div>
+
+      <div class="dest-card">
+        <div class="dest-photo dest-miami">
+          <span class="dest-photo-label">Beach • Standard / Premium</span>
+        </div>
+        <div class="dest-body">
+          <h3>Miami</h3>
+          <p>Vibrant nightlife, beaches, Cuban food, and sunshine.</p>
+          <div class="dest-tier">Standard & Premium Loop</div>
+        </div>
+      </div>
+
+      <div class="dest-card">
+        <div class="dest-photo dest-montreal">
+          <span class="dest-photo-label">Local • Basic / Standard</span>
+        </div>
+        <div class="dest-body">
+          <h3>Montréal</h3>
+          <p>European-style cafés, food culture, festivals, and history.</p>
+          <div class="dest-tier">Basic, Standard & Premium</div>
+        </div>
+      </div>
+
+      <div class="dest-card">
+        <div class="dest-photo dest-quebec">
+          <span class="dest-photo-label">Local • Basic / Standard</span>
+        </div>
+        <div class="dest-body">
+          <h3>Québec City</h3>
+          <p>Historic charm, cozy winter looks, and romantic old streets.</p>
+          <div class="dest-tier">Basic & Standard Loop</div>
+        </div>
+      </div>
+
+      <div class="dest-card">
+        <div class="dest-photo dest-cancun">
+          <span class="dest-photo-label">Resort • Premium</span>
+        </div>
+        <div class="dest-body">
+          <h3>Cancun</h3>
+          <p>All-inclusive vibes, beaches, and warm turquoise water.</p>
+          <div class="dest-tier">Premium Loop</div>
+        </div>
+      </div>
+
+      <div class="dest-card">
+        <div class="dest-photo dest-havana">
+          <span class="dest-photo-label">Culture • Premium</span>
+        </div>
+        <div class="dest-body">
+          <h3>Havana</h3>
+          <p>Colorful streets, vintage cars, music culture, and history.</p>
+          <div class="dest-tier">Premium Loop</div>
+        </div>
+      </div>
+
+      <div class="dest-card">
+        <div class="dest-photo dest-vancouver">
+          <span class="dest-photo-label">Nature • All Tiers</span>
+        </div>
+        <div class="dest-body">
+          <h3>Vancouver</h3>
+          <p>Mountains, beaches, nature, and beautiful ocean views.</p>
+          <div class="dest-tier">Basic, Standard & Premium</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+         FAQ
+============================== -->
+<section id="faq">
+  <div class="container">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">Is this a real product right now?</div>
+      <div class="faq-a">
+        This site is a portfolio concept for how a subscription-based travel
+        service could operate. It shows user experience and structure, not a
+        live travel agency yet.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Would flights actually be included?</div>
+      <div class="faq-a">
+        In a real FlyLoop service, each tier would include flights, hotels,
+        transfers, and curated itineraries through wholesale rates.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How do you prevent “join → travel → cancel”?</div>
+      <div class="faq-a">
+        Real subscription businesses use minimum commitments, trip credits that
+        unlock over time, loyalty perks, and pause options to prevent abuse.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+         CONTACT
+============================== -->
+<section id="contact">
+  <div class="container">
+    <h2>Join the Waitlist</h2>
+    <p style="color: var(--muted); max-width: 520px;">
+      This form is for demo purposes. Later you can connect it to an actual
+      backend or Google Forms for collecting interest.
+    </p>
+
+    <form onsubmit="event.preventDefault(); alert('Demo only — form not connected yet.');">
+      <input type="email" placeholder="you@example.com" required />
+      <select>
+        <option>Interested in Basic Loop</option>
+        <option>Interested in Standard Loop</option>
+        <option>Interested in Premium Loop</option>
+        <option>Not sure yet</option>
+      </select>
+      <textarea placeholder="Tell us how you usually travel or what you'd want from a subscription."></textarea>
+      <button class="btn-primary" type="submit">Join Waitlist (Demo)</button>
+    </form>
+  </div>
+</section>
+
+<!-- ===========================
+         FOOTER
+============================== -->
+<footer>
+  <div class="container">
+    © 2025 FlyLoop — Concept Travel Subscription Website
+  </div>
+</footer>
+
+</body>
+</html>
+
