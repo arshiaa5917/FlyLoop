@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <title>Destinations – FlyLoop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
     html { scroll-behavior: smooth; }
@@ -12,7 +15,7 @@
       --primary: #F97316;      /* orange */
       --primary-soft: #FDBA74;
       --accent-blue: #3B82F6;  /* blue */
-      --accent-red: #DC2626;   /* red (for small highlights) */
+      --accent-red: #DC2626;   /* red */
       --text: #F9FAFB;
       --muted: #9CA3AF;
       --border-subtle: rgba(148, 163, 184, 0.35);
@@ -34,25 +37,13 @@
 
     /* ANIMATIONS */
     @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes fadeIn {
       from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes floatSoft {
-      0%   { transform: translateY(0); }
-      50%  { transform: translateY(-4px); }
-      100% { transform: translateY(0); }
+      to   { opacity: 1; }
     }
 
     @keyframes glowPulse {
@@ -88,25 +79,25 @@
       gap: 10px;
     }
 
-   .logo-mark {
-  width: 36px;
-  height: 36px;
-  border-radius: 999px;
-  background: conic-gradient(from 210deg,
-    #F97316, #3B82F6, #DC2626, #F97316);
-  animation: glowPulse 3s ease-in-out infinite;
-  overflow: hidden;          /* keeps logo inside the circle */
-  display: inline-block;
-}
+    /* CLEAN LOGO */
+    .logo-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #020617;
+      animation: glowPulse 3s ease-in-out infinite;
+    }
 
-/* Make the image fill the glowing circle */
-.logo-mark img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
+    .logo-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
     .nav-title {
       font-weight: 800;
@@ -142,17 +133,9 @@
       transition: width 0.18s ease-out;
     }
 
-    .nav-links a:hover::after {
-      width: 100%;
-    }
-
-    .nav-links a:hover {
-      color: var(--primary-soft);
-    }
-
-    .nav-links a.nav-active {
-      color: var(--primary);
-    }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a:hover        { color: var(--primary-soft); }
+    .nav-links a.nav-active   { color: var(--primary); }
 
     /* LAYOUT */
     section {
@@ -171,278 +154,8 @@
       letter-spacing: -0.03em;
     }
 
-    h1 {
-      font-size: clamp(2.5rem, 4vw, 3.2rem);
-    }
-
-    h2 {
-      font-size: clamp(1.9rem, 3vw, 2.4rem);
-    }
-
-    p { margin: 0; }
-
-    /* BUTTONS */
-    .btn-primary,
-    .btn-outline {
-      padding: 11px 22px;
-      border-radius: 999px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: 0.2s;
-      border: none;
-      white-space: nowrap;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #F97316, #DC2626);
-      color: #0B0B0F;
-      box-shadow: 0 12px 30px rgba(248, 113, 22, 0.55);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px) scale(1.01);
-      box-shadow: 0 16px 40px rgba(248, 113, 22, 0.7);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--primary-soft);
-      border: 1px solid rgba(249, 115, 22, 0.6);
-    }
-
-    .btn-outline:hover {
-      background: rgba(249, 115, 22, 0.1);
-    }
-
-    /* HERO */
-    #hero {
-      padding-top: 70px;
-    }
-
-    .hero-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-      gap: 32px;
-      align-items: center;
-    }
-
-    .hero-sub {
-      max-width: 480px;
-      color: var(--muted);
-      font-size: 1.02rem;
-    }
-
-    .hero-actions {
-      margin-top: 24px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .hero-meta {
-      margin-top: 16px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    .hero-pill {
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(148, 163, 184, 0.4);
-    }
-
-    .hero-card {
-      background: radial-gradient(circle at top left, #1F2937, #020617);
-      border-radius: 22px;
-      padding: 18px;
-      box-shadow: var(--shadow-soft);
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      animation: fadeUp 0.7s ease-out 0.1s both, floatSoft 8s ease-in-out infinite;
-    }
-
-    .hero-card-top {
-      padding: 16px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, #F97316, #3B82F6);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-card-top::after {
-      content: "";
-      position: absolute;
-      width: 170px;
-      height: 170px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 10% 0%, rgba(248, 250, 252, 0.9), transparent);
-      right: -50px;
-      top: -40px;
-      opacity: 0.7;
-    }
-
-    .hero-card-top h3 {
-      position: relative;
-      z-index: 1;
-      margin-bottom: 6px;
-      color: #020617;
-    }
-
-    .hero-card-top p {
-      position: relative;
-      z-index: 1;
-      color: #0B1120;
-      font-size: 0.9rem;
-    }
-
-    .hero-badge {
-      position: relative;
-      z-index: 1;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px 9px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.15);
-      font-size: 0.75rem;
-      color: #0B1120;
-      margin-bottom: 6px;
-    }
-
-    .hero-card-bottom {
-      margin-top: 12px;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      font-size: 0.84rem;
-      color: var(--muted);
-    }
-
-    .hero-stat {
-      padding: 10px;
-      border-radius: 14px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(55, 65, 81, 0.8);
-    }
-
-    .hero-stat strong {
-      display: block;
-      color: var(--primary-soft);
-      font-size: 0.96rem;
-    }
-
-    .pill-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 26px;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    .pill-row span {
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(55, 65, 81, 0.8);
-    }
-
-    /* GENERIC LAYOUT UTILITIES */
-    .two-col {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-      gap: 24px;
-      align-items: flex-start;
-    }
-
-    .steps {
-      margin-top: 16px;
-      padding-left: 20px;
-      font-size: 0.95rem;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-
-    .highlight-box {
-      background: var(--surface);
-      border-radius: 16px;
-      padding: 18px;
-      border: 1px solid rgba(75, 85, 99, 0.8);
-      box-shadow: var(--shadow-soft);
-      font-size: 0.93rem;
-      color: var(--muted);
-      animation: fadeUp 0.6s ease-out both;
-    }
-
-    .highlight-title {
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: var(--primary-soft);
-    }
-
-    /* PRICING GRID */
-    .pricing-section {
-      background: radial-gradient(circle at top, #111827, #020617 70%);
-      padding: 80px 0;
-    }
-
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 22px;
-      margin-top: 30px;
-    }
-
-    .plan-card {
-      background: var(--surface);
-      border-radius: var(--radius-lg);
-      padding: 22px 20px 24px;
-      box-shadow: var(--shadow-soft);
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      animation: fadeUp 0.7s ease-out both;
-    }
-
-    .plan-tag {
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--primary-soft);
-    }
-
-    .plan-price {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--primary);
-    }
-
-    .plan-price span {
-      font-size: 0.9rem;
-      color: var(--muted);
-      font-weight: 500;
-    }
-
-    .plan-list {
-      font-size: 0.9rem;
-      color: var(--muted);
-      line-height: 1.7;
-      padding-left: 18px;
-      margin: 0;
-    }
-
-    .plan-list li { margin-bottom: 4px; }
-
-    .plan-cta { margin-top: 8px; }
+    h1 { font-size: clamp(2.3rem, 3.5vw, 2.7rem); }
+    p  { margin: 0; }
 
     /* DESTINATIONS GRID */
     .dest-grid {
@@ -516,89 +229,6 @@
       margin-top: 6px;
     }
 
-    /* FAQ */
-    .faq-item {
-      margin-bottom: 18px;
-      animation: fadeUp 0.6s ease-out both;
-    }
-
-    .faq-q {
-      font-weight: 700;
-      font-size: 1.02rem;
-      margin-bottom: 4px;
-      color: var(--primary-soft);
-    }
-
-    .faq-a {
-      color: var(--muted);
-      font-size: 0.93rem;
-    }
-
-    /* FORMS */
-    form { margin-top: 18px; }
-
-    input, textarea, select {
-      padding: 11px 12px;
-      width: 100%;
-      max-width: 360px;
-      border-radius: 10px;
-      border: 1px solid rgba(75, 85, 99, 0.9);
-      margin-bottom: 10px;
-      font-size: 0.96rem;
-      font-family: inherit;
-      outline: none;
-      background: #020617;
-      color: var(--text);
-      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-    }
-
-    input:focus, textarea:focus, select:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 1px rgba(248, 113, 22, 0.4);
-      background: #020617;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 70px;
-    }
-
-    /* LOGIN CARD */
-    .auth-wrapper {
-      min-height: calc(100vh - 120px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .auth-card {
-      background: rgba(15, 23, 42, 0.96);
-      border-radius: 20px;
-      padding: 26px 24px 24px;
-      max-width: 380px;
-      width: 100%;
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      box-shadow: var(--shadow-soft);
-      animation: fadeUp 0.6s ease-out both;
-    }
-
-    .auth-card h1 {
-      font-size: 1.7rem;
-      margin-bottom: 4px;
-    }
-
-    .auth-sub {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-bottom: 18px;
-    }
-
-    .auth-footer-text {
-      margin-top: 10px;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
     /* FOOTER */
     footer {
       background: #020617;
@@ -609,41 +239,28 @@
       color: var(--muted);
     }
 
-    footer .container {
-      text-align: center;
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 820px) {
-      .hero-layout,
-      .two-col {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
+    footer .container { text-align: center; }
 
     @media (max-width: 720px) {
       .nav-links { display: none; }
     }
   </style>
-
-  <meta charset="UTF-8" />
-  <title>Destinations – FlyLoop</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- same CSS as index.html -->
 </head>
 <body>
 
 <header>
   <div class="nav">
     <div class="nav-left">
-      <div class="logo-mark"></div>
+      <div class="logo-mark">
+        <img src="logo.png?v=2" alt="FlyLoop logo" />
+      </div>
       <div class="nav-title">FLYLOOP</div>
     </div>
     <nav class="nav-links">
-      <a href="index.html" class="nav-active">Home</a>
+      <a href="index.html">Home</a>
       <a href="how.html">How it works</a>
       <a href="pricing.html">Pricing</a>
-      <a href="destinations.html">Destinations</a>
+      <a href="destinations.html" class="nav-active">Destinations</a>
       <a href="faq.html">FAQ</a>
       <a href="contact.html">Contact</a>
       <a href="login.html">Login</a>
@@ -651,14 +268,12 @@
   </div>
 </header>
 
-
 <section>
   <div class="container">
     <h1>Destinations</h1>
     <p style="color: var(--muted); max-width: 620px; margin-bottom: 26px;">
       Below are sample destinations FlyLoop could include from a Canadian hub.
-      All images are real city photos (from Unsplash) so this page feels like
-      a real travel product.
+      All images are real city photos so this page feels like a real travel product.
     </p>
 
     <div class="dest-grid">
