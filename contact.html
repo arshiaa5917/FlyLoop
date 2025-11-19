@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Contact – FlyLoop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- same CSS as index.html -->
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="nav-left">
+      <div class="logo-mark"></div>
+      <div class="nav-title">FLYLOOP</div>
+    </div>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="how.html">How it works</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="destinations.html">Destinations</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contact.html" class="nav-active">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section>
+  <div class="container">
+    <h1>Contact & Waitlist</h1>
+    <p style="color: var(--muted); max-width: 620px; margin-bottom: 24px;">
+      This form is for demo purposes only. In a real project, you can connect
+      it to a backend (Node, Firebase, Supabase) or a no-code tool like
+      Typeform, Airtable, or Google Forms.
+    </p>
+
+    <form onsubmit="event.preventDefault(); alert('Demo only — form not connected yet.');">
+      <input type="text" placeholder="Your name" required />
+      <input type="email" placeholder="you@example.com" required />
+      <select required>
+        <option value="">What are you most interested in?</option>
+        <option>Basic Loop</option>
+        <option>Standard Loop</option>
+        <option>Premium Loop</option>
+        <option>Business / investor discussion</option>
+      </select>
+      <textarea placeholder="Tell us how you usually travel, or what you'd want from a subscription."></textarea>
+      <button class="btn-primary" type="submit">Submit (Demo)</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    © 2025 FlyLoop — Concept Travel Subscription Website
+  </div>
+</footer>
+
+</body>
+</html>
