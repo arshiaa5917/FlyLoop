@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FlyLoop – Weekly Travel Subscription</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      --primary: #3B82F6;        /* Royal blue */
+      --primary-light: #60A5FA;  /* Soft blue */
+      --bg: #FFFFFF;             /* Clean white */
+      --accent: #F0F9FF;         /* Light travel blue */
+      --dark: #0F172A;           /* Navy slate */
+      --text: #1E293B;           /* Text slate */
+      --muted: #64748B;          /* Soft gray */
+      --radius-lg: 20px;
+      --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.07);
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Inter", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    header {
+      position: sticky;
+      top: 0;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      z-index: 100;
+    }
+
+    .nav {
+      max-width: 1100px;
+      margin: auto;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-left img {
+      height: 40px;
+      width: auto;
+    }
+
+    .nav-title span:first-child {
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 0.07em;
+    }
+
+    .nav-links a {
+      margin-left: 18px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    section {
+      padding: 70px 0;
+    }
+
+    h1, h2, h3 {
+      color: var(--dark);
+      letter-spacing: -0.03em;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 0 20px;
+    }
+
+    .btn-primary {
+      padding: 12px 22px;
+      border-radius: 30px;
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 6px 18px rgba(59,130,246,0.3);
+      transition: 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-light);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      padding: 12px 22px;
+      border-radius: 30px;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .pricing-section {
+      background: var(--accent);
+      padding: 80px 0;
+      border-radius: 0 0 40px 40px;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .plan-card {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .plan-card h3 {
+      color: var(--dark);
+    }
+
+    .plan-price {
+      font-size: 26px;
+      font-weight: 700;
+      margin: 10px 0;
+      color: var(--primary);
+    }
+
+    .plan-list {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .dest-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .dest-card {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .faq-item {
+      margin-bottom: 18px;
+    }
+
+    .faq-q {
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="nav">
+    <div class="nav-left">
+      <img src="logo.png" alt="FlyLoop Logo" />
+      <div class="nav-title">
+        <span>FLYLOOP</span>
+      </div>
+    </div>
+
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#destinations">Destinations</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</header>
+
+<section id="hero">
+  <div class="container">
+    <h1 style="font-size: 3rem; margin-bottom: 10px;">
+      Travel Monthly.<br>One Simple Subscription.
+    </h1>
+    <p style="max-width: 480px; margin-bottom: 25px; color: var(--muted)">
+      FlyLoop gives you curated monthly trips for a fixed subscription—flights,
+      stays, itineraries, everything planned for you.
+    </p>
+    <div style="display: flex; gap: 14px;">
+      <a href="#pricing" class="btn-primary">See Plans</a>
+      <a href="#how" class="btn-outline">Learn More</a>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="container">
+    <h2>How it works</h2>
+    <p>FlyLoop makes travel effortless by turning trips into predictable plans.</p>
+    <ul style="margin-top: 20px;">
+      <li>Choose your subscription tier</li>
+      <li>Pick your travel week</li>
+      <li>Receive your flight + hotel package</li>
+      <li>Enjoy your trip — every month!</li>
+    </ul>
+  </div>
+</section>
+
+<section id="pricing" class="pricing-section">
+  <div class="container">
+    <h2>Choose your plan</h2>
+
+    <div class="pricing-grid">
+
+      <div class="plan-card">
+        <h3>Basic Loop</h3>
+        <div class="plan-price">$49 / month</div>
+        <div class="plan-list">
+          ✓ Domestic trips<br>
+          ✓ 2–3 nights stay<br>
+          ✓ Preselected destinations
+        </div>
+        <a href="#contact" class="btn-outline">Join Waitlist</a>
+      </div>
+
+      <div class="plan-card">
+        <h3>Standard Loop</h3>
+        <div class="plan-price">$99 / month</div>
+        <div class="plan-list">
+          ✓ Domestic + near-international<br>
+          ✓ 3–4 nights stay<br>
+          ✓ Priority booking
+        </div>
+        <a href="#contact" class="btn-primary">Join Waitlist</a>
+      </div>
+
+      <div class="plan-card">
+        <h3>Premium Loop</h3>
+        <div class="plan-price">$149 / month</div>
+        <div class="plan-list">
+          ✓ Weekly travel eligibility<br>
+          ✓ International flights<br>
+          ✓ Boutique hotels
+        </div>
+        <a href="#contact" class="btn-outline">Join Waitlist</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="destinations">
+  <div class="container">
+    <h2>Destinations</h2>
+
+    <div class="dest-grid">
+      <div class="dest-card">
+        <h3>Toronto → Montréal</h3>
+        <p>3-day urban escape — Basic Loop</p>
+      </div>
+
+      <div class="dest-card">
+        <h3>Toronto → New York</h3>
+        <p>Iconic city weekend — Standard Loop</p>
+      </div>
+
+      <div class="dest-card">
+        <h3>Toronto → Paris</h3>
+        <p>4 nights in Europe — Premium Loop</p>
+      </div>
+
+      <div class="dest-card">
+        <h3>NYC → Tokyo</h3>
+        <p>Bucket-list long haul — Premium Loop</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="faq">
+  <div class="container">
+    <h2>FAQ</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">Is the subscription real?</div>
+      <div class="faq-a">This is a concept website for your portfolio.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Are flights included?</div>
+      <div class="faq-a">Yes, every plan includes flights.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I travel with a friend?</div>
+      <div class="faq-a">Yes — add-on guests will be available.</div>
+    </div>
+
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container">
+    <h2>Join the Waitlist</h2>
+    <p>Enter your email to get notified when FlyLoop launches.</p>
+
+    <form style="margin-top: 20px;">
+      <input type="email" placeholder="you@example.com" required
+        style="padding: 14px; width: 300px; border-radius: 10px; border: 1px solid var(--muted);" />
+
+      <button class="btn-primary" style="margin-left: 10px;">
+        Join Waitlist
+      </button>
+    </form>
+  </div>
+</section>
+
+<footer style="background: var(--accent); padding: 30px; margin-top: 50px;">
+  <div class="container" style="text-align: center; color: var(--muted);">
+    © 2025 FlyLoop — Concept Site  
+  </div>
+</footer>
+
+</body>
+</html>
