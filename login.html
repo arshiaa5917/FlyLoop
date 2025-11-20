@@ -281,6 +281,24 @@
     }
   </style>
 </head>
+
+  <script>
+  document.getElementById('login-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const errorBox = document.getElementById('login-error');
+
+    // Demo credentials
+    if (email === 'demo@flyloop.com' && password === 'demo123') {
+      // In a real app you'd set a token/session. Here we just redirect.
+      window.location.href = 'dashboard.html';
+    } else {
+      errorBox.style.display = 'block';
+    }
+  });
+</script>
 <body>
 
 <header>
