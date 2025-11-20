@@ -329,7 +329,7 @@
       product, this would connect to your backend authentication.
     </p>
 
-<form action="dashboard.html" method="get">
+<form onsubmit="event.preventDefault(); window.location.href='dashboard.html';">
   <input type="email" placeholder="you@example.com" required />
   <input type="password" placeholder="Password" required />
   <button class="btn-primary" type="submit">Log In</button>
