@@ -311,11 +311,15 @@
       product, this would connect to your backend authentication.
     </p>
 
-    <form onsubmit="event.preventDefault(); alert('Demo only — login is not connected yet.');">
-      <input type="email" placeholder="you@example.com" required />
-      <input type="password" placeholder="Password" required />
-      <button class="btn-primary" type="submit">Log In</button>
-    </form>
+    <form id="login-form">
+  <input type="email" id="email" placeholder="you@example.com" required />
+  <input type="password" id="password" placeholder="Password" required />
+  <button class="btn-primary" type="submit">Log In</button>
+</form>
+
+<div class="auth-footer-text" id="login-error" style="display:none; color:#FCA5A5;">
+  Incorrect demo login. Try: demo@flyloop.com / demo123
+</div>
 
     <div class="auth-footer-text">
       Don’t have an account yet? In a live product, this would link to a full
