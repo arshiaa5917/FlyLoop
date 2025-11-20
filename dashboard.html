@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Member Dashboard – FlyLoop</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <style>
     html { scroll-behavior: smooth; }
 
@@ -37,18 +38,7 @@
     /* ANIMATIONS */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-
-    @keyframes floatSoft {
-      0%   { transform: translateY(0); }
-      50%  { transform: translateY(-4px); }
-      100% { transform: translateY(0); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes glowPulse {
@@ -57,53 +47,39 @@
       100% { box-shadow: 0 0 14px rgba(249, 115, 22, 0.5); }
     }
 
-    /* DASHBOARD HEADER (own nav) */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(15, 23, 42, 0.96);
-      backdrop-filter: blur(18px);
-      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
-      animation: fadeIn 0.5s ease-out both;
+    /* DASHBOARD LAYOUT */
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      min-height: 100vh;
     }
 
-    .nav {
-      max-width: 1100px;
-      margin: auto;
-      padding: 10px 20px;
+    /* SIDEBAR */
+    .sidebar {
+      background: #020617;
+      border-right: 1px solid rgba(148, 163, 184, 0.3);
+      padding: 24px 18px 24px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+      flex-direction: column;
+      gap: 18px;
     }
 
-    .nav-left {
+    .sidebar-logo {
       display: flex;
       align-items: center;
       gap: 10px;
+      margin-bottom: 26px;
     }
 
-    .logo-mark {
+    .sidebar-logo img {
       width: 40px;
       height: 40px;
       border-radius: 999px;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #020617;
+      object-fit: cover;
       animation: glowPulse 3s ease-in-out infinite;
     }
 
-    .logo-mark img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .nav-title {
+    .sidebar-logo span {
       font-weight: 800;
       letter-spacing: 0.18em;
       font-size: 0.9rem;
@@ -111,138 +87,146 @@
       color: var(--primary-soft);
     }
 
-    .nav-links {
+    .sidebar-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #6b7280;
+      margin-bottom: 4px;
+      margin-top: 6px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sidebar-link {
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      color: #e5e7eb;
       display: flex;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 18px;
-      font-size: 0.9rem;
-    }
-
-    .nav-links a {
-      color: var(--muted);
-      font-weight: 500;
-      position: relative;
-      padding-bottom: 2px;
+      justify-content: space-between;
       cursor: pointer;
+      border: none;
+      background: transparent;
+      text-align: left;
+      transition: background 0.18s ease, transform 0.1s ease;
     }
 
-    .nav-links a::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
-      transition: width 0.18s ease-out;
+    .sidebar-link span.label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .nav-links a:hover::after {
-      width: 100%;
+    .sidebar-link small {
+      font-size: 0.75rem;
+      color: #9ca3af;
     }
 
-    .nav-links a:hover {
-      color: var(--primary-soft);
+    .sidebar-link:hover {
+      background: rgba(148, 163, 184, 0.12);
+      transform: translateX(1px);
     }
 
-    .nav-links a.nav-active {
-      color: var(--primary);
+    .sidebar-link.active {
+      background: linear-gradient(135deg, #F97316, #DC2626);
+      color: #fff;
     }
 
-    .nav-links a.nav-active::after {
-      width: 100%;
+    .sidebar-link.active small {
+      color: #fee2e2;
     }
 
-    section {
-      padding: 60px 0 80px;
-      animation: fadeUp 0.6s ease-out both;
+    .sidebar-footer {
+      margin-top: auto;
+      border-top: 1px solid rgba(55, 65, 81, 0.8);
+      padding-top: 14px;
+      font-size: 0.8rem;
+      color: #6b7280;
     }
 
-    .container {
-      max-width: 1100px;
-      margin: auto;
-      padding: 0 20px;
+    .logout-link {
+      margin-top: 8px;
+      display: inline-flex;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(239, 68, 68, 0.7);
+      color: #fee2e2;
+      font-size: 0.8rem;
     }
 
-    h1, h2, h3 {
-      margin: 0 0 10px;
-      letter-spacing: -0.03em;
+    /* MAIN DASHBOARD CONTENT */
+    .dashboard-content {
+      padding: 26px 28px 32px;
+      animation: fadeUp 0.5s ease-out both;
+    }
+
+    .dashboard-header-eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 4px;
     }
 
     h1 {
-      font-size: clamp(2.1rem, 3.2vw, 2.7rem);
+      margin: 0 0 6px;
+      font-size: clamp(2.1rem, 3vw, 2.6rem);
+      letter-spacing: -0.03em;
     }
 
-    h2 {
-      font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+    .dashboard-sub {
+      color: var(--muted);
+      max-width: 640px;
+      font-size: 0.97rem;
+      margin-bottom: 24px;
     }
 
-    p { margin: 0; }
-
-    /* BUTTONS */
-    .btn-primary,
-    .btn-outline {
-      padding: 9px 20px;
-      border-radius: 999px;
-      font-weight: 600;
-      font-size: 0.9rem;
+    /* "Tabs" under the heading (purely visual) */
+    .top-pills {
       display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: 0.2s;
-      border: none;
-      white-space: nowrap;
+      gap: 10px;
+      margin-bottom: 26px;
     }
 
-    .btn-primary {
+    .top-pill {
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: var(--muted);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    .top-pill.main {
+      border-color: transparent;
       background: linear-gradient(135deg, #F97316, #DC2626);
-      color: #0B0B0F;
-      box-shadow: 0 10px 26px rgba(248, 113, 22, 0.55);
+      color: #020617;
+      font-weight: 600;
     }
 
-    .btn-primary:hover {
-      transform: translateY(-1px) scale(1.01);
-      box-shadow: 0 14px 34px rgba(248, 113, 22, 0.7);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--primary-soft);
-      border: 1px solid rgba(249, 115, 22, 0.6);
-    }
-
-    .btn-outline:hover {
-      background: rgba(249, 115, 22, 0.1);
-    }
-
-    /* GRID / CARD STYLES (reused) */
+    /* CARDS, GRID, DEST STYLES (reused from site) */
     .pricing-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 22px;
-      margin-top: 24px;
+      margin-bottom: 30px;
     }
 
     .plan-card {
       background: var(--surface);
       border-radius: var(--radius-lg);
-      padding: 18px 18px 20px;
+      padding: 22px 20px 20px;
       box-shadow: var(--shadow-soft);
       border: 1px solid rgba(55, 65, 81, 0.9);
       display: flex;
       flex-direction: column;
       gap: 8px;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .plan-card h3 {
-      margin: 4px 0 2px;
-      font-size: 1.05rem;
-      color: var(--text);
     }
 
     .plan-tag {
@@ -252,8 +236,12 @@
       color: var(--primary-soft);
     }
 
+    .plan-card h3 {
+      margin: 2px 0 4px;
+    }
+
     .plan-price {
-      font-size: 1.4rem;
+      font-size: 1.7rem;
       font-weight: 700;
       color: var(--primary);
     }
@@ -265,20 +253,31 @@
     }
 
     .plan-list {
-      font-size: 0.87rem;
+      font-size: 0.9rem;
       color: var(--muted);
-      line-height: 1.6;
+      line-height: 1.7;
       padding-left: 18px;
       margin: 0;
     }
 
     .plan-list li { margin-bottom: 4px; }
 
+    .section-heading {
+      margin: 0 0 6px;
+      letter-spacing: -0.02em;
+      font-size: 1.4rem;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+
     .dest-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 20px;
-      margin-top: 24px;
     }
 
     .dest-card {
@@ -322,8 +321,8 @@
     }
 
     .dest-body {
-      padding: 12px 14px 14px;
-      font-size: 0.88rem;
+      padding: 14px 16px 16px;
+      font-size: 0.9rem;
       color: var(--muted);
     }
 
@@ -344,106 +343,241 @@
       margin-top: 6px;
     }
 
-    .settings-group {
-      margin-top: 24px;
-      padding: 18px;
-      border-radius: 18px;
+    /* ACCOUNT & SETTINGS CARDS */
+    .account-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 22px;
+    }
+
+    .simple-card {
       background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 18px 18px 16px;
       border: 1px solid rgba(55, 65, 81, 0.9);
-      box-shadow: var(--shadow-soft);
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .simple-card h3 {
+      margin-top: 0;
+      margin-bottom: 6px;
+      color: var(--text);
+      font-size: 1.05rem;
+    }
+
+    .field-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
       font-size: 0.9rem;
     }
 
-    .settings-group h3 {
-      font-size: 1.05rem;
-      margin-bottom: 8px;
+    .field-label {
+      color: #9ca3af;
     }
 
-    .settings-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px solid rgba(31, 41, 55, 0.9);
-      gap: 10px;
+    .field-value {
+      color: #e5e7eb;
+      font-weight: 500;
     }
 
-    .settings-row:last-child {
-      border-bottom: none;
-    }
-
-    .settings-label {
-      color: var(--muted);
-      font-size: 0.88rem;
-    }
-
-    .badge {
+    .pill-info {
       display: inline-flex;
-      align-items: center;
-      padding: 2px 8px;
+      padding: 4px 9px;
       border-radius: 999px;
-      background: rgba(34, 197, 94, 0.2);
-      color: #bbf7d0;
-      font-size: 0.75rem;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 0.78rem;
+      color: #9ca3af;
+      margin-top: 6px;
     }
 
-    /* TAB SECTIONS */
-    .tab-section {
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+
+    label {
+      color: #d1d5db;
+      font-size: 0.85rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+      padding: 10px 11px;
+      border-radius: 10px;
+      border: 1px solid rgba(75, 85, 99, 0.9);
+      background: #020617;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(248, 113, 22, 0.4);
+    }
+
+    .btn-primary {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #F97316, #DC2626);
+      color: #020617;
+      font-weight: 600;
+      font-size: 0.9rem;
+      box-shadow: 0 12px 30px rgba(248, 113, 22, 0.55);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 40px rgba(248, 113, 22, 0.7);
+    }
+
+    .btn-outline {
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: transparent;
+      color: #e5e7eb;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .btn-outline:hover {
+      background: rgba(148, 163, 184, 0.12);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+
+    .toggle-row span {
+      max-width: 220px;
+    }
+
+    .fake-toggle {
+      width: 38px;
+      height: 20px;
+      border-radius: 999px;
+      background: #0f172a;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      position: relative;
+    }
+
+    .fake-toggle::after {
+      content: "";
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      top: 1px;
+      left: 1px;
+    }
+
+    .fake-toggle.on {
+      background: #16a34a;
+      border-color: #16a34a;
+    }
+
+    .fake-toggle.on::after {
+      left: 19px;
+      background: #f9fafb;
+    }
+
+    /* SECTIONS VISIBILITY */
+    .section {
       display: none;
     }
-    .tab-section.active {
+
+    .section.active-section {
       display: block;
     }
 
-    footer {
-      background: #020617;
-      border-top: 1px solid rgba(55, 65, 81, 0.7);
-      padding: 20px 0 24px;
-      margin-top: 40px;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    footer .container {
-      text-align: center;
-    }
-
-    @media (max-width: 720px) {
-      .nav-links { font-size: 0.82rem; gap: 12px; }
-      .pricing-grid, .dest-grid { grid-template-columns: minmax(0, 1fr); }
+    /* RESPONSIVE */
+    @media (max-width: 800px) {
+      .dashboard-layout {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        flex-direction: row;
+        align-items: center;
+        overflow-x: auto;
+      }
+      .sidebar-logo {
+        margin-bottom: 0;
+      }
+      .sidebar-footer {
+        display: none;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<header>
-  <div class="nav">
-    <div class="nav-left">
-      <div class="logo-mark">
-        <img src="logo.png" alt="FlyLoop logo" />
-      </div>
-      <div class="nav-title">FLYLOOP</div>
+<div class="dashboard-layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="logo.png" alt="FlyLoop logo" />
+      <span>FLYLOOP</span>
     </div>
-    <nav class="nav-links">
-      <a href="#" class="nav-active" data-tab="overview">Overview</a>
-      <a href="#" data-tab="account">Account</a>
-      <a href="#" data-tab="settings">Settings</a>
-      <a href="index.html">Log out</a>
-    </nav>
-  </div>
-</header>
 
-<section>
-  <div class="container">
+    <div class="sidebar-title">Dashboard</div>
+    <div class="sidebar-nav">
+      <button class="sidebar-link active" data-section="overview">
+        <span class="label">Overview</span>
+        <small>Trips & plan</small>
+      </button>
+      <button class="sidebar-link" data-section="account">
+        <span class="label">Account</span>
+        <small>Profile & billing</small>
+      </button>
+      <button class="sidebar-link" data-section="settings">
+        <span class="label">Settings</span>
+        <small>Preferences</small>
+      </button>
+    </div>
 
-    <!-- OVERVIEW TAB -->
-    <div id="tab-overview" class="tab-section active">
+    <div class="sidebar-footer">
+      Logged in as <strong>demo@flyloop.com</strong><br />
+      <a href="login.html" class="logout-link">Log out</a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="dashboard-content">
+
+    <!-- OVERVIEW SECTION -->
+    <section id="section-overview" class="section active-section">
+      <div class="dashboard-header-eyebrow">Member area</div>
       <h1>Welcome back, Demo Member 👋</h1>
-      <p style="color: var(--muted); max-width: 640px; margin-bottom: 24px;">
-        This is a visual member dashboard. In a real app, everything here would
-        be loaded from your account: plan, trips, and upcoming eligibility.
+      <p class="dashboard-sub">
+        This is a visual demo dashboard. In a real product, this page would show your
+        real trips, credits, upcoming bookings and account controls.
       </p>
 
+      <div class="top-pills">
+        <div class="top-pill main">Overview</div>
+        <div class="top-pill">Standard Loop • $109 / month</div>
+      </div>
+
+      <!-- TOP CARDS -->
       <div class="pricing-grid">
         <div class="plan-card">
           <div class="plan-tag">Your Plan</div>
@@ -467,17 +601,22 @@
         </div>
 
         <div class="plan-card">
-          <div class="plan-tag">Guest / Companion</div>
+          <div class="plan-tag">Companion & Guests</div>
           <h3>Guest options</h3>
           <ul class="plan-list">
             <li>Add 1–2 guests per trip at Companion rates</li>
             <li>Guests share your room to keep it affordable</li>
-            <li>Companion mini-membership (concept feature)</li>
+            <li>Future idea: Companion Mini-Memberships for frequent guests</li>
           </ul>
         </div>
       </div>
 
-      <h2 style="margin-top: 40px;">Your upcoming & eligible trips</h2>
+      <!-- UPCOMING & ELIGIBLE DESTINATIONS -->
+      <h2 class="section-heading">Your upcoming & eligible trips</h2>
+      <p class="section-sub">
+        This is sample data to show how a real dashboard could visualize current bookings
+        and future options based on your membership.
+      </p>
 
       <div class="dest-grid">
         <div class="dest-card">
@@ -498,7 +637,7 @@
           <div class="dest-body">
             <h3>Miami escape</h3>
             <p>Use your remaining 2026 trip for a 3–4 night Miami getaway.</p>
-            <div class="dest-tier">Request Trip (future feature)</div>
+            <div class="dest-tier">Tap “Request Trip” (future feature)</div>
           </div>
         </div>
 
@@ -507,173 +646,167 @@
             <span class="dest-photo-label">Upgrade option</span>
           </div>
           <div class="dest-body">
-            <h3>Cancun (Premium)</h3>
+            <h3>Cancun (Premium upgrade)</h3>
             <p>Upgrade to Premium Loop to unlock 1 sunny Cancun trip this year.</p>
             <div class="dest-tier">Upgrade required</div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- ACCOUNT TAB -->
-    <div id="tab-account" class="tab-section">
-      <h1>Your account</h1>
-      <p style="color: var(--muted); max-width: 640px; margin-bottom: 24px;">
-        In a real product, this section would be connected to your profile and
-        billing details. Here it’s written like a UX and product spec for your portfolio.
+    <!-- ACCOUNT SECTION -->
+    <section id="section-account" class="section">
+      <div class="dashboard-header-eyebrow">Account</div>
+      <h1>Your account details</h1>
+      <p class="dashboard-sub">
+        In a live product, this area would pull real data from your user profile and billing
+        system. For now it’s a static mockup you can show in your portfolio.
       </p>
 
-      <div class="pricing-grid">
-        <div class="plan-card">
-          <div class="plan-tag">Member Profile</div>
-          <h3>Personal details</h3>
-          <ul class="plan-list">
-            <li>Name: Demo Member</li>
-            <li>Email: demo@flyloop.app</li>
-            <li>Home airport: Toronto Pearson (YYZ)</li>
-            <li>Preferred contact: Email</li>
-          </ul>
-          <button class="btn-outline" type="button">Edit profile (demo)</button>
+      <div class="account-grid">
+        <div class="simple-card">
+          <h3>Profile</h3>
+          <div class="field-row">
+            <span class="field-label">Name</span>
+            <span class="field-value">Demo Member</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Email</span>
+            <span class="field-value">demo@flyloop.com</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Home airport</span>
+            <span class="field-value">Toronto (YYZ)</span>
+          </div>
+          <span class="pill-info">This info would be editable in a real product.</span>
         </div>
 
-        <div class="plan-card">
-          <div class="plan-tag">Membership</div>
-          <h3>Subscription details</h3>
-          <ul class="plan-list">
-            <li>Plan: Standard Loop</li>
-            <li>Billing: Monthly, auto-renew</li>
-            <li>Renewal date: 12 Feb 2026</li>
-            <li>Commitment: 6-month minimum term (concept)</li>
-          </ul>
-          <button class="btn-outline" type="button">Manage subscription (demo)</button>
+        <div class="simple-card">
+          <h3>Billing summary</h3>
+          <div class="field-row">
+            <span class="field-label">Plan</span>
+            <span class="field-value">Standard Loop</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Price</span>
+            <span class="field-value">$109 / month</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Next charge</span>
+            <span class="field-value">12 Feb 2026</span>
+          </div>
+          <button class="btn-outline" type="button">View invoices (demo)</button>
         </div>
 
-        <div class="plan-card">
-          <div class="plan-tag">Travel Preferences</div>
-          <h3>How you like to travel</h3>
+        <div class="simple-card">
+          <h3>Companion access</h3>
+          <p style="margin-bottom: 8px;">
+            You can currently bring <strong>up to 2 guests</strong> on eligible trips at
+            Companion rates. In a future version, guests could have their own mini-accounts.
+          </p>
           <ul class="plan-list">
-            <li>Trip style: City breaks & beach escapes</li>
-            <li>Room type: 1 queen bed, non-smoking</li>
-            <li>Budget for extras: Moderate</li>
-            <li>Companions: 1 main travel guest</li>
+            <li>Guest 1: added to Montréal 2026</li>
+            <li>Guest 2: not assigned</li>
           </ul>
-          <button class="btn-outline" type="button">Update preferences (demo)</button>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- SETTINGS TAB -->
-    <div id="tab-settings" class="tab-section">
-      <h1>Settings</h1>
-      <p style="color: var(--muted); max-width: 640px; margin-bottom: 24px;">
-        These settings show what you might expose to members in a real FlyLoop
-        app: notification controls, trip rules, and membership safety controls.
+    <!-- SETTINGS SECTION -->
+    <section id="section-settings" class="section">
+      <div class="dashboard-header-eyebrow">Settings</div>
+      <h1>Dashboard & notification settings</h1>
+      <p class="dashboard-sub">
+        This is a mock settings page to show product thinking: dashboard preferences,
+        notifications and security controls.
       </p>
 
-      <div class="settings-group">
-        <h3>Notifications</h3>
-        <div class="settings-row">
-          <div>
-            <strong>Email alerts</strong><br>
-            <span class="settings-label">Trip confirmations, changes, reminders.</span>
+      <div class="account-grid">
+        <!-- Preferences -->
+        <div class="simple-card">
+          <h3>Dashboard preferences</h3>
+          <div class="toggle-row">
+            <span>Show “Trips this year” card</span>
+            <div class="fake-toggle on"></div>
           </div>
-          <button class="btn-outline" type="button">On (demo)</button>
+          <div class="toggle-row">
+            <span>Show upgrade suggestions (e.g. Cancun)</span>
+            <div class="fake-toggle on"></div>
+          </div>
+          <div class="toggle-row">
+            <span>Compact card layout</span>
+            <div class="fake-toggle"></div>
+          </div>
+          <span class="pill-info">
+            In a real build, toggles would update user settings via API.
+          </span>
         </div>
-        <div class="settings-row">
-          <div>
-            <strong>New destination drops</strong><br>
-            <span class="settings-label">Get notified when new cities & dates open.</span>
-          </div>
-          <button class="btn-outline" type="button">On (demo)</button>
+
+        <!-- Notifications -->
+        <div class="simple-card">
+          <h3>Notifications</h3>
+          <form>
+            <div class="form-row">
+              <label>Email alerts</label>
+              <select>
+                <option>Important updates only</option>
+                <option>All trip + promo emails</option>
+                <option>No marketing, only required emails</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>SMS number (demo)</label>
+              <input type="text" placeholder="+1 (555) 000-0000" />
+            </div>
+            <button class="btn-primary" type="button">Save notification settings</button>
+          </form>
         </div>
-        <div class="settings-row">
-          <div>
-            <strong>Price & upgrade offers</strong><br>
-            <span class="settings-label">Optionally receive upgrade and add-on offers.</span>
-          </div>
-          <button class="btn-outline" type="button">Off (demo)</button>
+
+        <!-- Security -->
+        <div class="simple-card">
+          <h3>Security</h3>
+          <form>
+            <div class="form-row">
+              <label>Current password</label>
+              <input type="password" placeholder="••••••••" />
+            </div>
+            <div class="form-row">
+              <label>New password</label>
+              <input type="password" placeholder="New password" />
+            </div>
+            <div class="form-row">
+              <label>Confirm new password</label>
+              <input type="password" placeholder="Confirm new password" />
+            </div>
+            <button class="btn-outline" type="button">Update password (demo)</button>
+          </form>
         </div>
       </div>
+    </section>
 
-      <div class="settings-group">
-        <h3>Trip & guest rules</h3>
-        <div class="settings-row">
-          <div>
-            <strong>Guest policy</strong><br>
-            <span class="settings-label">
-              You can bring 1–2 guests per trip. Non-members pay a Companion fee or can
-              join as mini-members (concept model).
-            </span>
-          </div>
-        </div>
-        <div class="settings-row">
-          <div>
-            <strong>Cancellation window</strong><br>
-            <span class="settings-label">
-              Free changes up to 30 days before departure, partial credits after that.
-            </span>
-          </div>
-        </div>
-        <div class="settings-row">
-          <div>
-            <strong>Pause membership</strong><br>
-            <span class="settings-label">
-              In a real product, you could allow pausing for 1–3 months instead of cancelling.
-            </span>
-          </div>
-          <button class="btn-outline" type="button">Pause (demo)</button>
-        </div>
-      </div>
-
-      <div class="settings-group">
-        <h3>Security</h3>
-        <div class="settings-row">
-          <div>
-            <strong>Change password</strong><br>
-            <span class="settings-label">Update your login password regularly.</span>
-          </div>
-          <button class="btn-primary" type="button">Change (demo)</button>
-        </div>
-        <div class="settings-row">
-          <div>
-            <strong>Two-factor auth</strong>
-            <span class="badge">Recommended</span><br>
-            <span class="settings-label">
-              In a real build, you would turn this on via SMS or authenticator app.
-            </span>
-          </div>
-          <button class="btn-outline" type="button">Enable (demo)</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<footer>
-  <div class="container">
-    © 2025 FlyLoop — Concept Travel Subscription Website
-  </div>
-</footer>
+  </main>
+</div>
 
 <script>
-  // Simple tab switching logic for dashboard
-  const navLinks = document.querySelectorAll('.nav-links a[data-tab]');
-  const sections = document.querySelectorAll('.tab-section');
+  // Simple section switcher for sidebar links
+  const links = document.querySelectorAll('.sidebar-link');
+  const sections = {
+    overview: document.getElementById('section-overview'),
+    account: document.getElementById('section-account'),
+    settings: document.getElementById('section-settings'),
+  };
 
-  navLinks.forEach(link => {
-    link.addEventListener('click', function (e) {
-      e.preventDefault();
-      const target = this.getAttribute('data-tab');
-      if (!target) return;
+  links.forEach(link => {
+    link.addEventListener('click', () => {
+      const target = link.getAttribute('data-section');
 
-      // update active link
-      navLinks.forEach(l => l.classList.remove('nav-active'));
-      this.classList.add('nav-active');
+      // toggle active button
+      links.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
 
-      // show correct section
-      sections.forEach(sec => {
-        sec.classList.toggle('active', sec.id === 'tab-' + target);
+      // show/hide sections
+      Object.keys(sections).forEach(key => {
+        sections[key].classList.toggle('active-section', key === target);
       });
     });
   });
