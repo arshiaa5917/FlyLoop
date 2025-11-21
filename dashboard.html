@@ -210,7 +210,7 @@
       font-weight: 600;
     }
 
-    /* CARDS, GRID, DEST STYLES (reused from site) */
+    /* CARDS, GRID, DEST STYLES */
     .pricing-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -453,6 +453,12 @@
       cursor: pointer;
     }
 
+    .btn-outline.small {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      margin-top: 8px;
+    }
+
     .btn-outline:hover {
       background: rgba(148, 163, 184, 0.12);
     }
@@ -497,6 +503,59 @@
     .fake-toggle.on::after {
       left: 19px;
       background: #f9fafb;
+    }
+
+    /* HOTEL OPTIONS INSIDE DEST CARD */
+    .hotel-options {
+      display: none;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(55, 65, 81, 0.8);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .hotel-options.active {
+      display: block;
+    }
+
+    .hotel-options-title {
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    .hotel-option {
+      margin-bottom: 6px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .hotel-option input {
+      margin-top: 3px;
+    }
+
+    .hotel-name {
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+
+    .hotel-tag {
+      display: inline-flex;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 0.7rem;
+      margin-left: 6px;
+      color: #9ca3af;
+    }
+
+    .hotel-note {
+      font-size: 0.78rem;
+      color: #9ca3af;
+      margin-top: 4px;
     }
 
     /* SECTIONS VISIBILITY */
@@ -619,6 +678,7 @@
       </p>
 
       <div class="dest-grid">
+        <!-- MONTREAL -->
         <div class="dest-card">
           <div class="dest-photo" style="background-image:url('https://travel.home.sndimg.com/content/dam/images/travel/stock/2016/11/3/0/GettyImages-Holger-Mette-514723348-place-d-armes-montreal.jpg.rend.hgtvcom.1280.960.suffix/1491594537290.jpeg');">
             <span class="dest-photo-label">Booked • March 2026</span>
@@ -627,9 +687,52 @@
             <h3>Montréal weekend</h3>
             <p>3 nights in a central hotel. Flight + hotel confirmed.</p>
             <div class="dest-tier">Status: Confirmed</div>
+
+            <button
+              class="btn-outline small hotel-toggle"
+              type="button"
+              data-hotel-panel="hotels-montreal"
+            >
+              Choose / view hotel
+            </button>
+
+            <div id="hotels-montreal" class="hotel-options">
+              <div class="hotel-options-title">Hotel options for Montréal</div>
+
+              <label class="hotel-option">
+                <input type="radio" name="hotel-montreal" checked />
+                <div>
+                  <div class="hotel-name">
+                    Hôtel Vieux-Port
+                    <span class="hotel-tag">Included • Boutique</span>
+                  </div>
+                  <div class="hotel-note">
+                    Charming rooms in Old Montréal, walkable to cafés and the riverfront.
+                  </div>
+                </div>
+              </label>
+
+              <label class="hotel-option">
+                <input type="radio" name="hotel-montreal" />
+                <div>
+                  <div class="hotel-name">
+                    Downtown Skyline Hotel
+                    <span class="hotel-tag">+$40 / stay • Upgrade</span>
+                  </div>
+                  <div class="hotel-note">
+                    Higher floors, modern design, quick metro access everywhere.
+                  </div>
+                </div>
+              </label>
+
+              <div class="hotel-note">
+                In a real build, your selection would be saved to your booking.
+              </div>
+            </div>
           </div>
         </div>
 
+        <!-- MIAMI -->
         <div class="dest-card">
           <div class="dest-photo" style="background-image:url('https://th.bing.com/th/id/R.688a377e70ab56bfe74c3cb66d45a0e4?rik=h178sf7UHB3qHQ&pid=ImgRaw&r=0');">
             <span class="dest-photo-label">Eligible • Summer 2026</span>
@@ -638,9 +741,52 @@
             <h3>Miami escape</h3>
             <p>Use your remaining 2026 trip for a 3–4 night Miami getaway.</p>
             <div class="dest-tier">Tap “Request Trip” (future feature)</div>
+
+            <button
+              class="btn-outline small hotel-toggle"
+              type="button"
+              data-hotel-panel="hotels-miami"
+            >
+              Choose hotel for this trip
+            </button>
+
+            <div id="hotels-miami" class="hotel-options">
+              <div class="hotel-options-title">Hotel options for Miami</div>
+
+              <label class="hotel-option">
+                <input type="radio" name="hotel-miami" checked />
+                <div>
+                  <div class="hotel-name">
+                    South Beach Stay
+                    <span class="hotel-tag">Included • Near beach</span>
+                  </div>
+                  <div class="hotel-note">
+                    Simple but stylish, walking distance to the ocean and nightlife.
+                  </div>
+                </div>
+              </label>
+
+              <label class="hotel-option">
+                <input type="radio" name="hotel-miami" />
+                <div>
+                  <div class="hotel-name">
+                    Oceanfront Boutique
+                    <span class="hotel-tag">+$90 / stay • Upgrade</span>
+                  </div>
+                  <div class="hotel-note">
+                    Direct beach access, pool loungers and later checkout when available.
+                  </div>
+                </div>
+              </label>
+
+              <div class="hotel-note">
+                Once you officially request this trip, your hotel choice would be locked in.
+              </div>
+            </div>
           </div>
         </div>
 
+        <!-- CANCUN -->
         <div class="dest-card">
           <div class="dest-photo" style="background-image:url('https://images.odigoo.com/images/posts/que-hacer-en-cancun-35-actividades-para-tu-viaje/que-hacer-en-cancun-35-actividades-para-tu-viaje-header.jpg');">
             <span class="dest-photo-label">Upgrade option</span>
@@ -649,6 +795,49 @@
             <h3>Cancun (Premium upgrade)</h3>
             <p>Upgrade to Premium Loop to unlock 1 sunny Cancun trip this year.</p>
             <div class="dest-tier">Upgrade required</div>
+
+            <button
+              class="btn-outline small hotel-toggle"
+              type="button"
+              data-hotel-panel="hotels-cancun"
+            >
+              Preview Cancun hotels
+            </button>
+
+            <div id="hotels-cancun" class="hotel-options">
+              <div class="hotel-options-title">Sample Premium hotels for Cancun</div>
+
+              <label class="hotel-option">
+                <input type="radio" name="hotel-cancun" checked />
+                <div>
+                  <div class="hotel-name">
+                    All-Inclusive Resort Azul
+                    <span class="hotel-tag">Premium • Included with upgrade</span>
+                  </div>
+                  <div class="hotel-note">
+                    Beachfront, all-inclusive food & drinks, curated for relaxing getaways.
+                  </div>
+                </div>
+              </label>
+
+              <label class="hotel-option">
+                <input type="radio" name="hotel-cancun" />
+                <div>
+                  <div class="hotel-name">
+                    Adults-Only Escape
+                    <span class="hotel-tag">Premium+ • Higher tier</span>
+                  </div>
+                  <div class="hotel-note">
+                    Quieter atmosphere with spa credits and late checkout when available.
+                  </div>
+                </div>
+              </label>
+
+              <div class="hotel-note">
+                These are concept examples — a real product would pull live inventory
+                and pricing once you upgrade your plan.
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -808,6 +997,18 @@
       Object.keys(sections).forEach(key => {
         sections[key].classList.toggle('active-section', key === target);
       });
+    });
+  });
+
+  // Hotel selection toggles
+  const hotelToggles = document.querySelectorAll('.hotel-toggle');
+
+  hotelToggles.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const panelId = btn.getAttribute('data-hotel-panel');
+      const panel = document.getElementById(panelId);
+      if (!panel) return;
+      panel.classList.toggle('active');
     });
   });
 </script>
