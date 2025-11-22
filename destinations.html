@@ -1,6 +1,14 @@
+// destinations.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <title>Destinations – FlyLoop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content="Explore sample FlyLoop destinations like Toronto, LA, Miami, Montréal, Vancouver, Cancun, Havana and more. Includes a demo hotel picker for each city."
+  />
 
   <style>
     html { scroll-behavior: smooth; }
@@ -34,19 +42,13 @@
 
     /* ANIMATIONS */
     @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes fadeIn {
       from { opacity: 0; }
-      to { opacity: 1; }
+      to   { opacity: 1; }
     }
 
     @keyframes floatSoft {
@@ -88,15 +90,16 @@
       gap: 10px;
     }
 
-   .logo-mark {
-      width: 36px;
-      height: 36px;
+    .logo-mark {
+      width: 40px;
+      height: 40px;
       border-radius: 999px;
-      background: conic-gradient(from 210deg,
-        #F97316, #3B82F6, #DC2626, #F97316);
-      animation: glowPulse 3s ease-in-out infinite;
       overflow: hidden;
-      display: inline-block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #020617;
+      animation: glowPulse 3s ease-in-out infinite;
     }
 
     .logo-mark img {
@@ -140,9 +143,7 @@
       transition: width 0.18s ease-out;
     }
 
-    .nav-links a:hover::after {
-      width: 100%;
-    }
+    .nav-links a:hover::after { width: 100%; }
 
     .nav-links a:hover {
       color: var(--primary-soft);
@@ -150,6 +151,10 @@
 
     .nav-links a.nav-active {
       color: var(--primary);
+    }
+
+    .nav-links a.nav-active::after {
+      width: 100%;
     }
 
     /* LAYOUT */
@@ -416,20 +421,18 @@
       .nav-links { display: none; }
     }
   </style>
-
-  <meta charset="UTF-8" />
-  <title>Destinations – FlyLoop</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
 
 <header>
   <div class="nav">
     <div class="nav-left">
-      <div class="logo-mark"></div>
+      <div class="logo-mark">
+        <img src="logo.png?v=2" alt="FlyLoop logo" />
+      </div>
       <div class="nav-title">FLYLOOP</div>
     </div>
-    <nav class="nav-links">
+    <nav class="nav-links" aria-label="Main navigation">
       <a href="index.html">Home</a>
       <a href="how.html">How it works</a>
       <a href="pricing.html">Pricing</a>
@@ -437,6 +440,7 @@
       <a href="faq.html">FAQ</a>
       <a href="contact.html">Contact</a>
       <a href="login.html">Login</a>
+      <a href="dashboard.html">Dashboard</a>
     </nav>
   </div>
 </header>
@@ -446,14 +450,16 @@
     <h1>Destinations</h1>
     <p style="color: var(--muted); max-width: 620px; margin-bottom: 26px;">
       Below are sample destinations FlyLoop could include from a Canadian hub.
-      Click “Select hotel (demo)” on any city to see example hotel partners a
-      member could pick for their trip.
+      Click <strong>“Select hotel (demo)”</strong> on any city to see example hotel partners
+      a member could pick for their trip.
     </p>
 
     <div class="dest-grid">
-
       <div class="dest-card">
-        <div class="dest-photo" style="background-image:url('https://yfcfredericton.ca/wp-content/uploads/Toronto-skyline-Instagram-1024x1024.jpg');">
+        <div
+          class="dest-photo"
+          style="background-image:url('https://yfcfredericton.ca/wp-content/uploads/Toronto-skyline-Instagram-1024x1024.jpg');"
+        >
           <span class="dest-photo-label">Toronto • Hub City</span>
         </div>
         <div class="dest-body">
@@ -463,12 +469,17 @@
           <div class="hotel-summary">
             Hotel: <span class="selected-hotel">Not selected yet (demo)</span>
           </div>
-          <button class="btn-outline hotel-btn" data-dest="toronto">Select hotel (demo)</button>
+          <button class="btn-outline hotel-btn" data-dest="toronto" type="button">
+            Select hotel (demo)
+          </button>
         </div>
       </div>
 
       <div class="dest-card">
-        <div class="dest-photo" style="background-image:url('https://tse2.mm.bing.net/th/id/OIP.1ics56Eb0BScWdiP082u-wHaE8?rs=1&pid=ImgDetMain&o=7&rm=3');">
+        <div
+          class="dest-photo"
+          style="background-image:url('https://tse2.mm.bing.net/th/id/OIP.1ics56Eb0BScWdiP082u-wHaE8?rs=1&pid=ImgDetMain&o=7&rm=3');"
+        >
           <span class="dest-photo-label">Los Angeles • USA</span>
         </div>
         <div class="dest-body">
@@ -478,12 +489,17 @@
           <div class="hotel-summary">
             Hotel: <span class="selected-hotel">Not selected yet (demo)</span>
           </div>
-          <button class="btn-outline hotel-btn" data-dest="la">Select hotel (demo)</button>
+          <button class="btn-outline hotel-btn" data-dest="la" type="button">
+            Select hotel (demo)
+          </button>
         </div>
       </div>
 
       <div class="dest-card">
-        <div class="dest-photo" style="background-image:url('https://th.bing.com/th/id/R.688a377e70ab56bfe74c3cb66d45a0e4?rik=h178sf7UHB3qHQ&pid=ImgRaw&r=0');">
+        <div
+          class="dest-photo"
+          style="background-image:url('https://th.bing.com/th/id/R.688a377e70ab56bfe74c3cb66d45a0e4?rik=h178sf7UHB3qHQ&pid=ImgRaw&r=0');"
+        >
           <span class="dest-photo-label">Miami • USA</span>
         </div>
         <div class="dest-body">
@@ -493,12 +509,17 @@
           <div class="hotel-summary">
             Hotel: <span class="selected-hotel">Not selected yet (demo)</span>
           </div>
-          <button class="btn-outline hotel-btn" data-dest="miami">Select hotel (demo)</button>
+          <button class="btn-outline hotel-btn" data-dest="miami" type="button">
+            Select hotel (demo)
+          </button>
         </div>
       </div>
 
       <div class="dest-card">
-        <div class="dest-photo" style="background-image:url('https://travel.home.sndimg.com/content/dam/images/travel/stock/2016/11/3/0/GettyImages-Holger-Mette-514723348-place-d-armes-montreal.jpg.rend.hgtvcom.1280.960.suffix/1491594537290.jpeg');">
+        <div
+          class="dest-photo"
+          style="background-image:url('https://travel.home.sndimg.com/content/dam/images/travel/stock/2016/11/3/0/GettyImages-Holger-Mette-514723348-place-d-armes-montreal.jpg.rend.hgtvcom.1280.960.suffix/1491594537290.jpeg');"
+        >
           <span class="dest-photo-label">Montréal • Canada</span>
         </div>
         <div class="dest-body">
@@ -508,12 +529,17 @@
           <div class="hotel-summary">
             Hotel: <span class="selected-hotel">Not selected yet (demo)</span>
           </div>
-          <button class="btn-outline hotel-btn" data-dest="montreal">Select hotel (demo)</button>
+          <button class="btn-outline hotel-btn" data-dest="montreal" type="button">
+            Select hotel (demo)
+          </button>
         </div>
       </div>
 
       <div class="dest-card">
-        <div class="dest-photo" style="background-image:url('https://www.shoreexcursionsgroup.com/img/tour/CNQBHISTORIC-2.jpg');">
+        <div
+          class="dest-photo"
+          style="background-image:url('https://www.shoreexcursionsgroup.com/img/tour/CNQBHISTORIC-2.jpg');"
+        >
           <span class="dest-photo-label">Québec City • Canada</span>
         </div>
         <div class="dest-body">
@@ -523,12 +549,17 @@
           <div class="hotel-summary">
             Hotel: <span class="selected-hotel">Not selected yet (demo)</span>
           </div>
-          <button class="btn-outline hotel-btn" data-dest="quebec">Select hotel (demo)</button>
+          <button class="btn-outline hotel-btn" data-dest="quebec" type="button">
+            Select hotel (demo)
+          </button>
         </div>
       </div>
 
       <div class="dest-card">
-        <div class="dest-photo" style="background-image:url('https://images.odigoo.com/images/posts/que-hacer-en-cancun-35-actividades-para-tu-viaje/que-hacer-en-cancun-35-actividades-para-tu-viaje-header.jpg');">
+        <div
+          class="dest-photo"
+          style="background-image:url('https://images.odigoo.com/images/posts/que-hacer-en-cancun-35-actividades-para-tu-viaje/que-hacer-en-cancun-35-actividades-para-tu-viaje-header.jpg');"
+        >
           <span class="dest-photo-label">Cancun • Mexico</span>
         </div>
         <div class="dest-body">
@@ -538,12 +569,17 @@
           <div class="hotel-summary">
             Hotel: <span class="selected-hotel">Not selected yet (demo)</span>
           </div>
-          <button class="btn-outline hotel-btn" data-dest="cancun">Select hotel (demo)</button>
+          <button class="btn-outline hotel-btn" data-dest="cancun" type="button">
+            Select hotel (demo)
+          </button>
         </div>
       </div>
 
       <div class="dest-card">
-        <div class="dest-photo" style="background-image:url('https://res.cloudinary.com/friendly-planet/image/fetch/q_auto,f_auto/https://www.friendlyplanet.com/media/gallery/caribbean/cuba/old-havana-el-capitolio.2000x1325.bmp');">
+        <div
+          class="dest-photo"
+          style="background-image:url('https://res.cloudinary.com/friendly-planet/image/fetch/q_auto,f_auto/https://www.friendlyplanet.com/media/gallery/caribbean/cuba/old-havana-el-capitolio.2000x1325.bmp');"
+        >
           <span class="dest-photo-label">Havana • Cuba</span>
         </div>
         <div class="dest-body">
@@ -553,12 +589,17 @@
           <div class="hotel-summary">
             Hotel: <span class="selected-hotel">Not selected yet (demo)</span>
           </div>
-          <button class="btn-outline hotel-btn" data-dest="havana">Select hotel (demo)</button>
+          <button class="btn-outline hotel-btn" data-dest="havana" type="button">
+            Select hotel (demo)
+          </button>
         </div>
       </div>
 
       <div class="dest-card">
-        <div class="dest-photo" style="background-image:url('https://www.civitatis.com/blog/wp-content/uploads/2020/12/vista-panoramica-vancouver.jpg');">
+        <div
+          class="dest-photo"
+          style="background-image:url('https://www.civitatis.com/blog/wp-content/uploads/2020/12/vista-panoramica-vancouver.jpg');"
+        >
           <span class="dest-photo-label">Vancouver • Canada</span>
         </div>
         <div class="dest-body">
@@ -568,17 +609,18 @@
           <div class="hotel-summary">
             Hotel: <span class="selected-hotel">Not selected yet (demo)</span>
           </div>
-          <button class="btn-outline hotel-btn" data-dest="vancouver">Select hotel (demo)</button>
+          <button class="btn-outline hotel-btn" data-dest="vancouver" type="button">
+            Select hotel (demo)
+          </button>
         </div>
       </div>
-
     </div>
   </div>
 </section>
 
 <!-- HOTEL SELECTION MODAL (DEMO) -->
 <div class="hotel-modal-backdrop" id="hotelModal">
-  <div class="hotel-modal">
+  <div class="hotel-modal" role="dialog" aria-modal="true" aria-labelledby="hotelModalTitle">
     <h2 id="hotelModalTitle">Choose your hotel</h2>
     <p id="hotelModalSubtitle">
       These are example partner hotels FlyLoop could work with. In a real product,
@@ -671,7 +713,6 @@
       hotelOptionsContainer.appendChild(wrapper);
     });
 
-    // update title
     const titleEl = document.getElementById("hotelModalTitle");
     titleEl.textContent = `Select a hotel for ${cityName}`;
 
