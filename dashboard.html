@@ -1,9 +1,14 @@
+// dashboard.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Member Dashboard – FlyLoop</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content="FlyLoop member dashboard concept: view your subscription plan, sample trips, hotel selection demo, and mock account/settings sections for portfolio use."
+  />
 
   <style>
     html { scroll-behavior: smooth; }
@@ -15,7 +20,7 @@
       --primary: #F97316;      /* orange */
       --primary-soft: #FDBA74;
       --accent-blue: #3B82F6;  /* blue */
-      --accent-red: #DC2626;   /* red (for small highlights) */
+      --accent-red: #DC2626;   /* red */
       --text: #F9FAFB;
       --muted: #9CA3AF;
       --border-subtle: rgba(148, 163, 184, 0.35);
@@ -38,7 +43,7 @@
     /* ANIMATIONS */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes glowPulse {
@@ -187,7 +192,7 @@
       margin-bottom: 24px;
     }
 
-    /* "Tabs" under the heading (purely visual) */
+    /* TOP PILLS */
     .top-pills {
       display: inline-flex;
       gap: 10px;
@@ -591,23 +596,23 @@
 
 <div class="dashboard-layout">
   <!-- SIDEBAR -->
-  <aside class="sidebar">
+  <aside class="sidebar" aria-label="Dashboard navigation">
     <div class="sidebar-logo">
-      <img src="logo.png" alt="FlyLoop logo" />
+      <img src="logo.png?v=2" alt="FlyLoop logo" />
       <span>FLYLOOP</span>
     </div>
 
     <div class="sidebar-title">Dashboard</div>
     <div class="sidebar-nav">
-      <button class="sidebar-link active" data-section="overview">
+      <button class="sidebar-link active" data-section="overview" type="button">
         <span class="label">Overview</span>
-        <small>Trips & plan</small>
+        <small>Trips &amp; plan</small>
       </button>
-      <button class="sidebar-link" data-section="account">
+      <button class="sidebar-link" data-section="account" type="button">
         <span class="label">Account</span>
-        <small>Profile & billing</small>
+        <small>Profile &amp; billing</small>
       </button>
-      <button class="sidebar-link" data-section="settings">
+      <button class="sidebar-link" data-section="settings" type="button">
         <span class="label">Settings</span>
         <small>Preferences</small>
       </button>
@@ -621,14 +626,13 @@
 
   <!-- MAIN CONTENT -->
   <main class="dashboard-content">
-
     <!-- OVERVIEW SECTION -->
-    <section id="section-overview" class="section active-section">
+    <section id="section-overview" class="section active-section" aria-label="Overview">
       <div class="dashboard-header-eyebrow">Member area</div>
       <h1>Welcome back, Demo Member 👋</h1>
       <p class="dashboard-sub">
         This is a visual demo dashboard. In a real product, this page would show your
-        real trips, credits, upcoming bookings and account controls.
+        real trips, credits, upcoming bookings, and account controls.
       </p>
 
       <div class="top-pills">
@@ -660,7 +664,7 @@
         </div>
 
         <div class="plan-card">
-          <div class="plan-tag">Companion & Guests</div>
+          <div class="plan-tag">Companion &amp; Guests</div>
           <h3>Guest options</h3>
           <ul class="plan-list">
             <li>Add 1–2 guests per trip at Companion rates</li>
@@ -671,7 +675,7 @@
       </div>
 
       <!-- UPCOMING & ELIGIBLE DESTINATIONS -->
-      <h2 class="section-heading">Your upcoming & eligible trips</h2>
+      <h2 class="section-heading">Your upcoming &amp; eligible trips</h2>
       <p class="section-sub">
         This is sample data to show how a real dashboard could visualize current bookings
         and future options based on your membership.
@@ -680,7 +684,10 @@
       <div class="dest-grid">
         <!-- MONTREAL -->
         <div class="dest-card">
-          <div class="dest-photo" style="background-image:url('https://travel.home.sndimg.com/content/dam/images/travel/stock/2016/11/3/0/GettyImages-Holger-Mette-514723348-place-d-armes-montreal.jpg.rend.hgtvcom.1280.960.suffix/1491594537290.jpeg');">
+          <div
+            class="dest-photo"
+            style="background-image:url('https://travel.home.sndimg.com/content/dam/images/travel/stock/2016/11/3/0/GettyImages-Holger-Mette-514723348-place-d-armes-montreal.jpg.rend.hgtvcom.1280.960.suffix/1491594537290.jpeg');"
+          >
             <span class="dest-photo-label">Booked • March 2026</span>
           </div>
           <div class="dest-body">
@@ -734,7 +741,10 @@
 
         <!-- MIAMI -->
         <div class="dest-card">
-          <div class="dest-photo" style="background-image:url('https://th.bing.com/th/id/R.688a377e70ab56bfe74c3cb66d45a0e4?rik=h178sf7UHB3qHQ&pid=ImgRaw&r=0');">
+          <div
+            class="dest-photo"
+            style="background-image:url('https://th.bing.com/th/id/R.688a377e70ab56bfe74c3cb66d45a0e4?rik=h178sf7UHB3qHQ&pid=ImgRaw&r=0');"
+          >
             <span class="dest-photo-label">Eligible • Summer 2026</span>
           </div>
           <div class="dest-body">
@@ -774,7 +784,7 @@
                     <span class="hotel-tag">+$90 / stay • Upgrade</span>
                   </div>
                   <div class="hotel-note">
-                    Direct beach access, pool loungers and later checkout when available.
+                    Direct beach access, pool loungers, and later checkout when available.
                   </div>
                 </div>
               </label>
@@ -788,7 +798,10 @@
 
         <!-- CANCUN -->
         <div class="dest-card">
-          <div class="dest-photo" style="background-image:url('https://images.odigoo.com/images/posts/que-hacer-en-cancun-35-actividades-para-tu-viaje/que-hacer-en-cancun-35-actividades-para-tu-viaje-header.jpg');">
+          <div
+            class="dest-photo"
+            style="background-image:url('https://images.odigoo.com/images/posts/que-hacer-en-cancun-35-actividades-para-tu-viaje/que-hacer-en-cancun-35-actividades-para-tu-viaje-header.jpg');"
+          >
             <span class="dest-photo-label">Upgrade option</span>
           </div>
           <div class="dest-body">
@@ -815,7 +828,7 @@
                     <span class="hotel-tag">Premium • Included with upgrade</span>
                   </div>
                   <div class="hotel-note">
-                    Beachfront, all-inclusive food & drinks, curated for relaxing getaways.
+                    Beachfront, all-inclusive food &amp; drinks, curated for relaxing getaways.
                   </div>
                 </div>
               </label>
@@ -844,7 +857,7 @@
     </section>
 
     <!-- ACCOUNT SECTION -->
-    <section id="section-account" class="section">
+    <section id="section-account" class="section" aria-label="Account">
       <div class="dashboard-header-eyebrow">Account</div>
       <h1>Your account details</h1>
       <p class="dashboard-sub">
@@ -902,12 +915,12 @@
     </section>
 
     <!-- SETTINGS SECTION -->
-    <section id="section-settings" class="section">
+    <section id="section-settings" class="section" aria-label="Settings">
       <div class="dashboard-header-eyebrow">Settings</div>
-      <h1>Dashboard & notification settings</h1>
+      <h1>Dashboard &amp; notification settings</h1>
       <p class="dashboard-sub">
         This is a mock settings page to show product thinking: dashboard preferences,
-        notifications and security controls.
+        notifications, and security controls.
       </p>
 
       <div class="account-grid">
@@ -972,7 +985,6 @@
         </div>
       </div>
     </section>
-
   </main>
 </div>
 
@@ -989,11 +1001,9 @@
     link.addEventListener('click', () => {
       const target = link.getAttribute('data-section');
 
-      // toggle active button
       links.forEach(l => l.classList.remove('active'));
       link.classList.add('active');
 
-      // show/hide sections
       Object.keys(sections).forEach(key => {
         sections[key].classList.toggle('active-section', key === target);
       });
