@@ -221,6 +221,41 @@
       padding: 80px 0;
     }
 
+    .pricing-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .billing-toggle {
+      display: inline-flex;
+      padding: 3px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      font-size: 0.85rem;
+    }
+
+    .billing-pill {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+    }
+
+    .billing-pill.active {
+      background: linear-gradient(135deg, #F97316, #DC2626);
+      color: #020617;
+      font-weight: 600;
+      transform: translateY(-1px);
+    }
+
     .pricing-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -231,13 +266,55 @@
     .plan-card {
       background: var(--surface);
       border-radius: var(--radius-lg);
-      padding: 22px 20px 24px;
+      padding: 26px 26px 28px;
       box-shadow: var(--shadow-soft);
       border: 1px solid rgba(55, 65, 81, 0.9);
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      animation: fadeUp 0.7s ease-out both;
+      gap: 12px;
+      word-break: normal;
+      overflow-wrap: break-word;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .plan-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 22px 50px rgba(0, 0, 0, 0.85);
+      border-color: rgba(148, 163, 184, 0.8);
+    }
+
+    /* Featured / Most popular */
+    .plan-card.featured {
+      border-color: rgba(249, 115, 22, 0.9);
+      box-shadow:
+        0 0 0 1px rgba(249, 115, 22, 0.4),
+        0 20px 50px rgba(0, 0, 0, 0.9);
+      position: relative;
+      transform: translateY(-3px);
+    }
+
+    .plan-card.featured::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      background: radial-gradient(circle at top left,
+        rgba(249, 115, 22, 0.4),
+        transparent 55%);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .plan-card.featured:hover {
+      transform: translateY(-8px);
+      box-shadow:
+        0 0 0 1px rgba(249, 115, 22, 0.6),
+        0 24px 60px rgba(0, 0, 0, 0.95);
+    }
+
+    .plan-card.featured .plan-tag {
+      color: #fed7aa;
+      letter-spacing: 0.14em;
     }
 
     .plan-tag {
@@ -255,23 +332,53 @@
       font-size: 1.8rem;
       font-weight: 700;
       color: var(--primary);
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
     }
 
-    .plan-price span {
+    .price-amount {
+      font-size: 1.9rem;
+    }
+
+    .price-unit {
       font-size: 0.9rem;
       color: var(--muted);
       font-weight: 500;
     }
 
+    .price-caption {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* Bullet “icons” */
     .plan-list {
       font-size: 0.9rem;
       color: var(--muted);
       line-height: 1.7;
-      padding-left: 18px;
+      list-style: none;
+      padding-left: 0;
       margin: 0;
     }
 
-    .plan-list li { margin-bottom: 4px; }
+    .plan-list li {
+      margin-bottom: 4px;
+      position: relative;
+      padding-left: 18px;
+    }
+
+    .plan-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.6em;
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #F97316, #DC2626);
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9);
+    }
 
     .plan-cta { margin-top: 8px; }
 
@@ -292,6 +399,10 @@
     /* RESPONSIVE */
     @media (max-width: 720px) {
       .nav-links { display: none; }
+
+      .pricing-header {
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
@@ -306,32 +417,178 @@
       <div class="nav-title">FLYLOOP</div>
     </div>
     <nav class="nav-links" aria-label="Main navigation">
-  <a href="index.html">Home</a>
-  <a href="how.html">How it works</a>
-  <a href="pricing.html">Pricing</a>
-  <a href="destinations.html">Destinations</a>
-  <a href="faq.html">FAQ</a>
-  <a href="contact.html">Contact</a>
-  <a href="login.html">Login</a>
-</nav>
-
+      <a href="index.html">Home</a>
+      <a href="how.html">How it works</a>
+      <a href="pricing.html" class="nav-active">Pricing</a>
+      <a href="destinations.html">Destinations</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contact.html">Contact</a>
+      <a href="login.html">Login</a>
+    </nav>
   </div>
 </header>
 
 <section class="pricing-section">
   <div class="container">
-    <h1>Membership Pricing</h1>
-    <p style="color: var(--muted); max-width: 600px; margin-bottom: 24px;">
-      FlyLoop is a concept travel subscription. These price points are placeholders
-      to show how a real model could work — no payments are processed through this
-      demo. Each tier maps to how often you want to travel in a year.
-    </p>
+    <div class="pricing-header">
+      <div>
+        <h1>Membership Pricing</h1>
+        <p style="color: var(--muted); max-width: 600px; margin-bottom: 8px;">
+          FlyLoop is a concept travel subscription. These price points are placeholders
+          to show how a real model could work — no payments are processed through this
+          demo. Each tier maps to how often you want to travel in a year.
+        </p>
+      </div>
+
+      <!-- Monthly / Yearly toggle -->
+      <div class="billing-toggle" aria-label="Billing period toggle">
+        <button class="billing-pill active" type="button" data-billing="monthly">
+          Monthly
+        </button>
+        <button class="billing-pill" type="button" data-billing="yearly">
+          Yearly (save ~10%)
+        </button>
+      </div>
+    </div>
 
     <div class="pricing-grid">
       <!-- BASIC -->
-      <div class="plan-card">
+      <div
+        class="plan-card"
+        data-monthly-price="49"
+        data-yearly-price="529"
+        data-plan="Basic Loop"
+      >
         <div class="plan-tag">Starter</div>
         <h3>Basic Loop</h3>
-        <div class="plan-price">$49 <span>/ month</span></div>
+        <div class="plan-price">
+          <span class="price-amount">$49</span>
+          <span class="price-unit">/ month</span>
+        </div>
+        <div class="price-caption">
+          Ideal for one local getaway a year.
+        </div>
         <ul class="plan-list">
-          <li>1 trip per year (short
+          <li>1 trip per year (short distance)</li>
+          <li>Destinations: Montréal, Québec City, Vancouver</li>
+          <li>2–3 nights, curated stays</li>
+          <li>Good for budget-conscious travelers</li>
+        </ul>
+        <div class="plan-cta">
+          <a href="contact.html" class="btn-outline">Join Basic Waitlist</a>
+        </div>
+      </div>
+
+      <!-- STANDARD (FEATURED) -->
+      <div
+        class="plan-card featured"
+        data-monthly-price="99"
+        data-yearly-price="1069"
+        data-plan="Standard Loop"
+      >
+        <div class="plan-tag">Most popular</div>
+        <h3>Standard Loop</h3>
+        <div class="plan-price">
+          <span class="price-amount">$99</span>
+          <span class="price-unit">/ month</span>
+        </div>
+        <div class="price-caption">
+          The “sweet spot” for two trips a year.
+        </div>
+        <ul class="plan-list">
+          <li>2 trips per year</li>
+          <li>Destinations: Toronto, LA, Miami, Vancouver, Montréal</li>
+          <li>3–4 nights, more date flexibility</li>
+          <li>Best mix of value and frequency</li>
+        </ul>
+        <div class="plan-cta">
+          <a href="contact.html" class="btn-primary">Join Standard Waitlist</a>
+        </div>
+      </div>
+
+      <!-- PREMIUM -->
+      <div
+        class="plan-card"
+        data-monthly-price="149"
+        data-yearly-price="1599"
+        data-plan="Premium Loop"
+      >
+        <div class="plan-tag">Explorers</div>
+        <h3>Premium Loop</h3>
+        <div class="plan-price">
+          <span class="price-amount">$149</span>
+          <span class="price-unit">/ month</span>
+        </div>
+        <div class="price-caption">
+          For people who want to be on a plane as much as possible.
+        </div>
+        <ul class="plan-list">
+          <li>2–3 trips per year</li>
+          <li>All Standard destinations + Cancun &amp; Havana</li>
+          <li>Upgraded or boutique hotels when possible</li>
+          <li>Priority booking &amp; early access</li>
+        </ul>
+        <div class="plan-cta">
+          <a href="contact.html" class="btn-outline">Join Premium Waitlist</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    © 2025 FlyLoop — Concept Travel Subscription Website
+  </div>
+</footer>
+
+<script>
+  // Billing toggle logic
+  const billingButtons = document.querySelectorAll('.billing-pill');
+  const planCards = document.querySelectorAll('.plan-card');
+
+  let billingMode = 'monthly';
+
+  function updatePrices() {
+    planCards.forEach(card => {
+      const monthly = card.dataset.monthlyPrice;
+      const yearly = card.dataset.yearlyPrice;
+      const amountEl = card.querySelector('.price-amount');
+      const unitEl = card.querySelector('.price-unit');
+      const captionEl = card.querySelector('.price-caption');
+
+      if (!amountEl || !unitEl) return;
+
+      if (billingMode === 'monthly') {
+        amountEl.textContent = `$${monthly}`;
+        unitEl.textContent = '/ month';
+        if (captionEl) {
+          captionEl.textContent = captionEl.textContent.replace(/\(billed yearly.*\)$/i, '').trim();
+        }
+      } else {
+        amountEl.textContent = `$${yearly}`;
+        unitEl.textContent = '/ year';
+        if (captionEl && !/\(billed yearly/i.test(captionEl.textContent)) {
+          captionEl.textContent = `${captionEl.textContent} (billed yearly)`;
+        }
+      }
+    });
+  }
+
+  billingButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.getAttribute('data-billing');
+      if (mode === billingMode) return;
+
+      billingMode = mode;
+
+      billingButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      updatePrices();
+    });
+  });
+</script>
+
+</body>
+</html>
