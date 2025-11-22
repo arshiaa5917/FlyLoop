@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <title>How FlyLoop Works – FlyLoop</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content="See how FlyLoop works as a travel subscription concept: pick a membership, build trips with monthly payments, and redeem escapes through your dashboard."
+  />
+
   <style>
     html { scroll-behavior: smooth; }
 
@@ -22,7 +27,9 @@
       --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.6);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -32,7 +39,10 @@
       line-height: 1.6;
     }
 
-    a { text-decoration: none; color: inherit; }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
 
     /* ANIMATIONS */
     @keyframes fadeUp {
@@ -84,7 +94,6 @@
       gap: 10px;
     }
 
-    /* CLEAN LOGO WITH IMAGE */
     .logo-mark {
       width: 40px;
       height: 40px;
@@ -138,9 +147,21 @@
       transition: width 0.18s ease-out;
     }
 
-    .nav-links a:hover::after { width: 100%; }
-    .nav-links a:hover        { color: var(--primary-soft); }
-    .nav-links a.nav-active   { color: var(--primary); }
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary-soft);
+    }
+
+    .nav-links a.nav-active {
+      color: var(--primary);
+    }
+
+    .nav-links a.nav-active::after {
+      width: 100%;
+    }
 
     /* LAYOUT */
     section {
@@ -167,7 +188,9 @@
       font-size: clamp(1.9rem, 3vw, 2.4rem);
     }
 
-    p { margin: 0; }
+    p {
+      margin: 0;
+    }
 
     /* BUTTONS */
     .btn-primary,
@@ -208,7 +231,7 @@
     }
 
     /* HERO / MAIN CONTENT */
-    #hero {
+    #how-hero {
       padding-top: 70px;
     }
 
@@ -300,7 +323,9 @@
     }
 
     @media (max-width: 720px) {
-      .nav-links { display: none; }
+      .nav-links {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -314,7 +339,7 @@
       </div>
       <div class="nav-title">FLYLOOP</div>
     </div>
-    <nav class="nav-links">
+    <nav class="nav-links" aria-label="Main navigation">
       <a href="index.html">Home</a>
       <a href="how.html" class="nav-active">How it works</a>
       <a href="pricing.html">Pricing</a>
@@ -322,11 +347,12 @@
       <a href="faq.html">FAQ</a>
       <a href="contact.html">Contact</a>
       <a href="login.html">Login</a>
+      <a href="dashboard.html">Dashboard</a>
     </nav>
   </div>
 </header>
 
-<section>
+<section id="how-hero">
   <div class="container two-col">
     <div>
       <h1>How FlyLoop Works</h1>
@@ -338,41 +364,50 @@
 
       <h2>Your journey as a member</h2>
       <ul class="steps">
-        <li><strong>1. You land on the site.</strong><br>
-          You see three membership tiers with clear prices and destinations.
-          You pick the one that matches how often you want to travel.
+        <li>
+          <strong>1. You land on the site.</strong><br>
+          You see three membership tiers — Basic (1 trip/year), Standard (2 trips/year),
+          and Premium (3 trips/year) — with clear prices and destinations.
         </li>
-        <li><strong>2. You create an account & choose a plan.</strong><br>
+        <li>
+          <strong>2. You create an account &amp; choose a plan.</strong><br>
           After clicking <em>Join</em>, you would normally sign up, add your card,
           and confirm your subscription. From that moment, your “travel credits”
           or eligibility start building.
         </li>
-        <li><strong>3. Your subscription runs quietly each month.</strong><br>
+        <li>
+          <strong>3. Your subscription runs quietly each month.</strong><br>
           Instead of one big, painful payment, a small monthly amount goes toward
           your trips. Think: “$49/month” instead of “$900 at once.”
         </li>
-        <li><strong>4. You log in to your dashboard.</strong><br>
+        <li>
+          <strong>4. You log in to your dashboard.</strong><br>
           Inside your account, you’d see your plan, how many trips you’re entitled
           to, and which destinations are currently available.
         </li>
-        <li><strong>5. You browse available trip windows.</strong><br>
+        <li>
+          <strong>5. You browse available trip windows.</strong><br>
           The platform shows you future dates and destinations that match your
           plan: LA in March, Montréal in April, Cancun in October, etc.
         </li>
-        <li><strong>6. You redeem a trip.</strong><br>
+        <li>
+          <strong>6. You redeem a trip.</strong><br>
           When you’re ready, you choose a destination and date. FlyLoop
           (in a real version) would then handle the flight booking, hotel,
           and basic transfers.
         </li>
-        <li><strong>7. You receive your itinerary.</strong><br>
+        <li>
+          <strong>7. You receive your itinerary.</strong><br>
           A few days later, you get your flight details, hotel confirmation, and
           a simple suggested itinerary so you don’t have to overthink the trip.
         </li>
-        <li><strong>8. You travel.</strong><br>
+        <li>
+          <strong>8. You travel.</strong><br>
           You fly, stay, explore, and return knowing that your subscription is
           still running—quietly building your next escape.
         </li>
-        <li><strong>9. You manage your membership.</strong><br>
+        <li>
+          <strong>9. You manage your membership.</strong><br>
           You can view upcoming eligibility, see past trips, and—if this was live—
           request changes, pauses, upgrades, or plan switches from your account.
         </li>
@@ -385,14 +420,14 @@
       </div>
     </div>
 
-    <div class="highlight-box">
+    <aside class="highlight-box" aria-label="Behind the scenes product logic">
       <div class="highlight-title">Behind the scenes (for your portfolio)</div>
       <p style="margin-bottom: 10px;">
         This page acts like a mini product spec. From a business and tech
         point of view, this flow implies:
       </p>
       <ul class="steps">
-        <li>Recurring billing & subscription management (Stripe, etc.).</li>
+        <li>Recurring billing &amp; subscription management (Stripe, etc.).</li>
         <li>A “credits” or eligibility system tied to plan + time.</li>
         <li>An inventory/calendar of flights and hotels you control.</li>
         <li>A booking engine that locks in trips once redeemed.</li>
@@ -403,7 +438,7 @@
         isn’t just a pretty UI — it has a clear customer journey and real
         business logic behind it.
       </p>
-    </div>
+    </aside>
   </div>
 </section>
 
