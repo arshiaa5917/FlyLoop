@@ -1,9 +1,15 @@
+// login.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Login – FlyLoop</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content="Log in to the FlyLoop concept dashboard using demo credentials to explore how a travel subscription member area could look."
+  />
+
   <style>
     html { scroll-behavior: smooth; }
 
@@ -137,16 +143,12 @@
       transition: width 0.18s ease-out;
     }
 
-    .nav-links a:hover::after {
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a:hover        { color: var(--primary-soft); }
+    .nav-links a.nav-active   { color: var(--primary); }
+
+    .nav-links a.nav-active::after {
       width: 100%;
-    }
-
-    .nav-links a:hover {
-      color: var(--primary-soft);
-    }
-
-    .nav-links a.nav-active {
-      color: var(--primary);
     }
 
     /* LAYOUT */
@@ -281,24 +283,6 @@
     }
   </style>
 </head>
-
-  <script>
-  document.getElementById('login-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const errorBox = document.getElementById('login-error');
-
-    // Demo credentials
-    if (email === 'demo@flyloop.com' && password === 'demo123') {
-      // In a real app you'd set a token/session. Here we just redirect.
-      window.location.href = 'dashboard.html';
-    } else {
-      errorBox.style.display = 'block';
-    }
-  });
-</script>
 <body>
 
 <header>
@@ -309,7 +293,7 @@
       </div>
       <div class="nav-title">FLYLOOP</div>
     </div>
-    <nav class="nav-links">
+    <nav class="nav-links" aria-label="Main navigation">
       <a href="index.html">Home</a>
       <a href="how.html">How it works</a>
       <a href="pricing.html">Pricing</a>
@@ -317,6 +301,7 @@
       <a href="faq.html">FAQ</a>
       <a href="contact.html">Contact</a>
       <a href="login.html" class="nav-active">Login</a>
+      <a href="dashboard.html">Dashboard</a>
     </nav>
   </div>
 </header>
@@ -326,19 +311,38 @@
     <h1>Log in to FlyLoop</h1>
     <p class="auth-sub">
       This is a visual demo of what your member login could look like. In a real
-      product, this would connect to your backend authentication.
+      product, this would connect to your backend authentication and sessions.
     </p>
 
-<form action="dashboard.html" method="get">
-  <input type="email" placeholder="you@example.com" required />
-  <input type="password" placeholder="Password" required />
-  <button class="btn-primary" type="submit">Log In</button>
-</form>
+    <form id="login-form" novalidate>
+      <input
+        type="email"
+        id="email"
+        placeholder="demo@flyloop.com"
+        autocomplete="email"
+        required
+      />
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        autocomplete="current-password"
+        required
+      />
+      <button class="btn-primary" type="submit">Log In</button>
+    </form>
 
+    <div class="auth-footer-text" style="margin-top: 8px;">
+      <strong>Demo credentials:</strong> demo@flyloop.com / demo123
+    </div>
 
-<div class="auth-footer-text" id="login-error" style="display:none; color:#FCA5A5;">
-  Incorrect demo login. Try: demo@flyloop.com / demo123
-</div>
+    <div
+      class="auth-footer-text"
+      id="login-error"
+      style="display:none; color:#FCA5A5;"
+    >
+      Incorrect demo login. Try: demo@flyloop.com / demo123
+    </div>
 
     <div class="auth-footer-text">
       Don’t have an account yet? In a live product, this would link to a full
@@ -352,6 +356,34 @@
     © 2025 FlyLoop — Concept Travel Subscription Website
   </div>
 </footer>
+
+<script>
+  // Simple demo login logic for portfolio purposes
+  (function () {
+    const form = document.getElementById('login-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const errorBox = document.getElementById('login-error');
+
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const email = (emailInput.value || '').trim();
+      const password = (passwordInput.value || '').trim();
+
+      // Demo credentials only
+      if (email === 'demo@flyloop.com' && password === 'demo123') {
+        errorBox.style.display = 'none';
+        // In a real app you'd set a token/session. Here we just redirect.
+        window.location.href = 'dashboard.html';
+      } else {
+        errorBox.style.display = 'block';
+      }
+    });
+  })();
+</script>
 
 </body>
 </html>
