@@ -92,11 +92,12 @@
       width: 36px;
       height: 36px;
       border-radius: 999px;
-      background: conic-gradient(from 210deg,
-        #F97316, #3B82F6, #DC2626, #F97316);
+      background: #020617;
       animation: glowPulse 3s ease-in-out infinite;
       overflow: hidden;
-      display: inline-block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .logo-mark img {
@@ -441,7 +442,9 @@
 <header>
   <div class="nav">
     <div class="nav-left">
-      <div class="logo-mark"></div>
+      <div class="logo-mark">
+        <img src="logo.png?v=2" alt="FlyLoop logo" />
+      </div>
       <div class="nav-title">FLYLOOP</div>
     </div>
     <nav class="nav-links">
