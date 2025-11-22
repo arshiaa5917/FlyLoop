@@ -1,9 +1,14 @@
+// contact.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Contact – FlyLoop</title>
+  <title>Contact & Waitlist – FlyLoop</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content="Join the FlyLoop concept waitlist or reach out about the travel subscription idea. This is a demo contact page to showcase how a real launch funnel would work."
+  />
 
   <style>
     html { scroll-behavior: smooth; }
@@ -46,12 +51,6 @@
       to   { opacity: 1; }
     }
 
-    @keyframes floatSoft {
-      0%   { transform: translateY(0); }
-      50%  { transform: translateY(-4px); }
-      100% { transform: translateY(0); }
-    }
-
     @keyframes glowPulse {
       0%   { box-shadow: 0 0 14px rgba(249, 115, 22, 0.5); }
       50%  { box-shadow: 0 0 24px rgba(59, 130, 246, 0.7); }
@@ -86,13 +85,15 @@
     }
 
     .logo-mark {
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       border-radius: 999px;
-      background: conic-gradient(from 210deg,#F97316,#3B82F6,#DC2626,#F97316);
-      animation: glowPulse 3s ease-in-out infinite;
       overflow: hidden;
-      display: inline-block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #020617;
+      animation: glowPulse 3s ease-in-out infinite;
     }
 
     .logo-mark img {
@@ -137,8 +138,15 @@
     }
 
     .nav-links a:hover::after { width: 100%; }
-    .nav-links a:hover { color: var(--primary-soft); }
-    .nav-links a.nav-active { color: var(--primary); }
+    .nav-links a:hover        { color: var(--primary-soft); }
+
+    .nav-links a.nav-active {
+      color: var(--primary);
+    }
+
+    .nav-links a.nav-active::after {
+      width: 100%;
+    }
 
     /* LAYOUT */
     section {
@@ -196,7 +204,9 @@
     /* FORM */
     form { margin-top: 18px; }
 
-    input, textarea, select {
+    input,
+    textarea,
+    select {
       padding: 11px 12px;
       width: 100%;
       border-radius: 10px;
@@ -207,10 +217,15 @@
       outline: none;
       background: #020617;
       color: var(--text);
-      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease;
     }
 
-    input:focus, textarea:focus, select:focus {
+    input:focus,
+    textarea:focus,
+    select:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 1px rgba(248, 113, 22, 0.4);
       background: #020617;
@@ -271,11 +286,11 @@
   <div class="nav">
     <div class="nav-left">
       <div class="logo-mark">
-        <img src="logo.png" alt="FlyLoop logo" />
+        <img src="logo.png?v=2" alt="FlyLoop logo" />
       </div>
       <div class="nav-title">FLYLOOP</div>
     </div>
-    <nav class="nav-links">
+    <nav class="nav-links" aria-label="Main navigation">
       <a href="index.html">Home</a>
       <a href="how.html">How it works</a>
       <a href="pricing.html">Pricing</a>
@@ -283,6 +298,7 @@
       <a href="faq.html">FAQ</a>
       <a href="contact.html" class="nav-active">Contact</a>
       <a href="login.html">Login</a>
+      <a href="dashboard.html">Dashboard</a>
     </nav>
   </div>
 </header>
@@ -290,19 +306,19 @@
 <section>
   <div class="container two-col">
     <div>
-      <h1>Contact & Waitlist</h1>
+      <h1>Contact &amp; Waitlist</h1>
       <p style="color: var(--muted); max-width: 620px; margin-bottom: 18px;">
         Use this page as if FlyLoop were live: you’d drop your details, pick a
         plan you’re curious about, and we’d follow up with launch info, early
-        access and sample itineraries.
+        access, and sample itineraries.
       </p>
 
-      <h2 style="font-size:1.2rem; margin-top:20px;">What happens after you submit?</h2>
+      <h2 style="font-size: 1.2rem; margin-top: 20px;">What happens after you submit?</h2>
       <ul class="steps">
         <li>Your info would be saved in a secure CRM or database.</li>
-        <li>We’d tag you by plan interest (Basic, Standard, Premium).</li>
+        <li>We’d tag you by plan interest: Basic, Standard, or Premium.</li>
         <li>When FlyLoop launches in your region, you’d get early invites.</li>
-        <li>In a real build, you could also book intro calls or strategy calls from here.</li>
+        <li>In a real build, you could also book intro or strategy calls from here.</li>
       </ul>
     </div>
 
@@ -311,16 +327,19 @@
       <p>Demo only — the button just shows an alert so you can safely test the UI.</p>
 
       <form onsubmit="event.preventDefault(); alert('Demo only — form is not connected yet.');">
-        <input type="text" placeholder="Your name" required />
-        <input type="email" placeholder="you@example.com" required />
-        <select required>
+        <input type="text" name="name" placeholder="Your name" required />
+        <input type="email" name="email" placeholder="you@example.com" required />
+        <select name="interest" required>
           <option value="">What are you most interested in?</option>
-          <option>Basic Loop</option>
-          <option>Standard Loop</option>
-          <option>Premium Loop</option>
-          <option>Business / investor discussion</option>
+          <option value="basic">Basic Loop (1 trip/year)</option>
+          <option value="standard">Standard Loop (2 trips/year)</option>
+          <option value="premium">Premium Loop (3 trips/year)</option>
+          <option value="business">Business / investor discussion</option>
         </select>
-        <textarea placeholder="Tell us how you usually travel, or what you'd want from a subscription."></textarea>
+        <textarea
+          name="message"
+          placeholder="Tell us how you usually travel, or what you'd want from a subscription."
+        ></textarea>
         <button class="btn-primary" type="submit">Submit (Demo)</button>
       </form>
     </div>
