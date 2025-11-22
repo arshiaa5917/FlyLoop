@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Destinations – FlyLoop</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta
-    name="description"
-    content="Explore sample FlyLoop destinations like Toronto, LA, Miami, Montréal, Vancouver, Cancun, Havana and more. Includes a demo hotel picker for each city."
-  />
 
   <style>
     html { scroll-behavior: smooth; }
@@ -41,13 +34,19 @@
 
     /* ANIMATIONS */
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @keyframes fadeIn {
       from { opacity: 0; }
-      to   { opacity: 1; }
+      to { opacity: 1; }
     }
 
     @keyframes floatSoft {
@@ -90,15 +89,14 @@
     }
 
     .logo-mark {
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       border-radius: 999px;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #020617;
+      background: conic-gradient(from 210deg,
+        #F97316, #3B82F6, #DC2626, #F97316);
       animation: glowPulse 3s ease-in-out infinite;
+      overflow: hidden;
+      display: inline-block;
     }
 
     .logo-mark img {
@@ -142,7 +140,9 @@
       transition: width 0.18s ease-out;
     }
 
-    .nav-links a:hover::after { width: 100%; }
+    .nav-links a:hover::after {
+      width: 100%;
+    }
 
     .nav-links a:hover {
       color: var(--primary-soft);
@@ -150,10 +150,6 @@
 
     .nav-links a.nav-active {
       color: var(--primary);
-    }
-
-    .nav-links a.nav-active::after {
-      width: 100%;
     }
 
     /* LAYOUT */
@@ -359,15 +355,30 @@
     }
 
     .hotel-option input {
-      margin-top: 4px;
+      margin-top: 18px;
+      flex-shrink: 0;
     }
 
     .hotel-meta {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .hotel-image {
+      width: 80px;
+      height: 60px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .hotel-meta-text {
       font-size: 0.85rem;
       color: var(--muted);
     }
 
-    .hotel-meta strong {
+    .hotel-meta-text strong {
       color: var(--text);
       display: block;
       margin-bottom: 2px;
@@ -420,26 +431,28 @@
       .nav-links { display: none; }
     }
   </style>
+
+  <meta charset="UTF-8" />
+  <title>Destinations – FlyLoop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
 
 <header>
   <div class="nav">
     <div class="nav-left">
-      <div class="logo-mark">
-        <img src="logo.png?v=2" alt="FlyLoop logo" />
-      </div>
+      <div class="logo-mark"></div>
       <div class="nav-title">FLYLOOP</div>
     </div>
-   <nav class="nav-links" aria-label="Main navigation">
-  <a href="index.html">Home</a>
-  <a href="how.html">How it works</a>
-  <a href="pricing.html">Pricing</a>
-  <a href="destinations.html">Destinations</a>
-  <a href="faq.html">FAQ</a>
-  <a href="contact.html">Contact</a>
-  <a href="login.html">Login</a>
-</nav>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="how.html">How it works</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="destinations.html" class="nav-active">Destinations</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contact.html">Contact</a>
+      <a href="login.html">Login</a>
+    </nav>
   </div>
 </header>
 
@@ -448,16 +461,14 @@
     <h1>Destinations</h1>
     <p style="color: var(--muted); max-width: 620px; margin-bottom: 26px;">
       Below are sample destinations FlyLoop could include from a Canadian hub.
-      Click <strong>“Select hotel (demo)”</strong> on any city to see example hotel partners
-      a member could pick for their trip.
+      Click “Select hotel (demo)” on any city to see example hotel partners a
+      member could pick for their trip.
     </p>
 
     <div class="dest-grid">
+
       <div class="dest-card">
-        <div
-          class="dest-photo"
-          style="background-image:url('https://yfcfredericton.ca/wp-content/uploads/Toronto-skyline-Instagram-1024x1024.jpg');"
-        >
+        <div class="dest-photo" style="background-image:url('https://yfcfredericton.ca/wp-content/uploads/Toronto-skyline-Instagram-1024x1024.jpg');">
           <span class="dest-photo-label">Toronto • Hub City</span>
         </div>
         <div class="dest-body">
@@ -467,17 +478,12 @@
           <div class="hotel-summary">
             Hotel: <span class="selected-hotel">Not selected yet (demo)</span>
           </div>
-          <button class="btn-outline hotel-btn" data-dest="toronto" type="button">
-            Select hotel (demo)
-          </button>
+          <button class="btn-outline hotel-btn" data-dest="toronto">Select hotel (demo)</button>
         </div>
       </div>
 
       <div class="dest-card">
-        <div
-          class="dest-photo"
-          style="background-image:url('https://tse2.mm.bing.net/th/id/OIP.1ics56Eb0BScWdiP082u-wHaE8?rs=1&pid=ImgDetMain&o=7&rm=3');"
-        >
+        <div class="dest-photo" style="background-image:url('https://tse2.mm.bing.net/th/id/OIP.1ics56Eb0BScWdiP082u-wHaE8?rs=1&pid=ImgDetMain&o=7&rm=3');">
           <span class="dest-photo-label">Los Angeles • USA</span>
         </div>
         <div class="dest-body">
@@ -487,17 +493,12 @@
           <div class="hotel-summary">
             Hotel: <span class="selected-hotel">Not selected yet (demo)</span>
           </div>
-          <button class="btn-outline hotel-btn" data-dest="la" type="button">
-            Select hotel (demo)
-          </button>
+          <button class="btn-outline hotel-btn" data-dest="la">Select hotel (demo)</button>
         </div>
       </div>
 
       <div class="dest-card">
-        <div
-          class="dest-photo"
-          style="background-image:url('https://th.bing.com/th/id/R.688a377e70ab56bfe74c3cb66d45a0e4?rik=h178sf7UHB3qHQ&pid=ImgRaw&r=0');"
-        >
+        <div class="dest-photo" style="background-image:url('https://th.bing.com/th/id/R.688a377e70ab56bfe74c3cb66d45a0e4?rik=h178sf7UHB3qHQ&pid=ImgRaw&r=0');">
           <span class="dest-photo-label">Miami • USA</span>
         </div>
         <div class="dest-body">
@@ -507,17 +508,12 @@
           <div class="hotel-summary">
             Hotel: <span class="selected-hotel">Not selected yet (demo)</span>
           </div>
-          <button class="btn-outline hotel-btn" data-dest="miami" type="button">
-            Select hotel (demo)
-          </button>
+          <button class="btn-outline hotel-btn" data-dest="miami">Select hotel (demo)</button>
         </div>
       </div>
 
       <div class="dest-card">
-        <div
-          class="dest-photo"
-          style="background-image:url('https://travel.home.sndimg.com/content/dam/images/travel/stock/2016/11/3/0/GettyImages-Holger-Mette-514723348-place-d-armes-montreal.jpg.rend.hgtvcom.1280.960.suffix/1491594537290.jpeg');"
-        >
+        <div class="dest-photo" style="background-image:url('https://travel.home.sndimg.com/content/dam/images/travel/stock/2016/11/3/0/GettyImages-Holger-Mette-514723348-place-d-armes-montreal.jpg.rend.hgtvcom.1280.960.suffix/1491594537290.jpeg');">
           <span class="dest-photo-label">Montréal • Canada</span>
         </div>
         <div class="dest-body">
@@ -527,17 +523,12 @@
           <div class="hotel-summary">
             Hotel: <span class="selected-hotel">Not selected yet (demo)</span>
           </div>
-          <button class="btn-outline hotel-btn" data-dest="montreal" type="button">
-            Select hotel (demo)
-          </button>
+          <button class="btn-outline hotel-btn" data-dest="montreal">Select hotel (demo)</button>
         </div>
       </div>
 
       <div class="dest-card">
-        <div
-          class="dest-photo"
-          style="background-image:url('https://www.shoreexcursionsgroup.com/img/tour/CNQBHISTORIC-2.jpg');"
-        >
+        <div class="dest-photo" style="background-image:url('https://www.shoreexcursionsgroup.com/img/tour/CNQBHISTORIC-2.jpg');">
           <span class="dest-photo-label">Québec City • Canada</span>
         </div>
         <div class="dest-body">
@@ -547,17 +538,12 @@
           <div class="hotel-summary">
             Hotel: <span class="selected-hotel">Not selected yet (demo)</span>
           </div>
-          <button class="btn-outline hotel-btn" data-dest="quebec" type="button">
-            Select hotel (demo)
-          </button>
+          <button class="btn-outline hotel-btn" data-dest="quebec">Select hotel (demo)</button>
         </div>
       </div>
 
       <div class="dest-card">
-        <div
-          class="dest-photo"
-          style="background-image:url('https://images.odigoo.com/images/posts/que-hacer-en-cancun-35-actividades-para-tu-viaje/que-hacer-en-cancun-35-actividades-para-tu-viaje-header.jpg');"
-        >
+        <div class="dest-photo" style="background-image:url('https://images.odigoo.com/images/posts/que-hacer-en-cancun-35-actividades-para-tu-viaje/que-hacer-en-cancun-35-actividades-para-tu-viaje-header.jpg');">
           <span class="dest-photo-label">Cancun • Mexico</span>
         </div>
         <div class="dest-body">
@@ -567,17 +553,12 @@
           <div class="hotel-summary">
             Hotel: <span class="selected-hotel">Not selected yet (demo)</span>
           </div>
-          <button class="btn-outline hotel-btn" data-dest="cancun" type="button">
-            Select hotel (demo)
-          </button>
+          <button class="btn-outline hotel-btn" data-dest="cancun">Select hotel (demo)</button>
         </div>
       </div>
 
       <div class="dest-card">
-        <div
-          class="dest-photo"
-          style="background-image:url('https://res.cloudinary.com/friendly-planet/image/fetch/q_auto,f_auto/https://www.friendlyplanet.com/media/gallery/caribbean/cuba/old-havana-el-capitolio.2000x1325.bmp');"
-        >
+        <div class="dest-photo" style="background-image:url('https://res.cloudinary.com/friendly-planet/image/fetch/q_auto,f_auto/https://www.friendlyplanet.com/media/gallery/caribbean/cuba/old-havana-el-capitolio.2000x1325.bmp');">
           <span class="dest-photo-label">Havana • Cuba</span>
         </div>
         <div class="dest-body">
@@ -587,17 +568,12 @@
           <div class="hotel-summary">
             Hotel: <span class="selected-hotel">Not selected yet (demo)</span>
           </div>
-          <button class="btn-outline hotel-btn" data-dest="havana" type="button">
-            Select hotel (demo)
-          </button>
+          <button class="btn-outline hotel-btn" data-dest="havana">Select hotel (demo)</button>
         </div>
       </div>
 
       <div class="dest-card">
-        <div
-          class="dest-photo"
-          style="background-image:url('https://www.civitatis.com/blog/wp-content/uploads/2020/12/vista-panoramica-vancouver.jpg');"
-        >
+        <div class="dest-photo" style="background-image:url('https://www.civitatis.com/blog/wp-content/uploads/2020/12/vista-panoramica-vancouver.jpg');">
           <span class="dest-photo-label">Vancouver • Canada</span>
         </div>
         <div class="dest-body">
@@ -607,18 +583,17 @@
           <div class="hotel-summary">
             Hotel: <span class="selected-hotel">Not selected yet (demo)</span>
           </div>
-          <button class="btn-outline hotel-btn" data-dest="vancouver" type="button">
-            Select hotel (demo)
-          </button>
+          <button class="btn-outline hotel-btn" data-dest="vancouver">Select hotel (demo)</button>
         </div>
       </div>
+
     </div>
   </div>
 </section>
 
 <!-- HOTEL SELECTION MODAL (DEMO) -->
 <div class="hotel-modal-backdrop" id="hotelModal">
-  <div class="hotel-modal" role="dialog" aria-modal="true" aria-labelledby="hotelModalTitle">
+  <div class="hotel-modal">
     <h2 id="hotelModalTitle">Choose your hotel</h2>
     <p id="hotelModalSubtitle">
       These are example partner hotels FlyLoop could work with. In a real product,
@@ -644,36 +619,116 @@
   // Simple hotel data per destination (static demo)
   const HOTEL_DATA = {
     toronto: [
-      { name: "Harbourfront Skyline Hotel", tagline: "Waterfront • 4★ boutique", note: "Walkable to CN Tower & entertainment district." },
-      { name: "Union Station City Stay", tagline: "Downtown core • 3★+", note: "Ideal for quick weekend trips from YYZ." }
+      {
+        name: "Harbourfront Skyline Hotel",
+        tagline: "Waterfront • 4★ boutique",
+        note: "Walkable to CN Tower & entertainment district.",
+        image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=60"
+      },
+      {
+        name: "Union Station City Stay",
+        tagline: "Downtown core • 3★+",
+        note: "Ideal for quick weekend trips from YYZ.",
+        image: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1200&q=60"
+      }
     ],
     la: [
-      { name: "Sunset Strip Studio Hotel", tagline: "West Hollywood • 4★", note: "Perfect for nightlife & restaurants." },
-      { name: "Santa Monica Breeze Inn", tagline: "Near the beach • 3★+", note: "Relaxed, walkable, classic LA vibe." }
+      {
+        name: "Sunset Strip Studio Hotel",
+        tagline: "West Hollywood • 4★",
+        note: "Perfect for nightlife & restaurants.",
+        image: "https://images.unsplash.com/photo-1501117716987-c8e1ecb210ff?auto=format&fit=crop&w=1200&q=60"
+      },
+      {
+        name: "Santa Monica Breeze Inn",
+        tagline: "Near the beach • 3★+",
+        note: "Relaxed, walkable, classic LA vibe.",
+        image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=60"
+      }
     ],
     miami: [
-      { name: "Oceanfront Bay Resort", tagline: "South Beach • 4★", note: "Pool, rooftop bar, easy beach access." },
-      { name: "Little Havana Casa Suites", tagline: "Cultural hub • 3★+", note: "Colorful neighbourhood, food & music." }
+      {
+        name: "Oceanfront Bay Resort",
+        tagline: "South Beach • 4★",
+        note: "Pool, rooftop bar, easy beach access.",
+        image: "https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&w=1200&q=60"
+      },
+      {
+        name: "Little Havana Casa Suites",
+        tagline: "Cultural hub • 3★+",
+        note: "Colorful neighbourhood, food & music.",
+        image: "https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?auto=format&fit=crop&w=1200&q=60"
+      }
     ],
     montreal: [
-      { name: "Old Port Stone House Hotel", tagline: "Old Montréal • 4★", note: "Cobblestone streets, cafés & galleries." },
-      { name: "Plateau Artist Loft Hotel", tagline: "Plateau • 3★", note: "Young, creative area with bars & parks." }
+      {
+        name: "Old Port Stone House Hotel",
+        tagline: "Old Montréal • 4★",
+        note: "Cobblestone streets, cafés & galleries.",
+        image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=60"
+      },
+      {
+        name: "Plateau Artist Loft Hotel",
+        tagline: "Plateau • 3★",
+        note: "Young, creative area with bars & parks.",
+        image: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1200&q=60"
+      }
     ],
     quebec: [
-      { name: "Château Walls Inn", tagline: "Inside Old Québec • 4★", note: "Storybook views and winter charm." },
-      { name: "St. Lawrence Riverside Hotel", tagline: "River views • 3★", note: "Cozy stays, great sunrise walks." }
+      {
+        name: "Château Walls Inn",
+        tagline: "Inside Old Québec • 4★",
+        note: "Storybook views and winter charm.",
+        image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=60"
+      },
+      {
+        name: "St. Lawrence Riverside Hotel",
+        tagline: "River views • 3★",
+        note: "Cozy stays, great sunrise walks.",
+        image: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1200&q=60"
+      }
     ],
     cancun: [
-      { name: "Turquoise Reef All-Inclusive", tagline: "Beachfront • 4★", note: "Buffet, pools, activities all included." },
-      { name: "Lagoon Sunset Boutique", tagline: "Chill boutique • 4★", note: "Quieter vibe with design-focused rooms." }
+      {
+        name: "Turquoise Reef All-Inclusive",
+        tagline: "Beachfront • 4★",
+        note: "Buffet, pools, activities all included.",
+        image: "https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&w=1200&q=60"
+      },
+      {
+        name: "Lagoon Sunset Boutique",
+        tagline: "Chill boutique • 4★",
+        note: "Quieter vibe with design-focused rooms.",
+        image: "https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?auto=format&fit=crop&w=1200&q=60"
+      }
     ],
     havana: [
-      { name: "Malecón Heritage Hotel", tagline: "Oceanfront • 4★", note: "Classic façade, sunset promenade views." },
-      { name: "Old Town Courtyard Casa", tagline: "Historic centre • 3★", note: "Charming courtyards, local feel." }
+      {
+        name: "Malecón Heritage Hotel",
+        tagline: "Oceanfront • 4★",
+        note: "Classic façade, sunset promenade views.",
+        image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=60"
+      },
+      {
+        name: "Old Town Courtyard Casa",
+        tagline: "Historic centre • 3★",
+        note: "Charming courtyards, local feel.",
+        image: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1200&q=60"
+      }
     ],
     vancouver: [
-      { name: "Harbour & Mountains Hotel", tagline: "Coal Harbour • 4★", note: "Views of water & mountains together." },
-      { name: "Gastown Loft Stay", tagline: "Historic streets • 3★", note: "Brick alleys, coffee shops & boutiques." }
+      {
+        name: "Harbour & Mountains Hotel",
+        tagline: "Coal Harbour • 4★",
+        note: "Views of water & mountains together.",
+        image: "https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&w=1200&q=60"
+      },
+      {
+        name: "Gastown Loft Stay",
+        tagline: "Historic streets • 3★",
+        note: "Brick alleys, coffee shops & boutiques.",
+        image: "https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?auto=format&fit=crop&w=1200&q=60"
+      }
     ]
   };
 
@@ -702,9 +757,12 @@
       wrapper.innerHTML = `
         <input type="radio" name="hotelChoice" id="${optionId}" value="${hotel.name}" ${index === 0 ? "checked" : ""}>
         <div class="hotel-meta">
-          <strong>${hotel.name}</strong>
-          <div>${hotel.tagline}</div>
-          <div>${hotel.note}</div>
+          <img src="${hotel.image}" alt="${hotel.name}" class="hotel-image">
+          <div class="hotel-meta-text">
+            <strong>${hotel.name}</strong>
+            <div>${hotel.tagline}</div>
+            <div>${hotel.note}</div>
+          </div>
         </div>
       `;
 
