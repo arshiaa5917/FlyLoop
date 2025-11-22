@@ -1,9 +1,14 @@
+// faq.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>FAQ – FlyLoop</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content="Frequently asked questions about the FlyLoop travel subscription concept: how it could work, what’s included, and how the business model might operate."
+  />
 
   <style>
     html { scroll-behavior: smooth; }
@@ -79,7 +84,7 @@
       gap: 10px;
     }
 
-    /* CLEAN LOGO */
+    /* CLEAN LOGO (matching other pages) */
     .logo-mark {
       width: 40px;
       height: 40px;
@@ -137,6 +142,10 @@
 
     .nav-links a:hover      { color: var(--primary-soft); }
     .nav-links a.nav-active { color: var(--primary); }
+
+    .nav-links a.nav-active::after {
+      width: 100%;
+    }
 
     /* LAYOUT */
     section {
@@ -211,7 +220,7 @@
       </div>
       <div class="nav-title">FLYLOOP</div>
     </div>
-    <nav class="nav-links">
+    <nav class="nav-links" aria-label="Main navigation">
       <a href="index.html">Home</a>
       <a href="how.html">How it works</a>
       <a href="pricing.html">Pricing</a>
@@ -219,6 +228,7 @@
       <a href="faq.html" class="nav-active">FAQ</a>
       <a href="contact.html">Contact</a>
       <a href="login.html">Login</a>
+      <a href="dashboard.html">Dashboard</a>
     </nav>
   </div>
 </header>
@@ -228,15 +238,17 @@
     <h1>Frequently Asked Questions</h1>
     <p style="color: var(--muted); max-width: 620px; margin-bottom: 26px;">
       This page is written like a real product FAQ, but it also doubles as a
-      way to explain your concept clearly to anyone viewing your portfolio.
+      way to explain the FlyLoop subscription concept clearly to anyone viewing
+      your portfolio or CV.
     </p>
 
     <div class="faq-item">
       <div class="faq-q">Is FlyLoop live right now?</div>
       <div class="faq-a">
-        No. This website is a concept and portfolio piece that shows how a
+        No. FlyLoop is currently a concept and portfolio piece that shows how a
         subscription-based travel service <em>could</em> look and feel. It’s
-        useful for user testing, business planning and investor pitches.
+        meant for user testing, business planning and investor or recruiter
+        conversations rather than real bookings.
       </div>
     </div>
 
@@ -245,7 +257,22 @@
       <div class="faq-a">
         In a real version, yes. Each plan would include flights, hotels,
         basic transfers and curated suggestions, negotiated using wholesale
-        travel rates and partner agreements.
+        travel rates and partner agreements. This site shows what that user
+        experience could look like before connecting a real booking engine.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How would the three plans work?</div>
+      <div class="faq-a">
+        The concept has three core tiers:
+        <ul class="steps">
+          <li><strong>Basic Loop</strong> – 1 trip / year to closer destinations.</li>
+          <li><strong>Standard Loop</strong> – 2 trips / year, more date flexibility.</li>
+          <li><strong>Premium Loop</strong> – 3 trips / year and access to higher-end stays.</li>
+        </ul>
+        Each tier would have rules about how soon you can travel after joining,
+        how many guests you can bring and which destinations are unlocked.
       </div>
     </div>
 
@@ -254,21 +281,38 @@
       <div class="faq-a">
         Travel subscriptions usually rely on:
         <ul class="steps">
-          <li>Minimum membership terms (e.g. 3–6 months before use).</li>
+          <li>Minimum membership terms (e.g. 3–6 months before first use).</li>
           <li>Trip credits that accumulate over time before redemption.</li>
           <li>Loyalty rewards for long-term members.</li>
           <li>Pause options instead of full cancellation.</li>
         </ul>
-        Those same ideas can be built into FlyLoop’s model.
+        Those same ideas can be built into FlyLoop’s model and tested using this
+        concept site before coding a full backend.
       </div>
     </div>
 
     <div class="faq-item">
       <div class="faq-q">Can this model be profitable?</div>
       <div class="faq-a">
-        Profit comes from negotiated rates, group departures, breakage (not
-        everyone uses all trips), and upsells like extra nights, upgrades or
-        tours. This FAQ can be expanded with financial modeling for pitches.
+        Profit could come from negotiated rates, group departures, breakage
+        (not everyone uses all trips), and upsells like extra nights, room
+        upgrades or local tours. For a deeper portfolio piece, you can extend
+        this FAQ with simple unit economics or example P&amp;L scenarios.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What would need to exist for FlyLoop to become real?</div>
+      <div class="faq-a">
+        At minimum:
+        <ul class="steps">
+          <li>Real authentication (sign-up, login, password, user accounts).</li>
+          <li>A database for users, memberships, trips, and bookings.</li>
+          <li>Payment integration (e.g. Stripe) for recurring billing.</li>
+          <li>A basic admin panel to manage destinations and inventory.</li>
+        </ul>
+        This FAQ plus the “How it works” page basically functions as a
+        lightweight product spec you can show to devs, mentors or investors.
       </div>
     </div>
   </div>
