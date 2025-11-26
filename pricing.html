@@ -215,6 +215,12 @@
       background: rgba(249, 115, 22, 0.1);
     }
 
+    /* Small variant */
+    .btn-xs {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+
     /* PRICING SECTION */
     .pricing-section {
       background: radial-gradient(circle at top, #111827, #020617 70%);
@@ -254,6 +260,32 @@
       color: #020617;
       font-weight: 600;
       transform: translateY(-1px);
+    }
+
+    /* REGION PICKER */
+    .region-picker {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .region-picker select {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      color: var(--text);
+      padding: 5px 12px;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .currency-hint {
+      font-size: 0.8rem;
+      color: #9CA3AF;
     }
 
     .pricing-grid {
@@ -352,7 +384,6 @@
       color: var(--muted);
     }
 
-    /* Bullet “icons” */
     .plan-list {
       font-size: 0.9rem;
       color: var(--muted);
@@ -438,6 +469,47 @@
           to show how a real model could work — no payments are processed through this
           demo. Each tier maps to how often you want to travel in a year.
         </p>
+
+        <!-- REGION PICKER -->
+        <div class="region-picker">
+          <span class="region-label">Prices shown for:</span>
+          <select id="countrySelect">
+            <optgroup label="North America">
+              <option value="CA">Canada</option>
+              <option value="US">United States</option>
+              <option value="MX">Mexico</option>
+            </optgroup>
+            <optgroup label="Europe">
+              <option value="GB">United Kingdom</option>
+              <option value="FR">France</option>
+              <option value="DE">Germany</option>
+              <option value="ES">Spain</option>
+              <option value="IT">Italy</option>
+              <option value="NL">Netherlands</option>
+              <option value="SE">Sweden</option>
+              <option value="CH">Switzerland</option>
+            </optgroup>
+            <optgroup label="Asia">
+              <option value="IN">India</option>
+              <option value="AE">UAE</option>
+              <option value="JP">Japan</option>
+              <option value="KR">South Korea</option>
+              <option value="TH">Thailand</option>
+              <option value="SG">Singapore</option>
+            </optgroup>
+            <optgroup label="Africa">
+              <option value="ZA">South Africa</option>
+              <option value="NG">Nigeria</option>
+              <option value="EG">Egypt</option>
+              <option value="KE">Kenya</option>
+            </optgroup>
+            <optgroup label="Oceania">
+              <option value="AU">Australia</option>
+              <option value="NZ">New Zealand</option>
+            </optgroup>
+          </select>
+          <span id="currencyHint" class="currency-hint"></span>
+        </div>
       </div>
 
       <!-- Monthly / Yearly toggle -->
@@ -455,9 +527,10 @@
       <!-- BASIC -->
       <div
         class="plan-card"
+        data-plan="Basic Loop"
+        data-tier="basic"
         data-monthly-price="49"
         data-yearly-price="529"
-        data-plan="Basic Loop"
       >
         <div class="plan-tag">Starter</div>
         <h3>Basic Loop</h3>
@@ -482,9 +555,10 @@
       <!-- STANDARD (FEATURED) -->
       <div
         class="plan-card featured"
+        data-plan="Standard Loop"
+        data-tier="standard"
         data-monthly-price="99"
         data-yearly-price="1069"
-        data-plan="Standard Loop"
       >
         <div class="plan-tag">Most popular</div>
         <h3>Standard Loop</h3>
@@ -509,9 +583,10 @@
       <!-- PREMIUM -->
       <div
         class="plan-card"
+        data-plan="Premium Loop"
+        data-tier="premium"
         data-monthly-price="149"
         data-yearly-price="1599"
-        data-plan="Premium Loop"
       >
         <div class="plan-tag">Explorers</div>
         <h3>Premium Loop</h3>
@@ -543,30 +618,123 @@
 </footer>
 
 <script>
-  // Billing toggle logic
+  // ---------- REGION & PRICING LOGIC ----------
+
+  const DEFAULT_COUNTRY = 'CA';
+
+  // Base pricing per region (monthly). Conservative, profit-safe.
+  const REGION_PRICING = {
+    NA: { // North America
+      currencySymbol: '$',
+      currencyCode: 'USD',
+      plans: { basic: 79, standard: 159, premium: 229 }
+    },
+    EU: {
+      currencySymbol: '€',
+      currencyCode: 'EUR',
+      plans: { basic: 39, standard: 79, premium: 119 }
+    },
+    ASIA: {
+      currencySymbol: '$',
+      currencyCode: 'USD',
+      plans: { basic: 49, standard: 99, premium: 149 }
+    },
+    AUS: {
+      currencySymbol: '$',
+      currencyCode: 'AUD',
+      plans: { basic: 79, standard: 149, premium: 219 }
+    },
+    AFRICA: {
+      currencySymbol: '$',
+      currencyCode: 'USD',
+      plans: { basic: 59, standard: 119, premium: 169 }
+    }
+  };
+
+  // Country-specific overrides: region + local currency symbol/code
+  const COUNTRY_SETTINGS = {
+    CA: { region: 'NA', currencySymbol: '$', currencyCode: 'CAD' },
+    US: { region: 'NA', currencySymbol: '$', currencyCode: 'USD' },
+    MX: { region: 'NA', currencySymbol: '$', currencyCode: 'MXN' },
+
+    GB: { region: 'EU', currencySymbol: '£', currencyCode: 'GBP' },
+    FR: { region: 'EU', currencySymbol: '€', currencyCode: 'EUR' },
+    DE: { region: 'EU', currencySymbol: '€', currencyCode: 'EUR' },
+    ES: { region: 'EU', currencySymbol: '€', currencyCode: 'EUR' },
+    IT: { region: 'EU', currencySymbol: '€', currencyCode: 'EUR' },
+    NL: { region: 'EU', currencySymbol: '€', currencyCode: 'EUR' },
+    SE: { region: 'EU', currencySymbol: 'kr', currencyCode: 'SEK' },
+    CH: { region: 'EU', currencySymbol: 'CHF', currencyCode: 'CHF' },
+
+    IN: { region: 'ASIA', currencySymbol: '₹', currencyCode: 'INR' },
+    AE: { region: 'ASIA', currencySymbol: 'د.إ', currencyCode: 'AED' },
+    JP: { region: 'ASIA', currencySymbol: '¥', currencyCode: 'JPY' },
+    KR: { region: 'ASIA', currencySymbol: '₩', currencyCode: 'KRW' },
+    TH: { region: 'ASIA', currencySymbol: '฿', currencyCode: 'THB' },
+    SG: { region: 'ASIA', currencySymbol: '$', currencyCode: 'SGD' },
+
+    ZA: { region: 'AFRICA', currencySymbol: 'R', currencyCode: 'ZAR' },
+    NG: { region: 'AFRICA', currencySymbol: '₦', currencyCode: 'NGN' },
+    EG: { region: 'AFRICA', currencySymbol: '£', currencyCode: 'EGP' },
+    KE: { region: 'AFRICA', currencySymbol: 'KSh', currencyCode: 'KES' },
+
+    AU: { region: 'AUS', currencySymbol: '$', currencyCode: 'AUD' },
+    NZ: { region: 'AUS', currencySymbol: '$', currencyCode: 'NZD' }
+  };
+
+  function getPricingForCountry(code) {
+    const upper = (code || '').toUpperCase();
+    const countryCfg = COUNTRY_SETTINGS[upper];
+    if (!countryCfg) {
+      // Fallback: North America default
+      return {
+        countryCode: upper || DEFAULT_COUNTRY,
+        regionKey: 'NA',
+        currencySymbol: REGION_PRICING.NA.currencySymbol,
+        currencyCode: REGION_PRICING.NA.currencyCode,
+        plans: REGION_PRICING.NA.plans
+      };
+    }
+    const regionCfg = REGION_PRICING[countryCfg.region];
+    return {
+      countryCode: upper,
+      regionKey: countryCfg.region,
+      currencySymbol: countryCfg.currencySymbol || regionCfg.currencySymbol,
+      currencyCode: countryCfg.currencyCode || regionCfg.currencyCode,
+      plans: regionCfg.plans
+    };
+  }
+
+  function computeYearly(monthly) {
+    // ~10% discount for yearly: monthly * 12 * 0.9
+    const value = monthly * 12 * 0.9;
+    return Math.round(value); // you can tweak rounding later
+  }
+
+  // ---------- EXISTING BILLING TOGGLE ----------
   const billingButtons = document.querySelectorAll('.billing-pill');
   const planCards = document.querySelectorAll('.plan-card');
-
   let billingMode = 'monthly';
 
   function updatePrices() {
     planCards.forEach(card => {
-      const monthly = card.dataset.monthlyPrice;
-      const yearly = card.dataset.yearlyPrice;
+      const monthly = Number(card.dataset.monthlyPrice);
+      const yearly = Number(card.dataset.yearlyPrice);
       const amountEl = card.querySelector('.price-amount');
       const unitEl = card.querySelector('.price-unit');
       const captionEl = card.querySelector('.price-caption');
+      const currencySymbol = card.dataset.currencySymbol || '$';
 
-      if (!amountEl || !unitEl) return;
+      if (!amountEl || !unitEl || !monthly) return;
 
       if (billingMode === 'monthly') {
-        amountEl.textContent = `$${monthly}`;
+        amountEl.textContent = `${currencySymbol}${monthly}`;
         unitEl.textContent = '/ month';
         if (captionEl) {
           captionEl.textContent = captionEl.textContent.replace(/\(billed yearly.*\)$/i, '').trim();
         }
       } else {
-        amountEl.textContent = `$${yearly}`;
+        amountEl.textContent = `${currencySymbol}${yearly}`;
         unitEl.textContent = '/ year';
         if (captionEl && !/\(billed yearly/i.test(captionEl.textContent)) {
           captionEl.textContent = `${captionEl.textContent} (billed yearly)`;
@@ -581,13 +749,67 @@
       if (mode === billingMode) return;
 
       billingMode = mode;
-
       billingButtons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-
       updatePrices();
     });
   });
+
+  // ---------- APPLY REGION PRICING ----------
+  const countrySelect = document.getElementById('countrySelect');
+  const currencyHint = document.getElementById('currencyHint');
+
+  function applyCountry(code) {
+    const config = getPricingForCountry(code);
+    const countryOption = countrySelect.querySelector(`option[value="${config.countryCode}"]`);
+    const countryName = countryOption ? countryOption.textContent : 'your region';
+
+    // Update each card
+    planCards.forEach(card => {
+      const tier = card.dataset.tier; // basic / standard / premium
+      if (!tier) return;
+
+      const monthlyPrice = config.plans[tier];
+      card.dataset.monthlyPrice = monthlyPrice;
+      card.dataset.yearlyPrice = computeYearly(monthlyPrice);
+      card.dataset.currencySymbol = config.currencySymbol;
+    });
+
+    currencyHint.textContent =
+      `${countryName} – prices shown in ${config.currencyCode} (${config.currencySymbol}). Demo only, no real billing.`;
+
+    updatePrices();
+  }
+
+  if (countrySelect) {
+    countrySelect.addEventListener('change', () => {
+      applyCountry(countrySelect.value);
+    });
+  }
+
+  // ---------- GEO IP (best effort) ----------
+  function detectCountryAndApply() {
+    // Default first
+    countrySelect.value = DEFAULT_COUNTRY;
+    applyCountry(DEFAULT_COUNTRY);
+
+    // Try to detect via IP (will silently fail if blocked)
+    fetch('https://ipapi.co/json/')
+      .then(r => r.json())
+      .then(data => {
+        const code = (data && (data.country || data.country_code)) || DEFAULT_COUNTRY;
+        const optionExists = countrySelect.querySelector(`option[value="${code}"]`);
+        if (optionExists) {
+          countrySelect.value = code;
+          applyCountry(code);
+        }
+      })
+      .catch(() => {
+        // If it fails, we just stay on default
+      });
+  }
+
+  detectCountryAndApply();
 </script>
 
 </body>
