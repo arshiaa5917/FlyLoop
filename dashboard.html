@@ -573,55 +573,54 @@
 
     /* RESPONSIVE */
     @media (max-width: 800px) {
-      .dashboard-layout {
-        grid-template-columns: 1fr;
-      }
-      .sidebar {
-        flex-direction: row;
-        align-items: center;
-        overflow-x: auto;
-      }
-      .sidebar-logo {
-        margin-bottom: 0;
-      }
-      .sidebar-footer {
-        display: none;
-      }
-    }
-  </style>
-</head>
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
 
-<body>
+  .sidebar {
+    flex-direction: row;
+    align-items: center;
 
-<div class="dashboard-layout">
-  <!-- SIDEBAR -->
-  <aside class="sidebar" aria-label="Dashboard navigation">
-    <div class="sidebar-logo">
-      <img src="logo.png?v=2" alt="FlyLoop logo" />
-      <span>FLYLOOP</span>
-    </div>
+    /* key fixes */
+    flex-wrap: nowrap;              /* don’t wrap items to next line */
+    overflow-x: auto;               /* allow horizontal scroll */
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
 
-    <div class="sidebar-title">Dashboard</div>
-    <div class="sidebar-nav">
-      <button class="sidebar-link active" data-section="overview" type="button">
-        <span class="label">Overview</span>
-        <small>Trips &amp; plan</small>
-      </button>
-      <button class="sidebar-link" data-section="account" type="button">
-        <span class="label">Account</span>
-        <small>Profile &amp; billing</small>
-      </button>
-      <button class="sidebar-link" data-section="settings" type="button">
-        <span class="label">Settings</span>
-        <small>Preferences</small>
-      </button>
-    </div>
+    gap: 12px;
+    padding: 14px 12px;
+  }
 
-    <div class="sidebar-footer">
-      Logged in as <strong>demo@flyloop.com</strong><br />
-      <a href="login.html" class="logout-link">Log out</a>
-    </div>
-  </aside>
+  /* keep logo compact */
+  .sidebar-logo {
+    margin-bottom: 0;
+    flex: 0 0 auto;
+  }
+
+  /* put title + buttons in one row that scrolls */
+  .sidebar-title {
+    margin: 0;
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    flex: 0 0 auto;
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  /* prevent buttons from shrinking to nothing */
+  .sidebar-link {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .sidebar-footer {
+    display: none;
+  }
+}
 
   <!-- MAIN CONTENT -->
   <main class="dashboard-content">
