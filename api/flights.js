@@ -1,19 +1,10 @@
-// api/flights.js
-// Vercel Serverless Function: /api/flights
-// Uses Amadeus Self-Service APIs (OAuth2 + Flight Offers Search)
-// Env vars required:
-//   AMADEUS_API_KEY
-//   AMADEUS_API_SECRET
-// Optional:
-//   AMADEUS_ENV = "test" (default) or "prod"
+// api/flights.js (Vercel Serverless Function - CommonJS)
 
 let cachedToken = null;
 let cachedTokenExpMs = 0;
 
-function json(res, status, data) {
-  res.statusCode = status;
-  res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.end(JSON.stringify(data));
+function send(res, status, data) {
+  res.status(status).json(data);
 }
 
 function normalizeIata(v) {
@@ -21,7 +12,6 @@ function normalizeIata(v) {
 }
 
 function isIsoDate(v) {
-  // Accept YYYY-MM-DD only (simple validation)
   return /^\d{4}-\d{2}-\d{2}$/.test(String(v || "").trim());
 }
 
@@ -33,7 +23,6 @@ async function getAccessToken() {
     throw new Error("Missing AMADEUS_API_KEY or AMADEUS_API_SECRET env vars.");
   }
 
-  // Reuse token if still valid (with 30s safety buffer)
   const now = Date.now();
   if (cachedToken && cachedTokenExpMs - now > 30_000) return cachedToken;
 
@@ -54,8 +43,7 @@ async function getAccessToken() {
 
   const t = await r.json().catch(() => ({}));
   if (!r.ok) {
-    const msg = t?.error_description || t?.error || "Failed to get access token";
-    throw new Error(msg);
+    throw new Error(t?.error_description || t?.error || "Failed to get access token");
   }
 
   cachedToken = t.access_token;
@@ -63,12 +51,11 @@ async function getAccessToken() {
   return cachedToken;
 }
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   try {
-    // Only allow GET
     if (req.method !== "GET") {
       res.setHeader("Allow", "GET");
-      return json(res, 405, { error: "Method not allowed. Use GET." });
+      return send(res, 405, { error: "Method not allowed. Use GET." });
     }
 
     const origin = normalizeIata(req.query.origin);
@@ -77,22 +64,15 @@ export default async function handler(req, res) {
     const adults = Math.max(1, Math.min(9, parseInt(req.query.adults || "1", 10) || 1));
     const currency = String(req.query.currency || "CAD").trim().toUpperCase();
 
-    if (!origin || origin.length !== 3) {
-      return json(res, 400, { error: "origin must be a 3-letter IATA code (e.g., YYZ)." });
-    }
-    if (!destination || destination.length !== 3) {
-      return json(res, 400, { error: "destination must be a 3-letter IATA code (e.g., MIA)." });
-    }
-    if (!isIsoDate(date)) {
-      return json(res, 400, { error: "date must be YYYY-MM-DD." });
-    }
+    if (!origin || origin.length !== 3) return send(res, 400, { error: "origin must be a 3-letter IATA code (e.g., YYZ)." });
+    if (!destination || destination.length !== 3) return send(res, 400, { error: "destination must be a 3-letter IATA code (e.g., MIA)." });
+    if (!isIsoDate(date)) return send(res, 400, { error: "date must be YYYY-MM-DD." });
 
     const env = (process.env.AMADEUS_ENV || "test").toLowerCase();
     const base = env === "prod" ? "https://api.amadeus.com" : "https://test.api.amadeus.com";
 
     const token = await getAccessToken();
 
-    // Flight Offers Search (one-way)
     const qs = new URLSearchParams({
       originLocationCode: origin,
       destinationLocationCode: destination,
@@ -107,22 +87,12 @@ export default async function handler(req, res) {
     });
 
     const data = await r.json().catch(() => ({}));
-
     if (!r.ok) {
-      // Amadeus errors are usually in data.errors[]
       const err = data?.errors?.[0];
-      return json(res, r.status, {
-        error: err?.detail || err?.title || "Flight search failed",
-        raw: data,
-      });
+      return send(res, r.status, { error: err?.detail || err?.title || "Flight search failed", raw: data });
     }
 
-    // Convert Amadeus payload to a clean, frontend-friendly list
     const offers = (data.data || []).map((offer) => {
-      const total = offer?.price?.total;
-      const currencyOut = offer?.price?.currency;
-
-      // Use first itinerary for one-way; each itinerary has segments
       const itinerary = offer?.itineraries?.[0];
       const segs = (itinerary?.segments || []).map((s) => ({
         from: s?.departure?.iataCode,
@@ -131,31 +101,21 @@ export default async function handler(req, res) {
         arrival: s?.arrival?.at,
         carrier: s?.carrierCode,
         flightNumber: s?.number,
-        duration: s?.duration,
       }));
-
-      // pick a "marketing" airline (first segment carrier)
-      const airline = segs[0]?.carrier || offer?.validatingAirlineCodes?.[0] || "";
 
       return {
         id: offer?.id,
-        total,
-        currency: currencyOut,
-        airline,
+        total: offer?.price?.total,
+        currency: offer?.price?.currency,
+        airline: segs[0]?.carrier || offer?.validatingAirlineCodes?.[0] || "",
         segments: segs,
         stops: Math.max(0, segs.length - 1),
       };
     });
 
-    // Helpful cache header (short)
     res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
-
-    return json(res, 200, {
-      query: { origin, destination, date, adults, currency },
-      offers,
-      meta: data?.meta || {},
-    });
+    return send(res, 200, { query: { origin, destination, date, adults, currency }, offers });
   } catch (e) {
-    return json(res, 500, { error: e?.message || "Server error" });
+    return send(res, 500, { error: e?.message || "Server error" });
   }
-}
+};
