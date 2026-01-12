@@ -374,7 +374,39 @@
     color: var(--primary-soft);
   }
 }
+//debug added section
 
+    /* === MOBILE NAV FIX (FORCE SHOW) === */
+/* Put this at the END of the <style> tag */
+@media (max-width: 720px) {
+  .nav-links {
+    display: grid !important;
+    width: 100% !important;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)) !important;
+    gap: 8px !important;
+    padding-top: 8px !important;
+  }
+
+  .nav-links a {
+    text-align: center !important;
+    padding: 10px 8px !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(148, 163, 184, 0.35) !important;
+    background: rgba(2, 6, 23, 0.35) !important;
+    font-size: clamp(0.75rem, 2.9vw, 0.9rem) !important;
+    white-space: nowrap !important;
+  }
+
+  .nav {
+    flex-wrap: wrap !important;
+  }
+
+  .nav-left {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+//
   </style>
 </head>
 
