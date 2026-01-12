@@ -116,12 +116,17 @@
     }
 
     /* Desktop links (top nav) */
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      font-size: 0.9rem;
-    }
+   /* Desktop links (top nav) */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 0.9rem;
+
+  margin-left: auto;          /* ✅ pushes tabs to the right */
+  justify-content: flex-end;  /* ✅ aligns them to the right */
+}
+
 
     .nav-links a {
       color: var(--muted);
