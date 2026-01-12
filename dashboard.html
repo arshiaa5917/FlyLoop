@@ -573,61 +573,79 @@
 
     /* RESPONSIVE */
   /* Mobile portrait: tabs at top, always visible */
-@media (max-width: 800px) and (orientation: portrait) {
+/* ================================
+   FlyLoop Mobile – Auto-Fit Tabs
+   ================================ */
+@media (max-width: 800px) {
+
+  /* Stack layout on mobile */
   .dashboard-layout {
     grid-template-columns: 1fr;
   }
 
+  /* Sidebar becomes a top bar */
   .sidebar {
-    flex-direction: column;
-    padding: 14px 14px 10px;
+    flex-direction: row;
+    align-items: center;
+
+    padding: 10px 12px;
+    gap: 10px;
+
     border-right: none;
     border-bottom: 1px solid rgba(148,163,184,0.3);
+
     position: sticky;
     top: 0;
-    z-index: 50;
+    z-index: 100;
   }
 
+  /* Keep logo small and neat */
+  .sidebar-logo {
+    margin-bottom: 0;
+    flex: 0 0 auto;
+  }
+
+  .sidebar-logo img {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Slightly shrink brand text so it fits */
+  .sidebar-logo span {
+    font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+    letter-spacing: 0.14em;
+  }
+
+  /* Hide desktop-only elements */
   .sidebar-title,
   .sidebar-footer {
     display: none;
   }
 
-  .sidebar-logo {
-    justify-content: center;
-    margin-bottom: 10px;
-  }
-
+  /* Tabs container */
   .sidebar-nav {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+
+    flex: 1;
+    justify-content: space-between;
   }
 
+  /* Individual tabs auto-scale */
   .sidebar-link {
+    flex: 1;
     justify-content: center;
-    text-align: center;
-    padding: 12px 8px;
+
+    padding: clamp(8px, 2.5vw, 12px) clamp(8px, 2.5vw, 14px);
+    font-size: clamp(0.7rem, 2.8vw, 0.9rem);
+    white-space: nowrap;
   }
 
+  /* Hide subtitles for clean look */
   .sidebar-link small {
     display: none;
   }
-}
-
-/* Mobile landscape: if you still want the horizontal bar there */
-@media (max-width: 800px) and (orientation: landscape) {
-  .dashboard-layout { grid-template-columns: 1fr; }
-
-  .sidebar {
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
-    padding: 12px;
-  }
-
-  .sidebar-footer { display: none; }
-  /* you can keep your landscape behavior here */
 }
 
   <!-- MAIN CONTENT -->
