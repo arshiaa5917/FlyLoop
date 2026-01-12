@@ -45,7 +45,10 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
 
     @keyframes floatSoft {
       0%, 100% { transform: translateY(0); }
@@ -57,7 +60,14 @@
       50%      { box-shadow: 0 0 24px rgba(59, 130, 246, 0.7); }
     }
 
-    /* NAVBAR */
+    /* PAGE LAYOUT (SIDEBAR + MAIN) */
+    .page-layout {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    /* TOP BAR (ONLY LOGO + LOGIN) */
     header {
       position: sticky;
       top: 0;
@@ -68,7 +78,7 @@
       animation: fadeIn 0.5s ease-out both;
     }
 
-    .nav {
+    .topbar {
       max-width: 1100px;
       margin: auto;
       padding: 10px 20px;
@@ -78,15 +88,13 @@
       gap: 16px;
     }
 
-    /* Make logo clickable (go home) */
-    .nav-left {
-      display: flex;
+    .brand {
+      display: inline-flex;
       align-items: center;
       gap: 10px;
-      flex: 0 0 auto;
     }
 
-    .nav-left:focus-visible {
+    .brand:focus-visible {
       outline: 2px solid rgba(249, 115, 22, 0.8);
       outline-offset: 4px;
       border-radius: 14px;
@@ -102,6 +110,7 @@
       justify-content: center;
       background: #020617;
       animation: glowPulse 3s ease-in-out infinite;
+      flex: 0 0 auto;
     }
 
     .logo-mark img {
@@ -110,7 +119,7 @@
       object-fit: cover;
     }
 
-    .nav-title {
+    .brand-title {
       font-weight: 800;
       letter-spacing: 0.18em;
       font-size: 0.9rem;
@@ -119,57 +128,78 @@
       white-space: nowrap;
     }
 
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 18px;
+    .login-link {
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: 600;
       font-size: 0.9rem;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      color: #e5e7eb;
+      background: rgba(2, 6, 23, 0.25);
+      white-space: nowrap;
     }
 
-    .nav-links a {
-      color: var(--muted);
-      font-weight: 500;
-      position: relative;
-      padding-bottom: 2px;
+    .login-link:hover {
+      background: rgba(148, 163, 184, 0.10);
     }
 
-    .nav-links a::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
-      transition: width 0.18s ease-out;
+    /* SIDEBAR */
+    .sidebar {
+      background: #020617;
+      border-right: 1px solid rgba(148, 163, 184, 0.25);
+      padding: 18px 14px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
     }
 
-    .nav-links a:hover::after { width: 100%; }
-    .nav-links a:hover        { color: var(--primary-soft); }
-
-    .nav-links a.nav-active {
-      color: var(--primary);
+    .sidebar-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #6b7280;
+      margin: 8px 10px 10px;
     }
 
-    .nav-links a.nav-active::after {
-      width: 100%;
+    .side-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
-    /* "More" dropdown (desktop hidden by default; mobile shows it) */
-    .nav-more { display: none; }
-    .nav-more button {
-      border: none;
+    .side-link {
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      color: #e5e7eb;
+      border: 1px solid rgba(148, 163, 184, 0.10);
       background: transparent;
-      color: var(--muted);
-      font: inherit;
-      cursor: pointer;
+      transition: background 0.18s ease, transform 0.1s ease, border-color 0.18s ease;
     }
 
-    /* LAYOUT */
+    .side-link:hover {
+      background: rgba(148, 163, 184, 0.10);
+      transform: translateX(1px);
+      border-color: rgba(148, 163, 184, 0.20);
+    }
+
+    .side-link.active {
+      background: linear-gradient(135deg, #F97316, #DC2626);
+      color: #111827;
+      border-color: transparent;
+      font-weight: 700;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+      min-width: 0;
+    }
+
     section {
       padding: 80px 0;
       animation: fadeUp 0.6s ease-out both;
-      scroll-margin-top: 90px; /* keeps section headings from hiding under sticky header */
+      scroll-margin-top: 90px;
     }
 
     .container {
@@ -343,17 +373,26 @@
     footer .container { text-align: center; }
 
     /* RESPONSIVE */
-    @media (max-width: 820px) {
-      .hero-layout {
-        grid-template-columns: 1fr;
-      }
+    @media (max-width: 900px) {
+      .hero-layout { grid-template-columns: 1fr; }
     }
 
-    /* MOBILE NAV: single row + "More" dropdown (compact, always visible) */
-    @media (max-width: 720px) {
-      .nav {
+    /* On small screens: sidebar becomes a stacked "menu panel" under the top bar */
+    @media (max-width: 820px) {
+      .page-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 62px; /* sits under the sticky header */
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+      }
+
+      .topbar {
         padding: 10px 12px;
-        gap: 10px;
       }
 
       .logo-mark {
@@ -361,208 +400,120 @@
         height: 34px;
       }
 
-      .nav-title {
-        font-size: clamp(0.72rem, 3vw, 0.88rem);
-      }
-
-      .nav-links {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .nav-links a {
-        padding: 8px 10px;
-        border-radius: 999px;
-        border: 1px solid rgba(148, 163, 184, 0.35);
-        background: rgba(2, 6, 23, 0.25);
-        font-size: clamp(0.72rem, 2.7vw, 0.85rem);
-        white-space: nowrap;
-      }
-
-      /* remove underline animation for pill-style tabs */
-      .nav-links a::after { display: none; }
-
-      .nav-links a.nav-active {
-        border-color: rgba(249, 115, 22, 0.75);
-        background: rgba(249, 115, 22, 0.12);
-        color: var(--primary-soft);
-      }
-
-      /* hide extra links on mobile (they go in More) */
-      .nav-links a.hide-mobile {
-        display: none;
-      }
-
-      /* More dropdown */
-      .nav-more {
-        display: inline-block;
-        position: relative;
-      }
-
-      .nav-more button {
-        padding: 8px 10px;
-        border-radius: 999px;
-        border: 1px solid rgba(148, 163, 184, 0.35);
-        background: rgba(2, 6, 23, 0.25);
-        color: var(--muted);
-        font-size: clamp(0.72rem, 2.7vw, 0.85rem);
-        cursor: pointer;
-      }
-
-      .nav-more button:active {
-        transform: translateY(1px);
-      }
-
-      .nav-more-menu {
-        display: none;
-        position: absolute;
-        right: 0;
-        top: 44px;
-        min-width: 180px;
-        border-radius: 14px;
-        background: rgba(2, 6, 23, 0.96);
-        border: 1px solid rgba(148, 163, 184, 0.25);
-        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
-        padding: 8px;
-      }
-
-      .nav-more-menu a {
-        display: block;
-        padding: 10px 10px;
-        border-radius: 10px;
-        color: #e5e7eb;
-        background: transparent;
-      }
-
-      .nav-more-menu a:hover {
-        background: rgba(148, 163, 184, 0.12);
-      }
-
-      .nav-more.open .nav-more-menu {
-        display: block;
+      .brand-title {
+        font-size: 0.85rem;
       }
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <div class="nav">
-      <!-- Clickable logo goes home -->
-      <a class="nav-left" href="index.html" aria-label="FlyLoop Home">
-        <div class="logo-mark">
-          <img src="logo.png?v=2" alt="FlyLoop logo" />
-        </div>
-        <div class="nav-title">FLYLOOP</div>
-      </a>
 
-      <nav class="nav-links" aria-label="Main navigation">
-        <a href="index.html" class="nav-active">Home</a>
-        <a href="how.html">How it works</a>
-        <a href="pricing.html">Pricing</a>
+  <!-- Sidebar nav -->
+  <div class="page-layout">
 
-        <a class="hide-mobile" href="destinations.html">Destinations</a>
-        <a class="hide-mobile" href="faq.html">FAQ</a>
-        <a class="hide-mobile" href="waitlist.html">Waitlist</a>
-        <a class="hide-mobile" href="login.html">Login</a>
-
-        <div class="nav-more" id="navMore">
-          <button type="button" aria-label="More menu">More ▾</button>
-          <div class="nav-more-menu" aria-label="More links">
-            <a href="destinations.html">Destinations</a>
-            <a href="faq.html">FAQ</a>
-            <a href="waitlist.html">Waitlist</a>
-            <a href="login.html">Login</a>
-          </div>
-        </div>
+    <aside class="sidebar" aria-label="Sidebar navigation">
+      <div class="sidebar-title">Menu</div>
+      <nav class="side-nav">
+        <a class="side-link" href="index.html">Home</a>
+        <a class="side-link" href="how.html">How it works</a>
+        <a class="side-link" href="pricing.html">Pricing</a>
+        <a class="side-link" href="destinations.html">Destinations</a>
+        <a class="side-link" href="faq.html">FAQ</a>
+        <a class="side-link" href="waitlist.html">Waitlist</a>
       </nav>
-    </div>
-  </header>
+    </aside>
 
-  <section id="hero">
-    <div class="container hero-layout">
-      <div>
-        <h1>Travel like a subscription,<br>not a surprise.</h1>
+    <div class="main">
+      <!-- Top bar (only logo + login) -->
+      <header>
+        <div class="topbar">
+          <a class="brand" href="index.html" aria-label="FlyLoop Home">
+            <div class="logo-mark">
+              <img src="logo.png?v=2" alt="FlyLoop logo" />
+            </div>
+            <div class="brand-title">FLYLOOP</div>
+          </a>
 
-        <p class="hero-sub">
-          FlyLoop turns trips into a monthly habit. You pay a fixed fee; we plan
-          flights, hotels, and curated escapes to cities like LA, Miami, Montréal,
-          Vancouver, Cancun, Havana and more.
-        </p>
-
-        <div class="hero-actions">
-          <a href="pricing.html" class="btn-primary">View Plans</a>
-          <a href="how.html" class="btn-outline">How FlyLoop Works</a>
+          <a class="login-link" href="login.html">Login</a>
         </div>
+      </header>
 
-        <div class="hero-meta">
-          <span class="hero-pill">✈️ Flights + hotels included (concept)</span>
-          <span class="hero-pill">🧡 Built as a portfolio-ready startup idea</span>
-          <span class="hero-pill">🌃 Dark / orange / blue visual identity</span>
-        </div>
+      <!-- CONTENT -->
+      <section id="hero">
+        <div class="container hero-layout">
+          <div>
+            <h1>Travel like a subscription,<br>not a surprise.</h1>
 
-        <div class="pill-row">
-          <span>Domestic & US escapes</span>
-          <span>Credit-style membership model</span>
-          <span>Toronto-based concept</span>
-        </div>
-      </div>
-
-      <div>
-        <div class="hero-card">
-          <div class="hero-card-top">
-            <div class="hero-badge">Concept • Subscription Travel</div>
-            <h3>“Netflix for travel” — but make it premium.</h3>
-            <p>
-              This site is a dark-themed portfolio demo of a travel subscription:
-              monthly payments, curated trips, and real destinations designed
-              like a real startup product.
+            <p class="hero-sub">
+              FlyLoop turns trips into a monthly habit. You pay a fixed fee; we plan
+              flights, hotels, and curated escapes to cities like LA, Miami, Montréal,
+              Vancouver, Cancun, Havana and more.
             </p>
+
+            <div class="hero-actions">
+              <a href="pricing.html" class="btn-primary">View Plans</a>
+              <a href="how.html" class="btn-outline">How FlyLoop Works</a>
+            </div>
+
+            <div class="hero-meta">
+              <span class="hero-pill">✈️ Flights + hotels included (concept)</span>
+              <span class="hero-pill">🧡 Built as a portfolio-ready startup idea</span>
+              <span class="hero-pill">🌃 Dark / orange / blue visual identity</span>
+            </div>
+
+            <div class="pill-row">
+              <span>Domestic & US escapes</span>
+              <span>Credit-style membership model</span>
+              <span>Toronto-based concept</span>
+            </div>
           </div>
 
-          <div class="hero-card-bottom">
-            <div class="hero-stat">
-              <strong>3 membership tiers</strong>
-              Basic, Standard and Premium for different budgets.
-            </div>
-            <div class="hero-stat">
-              <strong>8 sample destinations</strong>
-              Toronto, LA, Miami, Montréal, Québec, Cancun, Havana, Vancouver.
+          <div>
+            <div class="hero-card">
+              <div class="hero-card-top">
+                <div class="hero-badge">Concept • Subscription Travel</div>
+                <h3>“Netflix for travel” — but make it premium.</h3>
+                <p>
+                  This site is a dark-themed portfolio demo of a travel subscription:
+                  monthly payments, curated trips, and real destinations designed
+                  like a real startup product.
+                </p>
+              </div>
+
+              <div class="hero-card-bottom">
+                <div class="hero-stat">
+                  <strong>3 membership tiers</strong>
+                  Basic, Standard and Premium for different budgets.
+                </div>
+                <div class="hero-stat">
+                  <strong>8 sample destinations</strong>
+                  Toronto, LA, Miami, Montréal, Québec, Cancun, Havana, Vancouver.
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <footer>
-    <div class="container">
-      © 2025 FlyLoop — Concept Travel Subscription Website
+      <footer>
+        <div class="container">
+          © 2025 FlyLoop — Concept Travel Subscription Website
+        </div>
+      </footer>
     </div>
-  </footer>
+  </div>
 
   <script>
-    // Mobile "More" dropdown toggle
-    const navMore = document.getElementById('navMore');
-    if (navMore) {
-      const btn = navMore.querySelector('button');
-
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        navMore.classList.toggle('open');
+    // Highlight active sidebar link based on current page
+    (function () {
+      const path = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+      document.querySelectorAll(".side-link").forEach(a => {
+        const href = (a.getAttribute("href") || "").toLowerCase();
+        if (href === path) a.classList.add("active");
       });
-
-      // close when tapping outside
-      document.addEventListener('click', (e) => {
-        if (!navMore.contains(e.target)) navMore.classList.remove('open');
-      });
-
-      // close when selecting a link inside the menu
-      navMore.querySelectorAll('a').forEach(a => {
-        a.addEventListener('click', () => navMore.classList.remove('open'));
-      });
-    }
+    })();
   </script>
+
 </body>
 </html>
