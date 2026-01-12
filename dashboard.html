@@ -579,10 +579,66 @@
    Force tabs to always show (NO SCROLL)
    Option B: shrink to fit (clamp)
    ========================================= */
-/* RESPONSIVE */ @media (max-width: 800px) { .dashboard-layout { grid-template-columns: 1fr; } .sidebar { flex-direction: row; align-items: center; overflow-x: auto; } .sidebar-logo { margin-bottom: 0; } .sidebar-footer { display: none; } } </style> </head> <body> <div class="dashboard-layout"> <!-- SIDEBAR --> <aside class="sidebar" aria-label="Dashboard navigation"> <div class="sidebar-logo"> <img src="logo.png?v=2" alt="FlyLoop logo" /> <span>FLYLOOP</span> </div> <div class="sidebar-title">Dashboard</div> <div class="sidebar-nav"> <button class="sidebar-link active" data-section="overview" type="button"> <span class="label">Overview</span> <small>Trips &amp; plan</small> </button> <button class="sidebar-link" data-section="account" type="button"> <span class="label">Account</span> <small>Profile &amp; billing</small> </button> <button class="sidebar-link" data-section="settings" type="button"> <span class="label">Settings</span> <small>Preferences</small> </button> </div> <div class="sidebar-footer"> Logged in as <strong>demo@flyloop.com</strong><br /> <a href="login.html" class="logout-link">Log out</a> </div> </aside>
+/* RESPONSIVE */
+    @media (max-width: 800px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
 
+  .sidebar {
+    flex-direction: row;
+    align-items: center;
+    overflow-x: auto;
+  }
 
-    
+  .sidebar-logo {
+    margin-bottom: 0;
+  }
+
+  .sidebar-footer {
+    display: none;
+  }
+}
+</style>
+</head>
+
+<body>
+  <div class="dashboard-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" aria-label="Dashboard navigation">
+
+      <div class="sidebar-logo">
+        <img src="logo.png?v=2" alt="FlyLoop logo" />
+        <span>FLYLOOP</span>
+      </div>
+
+      <div class="sidebar-title">Dashboard</div>
+
+      <div class="sidebar-nav">
+        <button class="sidebar-link active" data-section="overview" type="button">
+          <span class="label">Overview</span>
+          <small>Trips &amp; plan</small>
+        </button>
+
+        <button class="sidebar-link" data-section="account" type="button">
+          <span class="label">Account</span>
+          <small>Profile &amp; billing</small>
+        </button>
+
+        <button class="sidebar-link" data-section="settings" type="button">
+          <span class="label">Settings</span>
+          <small>Preferences</small>
+        </button>
+      </div>
+
+      <div class="sidebar-footer">
+        Logged in as <strong>demo@flyloop.com</strong><br />
+        <a href="login.html" class="logout-link">Log out</a>
+      </div>
+
+    </aside>
+
 
   <!-- MAIN CONTENT -->
   <main class="dashboard-content">
