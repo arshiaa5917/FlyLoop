@@ -61,7 +61,7 @@
     header {
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 9999;
       background: rgba(15, 23, 42, 0.86);
       backdrop-filter: blur(18px);
       border-bottom: 1px solid rgba(148, 163, 184, 0.3);
@@ -78,10 +78,18 @@
       gap: 16px;
     }
 
+    /* Make logo clickable (go home) */
     .nav-left {
       display: flex;
       align-items: center;
       gap: 10px;
+      flex: 0 0 auto;
+    }
+
+    .nav-left:focus-visible {
+      outline: 2px solid rgba(249, 115, 22, 0.8);
+      outline-offset: 4px;
+      border-radius: 14px;
     }
 
     .logo-mark {
@@ -108,6 +116,7 @@
       font-size: 0.9rem;
       text-transform: uppercase;
       color: var(--primary-soft);
+      white-space: nowrap;
     }
 
     .nav-links {
@@ -146,10 +155,21 @@
       width: 100%;
     }
 
+    /* "More" dropdown (desktop hidden by default; mobile shows it) */
+    .nav-more { display: none; }
+    .nav-more button {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      cursor: pointer;
+    }
+
     /* LAYOUT */
     section {
       padding: 80px 0;
       animation: fadeUp 0.6s ease-out both;
+      scroll-margin-top: 90px; /* keeps section headings from hiding under sticky header */
     }
 
     .container {
@@ -329,172 +349,220 @@
       }
     }
 
-    /* MOBILE NAV: keep tabs visible + auto-fit */
-@media (max-width: 720px) {
-  .nav {
-    padding: 10px 12px;
-    gap: 10px;
-    flex-wrap: wrap;         /* allows clean 2-row layout if needed */
-  }
+    /* MOBILE NAV: single row + "More" dropdown (compact, always visible) */
+    @media (max-width: 720px) {
+      .nav {
+        padding: 10px 12px;
+        gap: 10px;
+      }
 
-  .nav-left {
-    width: 100%;
-    justify-content: center; /* center logo/title on phone */
-  }
+      .logo-mark {
+        width: 34px;
+        height: 34px;
+      }
 
-  .nav-title {
-    font-size: clamp(0.75rem, 3.2vw, 0.9rem);
-  }
+      .nav-title {
+        font-size: clamp(0.72rem, 3vw, 0.88rem);
+      }
 
-  .nav-links {
-    width: 100%;
-    display: grid;           /* grid tabs */
-    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-    gap: 8px;
-    padding-top: 8px;
-  }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
 
-  .nav-links a {
-    text-align: center;
-    padding: 10px 8px;
-    border-radius: 999px;
-    border: 1px solid rgba(148, 163, 184, 0.35);
-    background: rgba(2, 6, 23, 0.35);
-    font-size: clamp(0.75rem, 2.9vw, 0.9rem);
-    white-space: nowrap;     /* keep each tab on one line */
-  }
+      .nav-links a {
+        padding: 8px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        background: rgba(2, 6, 23, 0.25);
+        font-size: clamp(0.72rem, 2.7vw, 0.85rem);
+        white-space: nowrap;
+      }
 
-  .nav-links a::after {
-    display: none;           /* remove underline animation on tiny tabs */
-  }
+      /* remove underline animation for pill-style tabs */
+      .nav-links a::after { display: none; }
 
-  .nav-links a.nav-active {
-    border-color: rgba(249, 115, 22, 0.75);
-    background: rgba(249, 115, 22, 0.12);
-    color: var(--primary-soft);
-  }
-}
-//debug added section
+      .nav-links a.nav-active {
+        border-color: rgba(249, 115, 22, 0.75);
+        background: rgba(249, 115, 22, 0.12);
+        color: var(--primary-soft);
+      }
 
-    /* === MOBILE NAV FIX (FORCE SHOW) === */
-/* Put this at the END of the <style> tag */
-@media (max-width: 720px) {
-  .nav-links {
-    display: grid !important;
-    width: 100% !important;
-    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)) !important;
-    gap: 8px !important;
-    padding-top: 8px !important;
-  }
+      /* hide extra links on mobile (they go in More) */
+      .nav-links a.hide-mobile {
+        display: none;
+      }
 
-  .nav-links a {
-    text-align: center !important;
-    padding: 10px 8px !important;
-    border-radius: 999px !important;
-    border: 1px solid rgba(148, 163, 184, 0.35) !important;
-    background: rgba(2, 6, 23, 0.35) !important;
-    font-size: clamp(0.75rem, 2.9vw, 0.9rem) !important;
-    white-space: nowrap !important;
-  }
+      /* More dropdown */
+      .nav-more {
+        display: inline-block;
+        position: relative;
+      }
 
-  .nav {
-    flex-wrap: wrap !important;
-  }
+      .nav-more button {
+        padding: 8px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        background: rgba(2, 6, 23, 0.25);
+        color: var(--muted);
+        font-size: clamp(0.72rem, 2.7vw, 0.85rem);
+        cursor: pointer;
+      }
 
-  .nav-left {
-    width: 100% !important;
-    justify-content: center !important;
-  }
-}
-//
+      .nav-more button:active {
+        transform: translateY(1px);
+      }
+
+      .nav-more-menu {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 44px;
+        min-width: 180px;
+        border-radius: 14px;
+        background: rgba(2, 6, 23, 0.96);
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
+        padding: 8px;
+      }
+
+      .nav-more-menu a {
+        display: block;
+        padding: 10px 10px;
+        border-radius: 10px;
+        color: #e5e7eb;
+        background: transparent;
+      }
+
+      .nav-more-menu a:hover {
+        background: rgba(148, 163, 184, 0.12);
+      }
+
+      .nav-more.open .nav-more-menu {
+        display: block;
+      }
+    }
   </style>
 </head>
 
 <body>
-
-<header>
-  <div class="nav">
-    <div class="nav-left">
-      <div class="logo-mark">
-        <img src="logo.png?v=2" alt="FlyLoop logo" />
-      </div>
-      <div class="nav-title">FLYLOOP</div>
-    </div>
-
-   <nav class="nav-links" aria-label="Main navigation">
-  <a href="index.html" class="nav-active">Home</a>
-  <a href="how.html">How it works</a>
-  <a href="pricing.html">Pricing</a>
-  <a href="destinations.html">Destinations</a>
-  <a href="faq.html">FAQ</a>
-  <a href="waitlist.html">Waitlist</a>
-  <a href="login.html">Login</a>
-</nav>
-
-  </div>
-</header>
-
-<section id="hero">
-  <div class="container hero-layout">
-    <div>
-      <h1>Travel like a subscription,<br>not a surprise.</h1>
-
-      <p class="hero-sub">
-        FlyLoop turns trips into a monthly habit. You pay a fixed fee; we plan
-        flights, hotels, and curated escapes to cities like LA, Miami, Montréal,
-        Vancouver, Cancun, Havana and more.
-      </p>
-
-      <div class="hero-actions">
-        <a href="pricing.html" class="btn-primary">View Plans</a>
-        <a href="how.html" class="btn-outline">How FlyLoop Works</a>
-      </div>
-
-      <div class="hero-meta">
-        <span class="hero-pill">✈️ Flights + hotels included (concept)</span>
-        <span class="hero-pill">🧡 Built as a portfolio-ready startup idea</span>
-        <span class="hero-pill">🌃 Dark / orange / blue visual identity</span>
-      </div>
-
-      <div class="pill-row">
-        <span>Domestic & US escapes</span>
-        <span>Credit-style membership model</span>
-        <span>Toronto-based concept</span>
-      </div>
-    </div>
-
-    <div>
-      <div class="hero-card">
-        <div class="hero-card-top">
-          <div class="hero-badge">Concept • Subscription Travel</div>
-          <h3>“Netflix for travel” — but make it premium.</h3>
-          <p>
-            This site is a dark-themed portfolio demo of a travel subscription:
-            monthly payments, curated trips, and real destinations designed
-            like a real startup product.
-          </p>
+  <header>
+    <div class="nav">
+      <!-- Clickable logo goes home -->
+      <a class="nav-left" href="index.html" aria-label="FlyLoop Home">
+        <div class="logo-mark">
+          <img src="logo.png?v=2" alt="FlyLoop logo" />
         </div>
+        <div class="nav-title">FLYLOOP</div>
+      </a>
 
-        <div class="hero-card-bottom">
-          <div class="hero-stat">
-            <strong>3 membership tiers</strong>
-            Basic, Standard and Premium for different budgets.
-          </div>
-          <div class="hero-stat">
-            <strong>8 sample destinations</strong>
-            Toronto, LA, Miami, Montréal, Québec, Cancun, Havana, Vancouver.
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html" class="nav-active">Home</a>
+        <a href="how.html">How it works</a>
+        <a href="pricing.html">Pricing</a>
+
+        <a class="hide-mobile" href="destinations.html">Destinations</a>
+        <a class="hide-mobile" href="faq.html">FAQ</a>
+        <a class="hide-mobile" href="waitlist.html">Waitlist</a>
+        <a class="hide-mobile" href="login.html">Login</a>
+
+        <div class="nav-more" id="navMore">
+          <button type="button" aria-label="More menu">More ▾</button>
+          <div class="nav-more-menu" aria-label="More links">
+            <a href="destinations.html">Destinations</a>
+            <a href="faq.html">FAQ</a>
+            <a href="waitlist.html">Waitlist</a>
+            <a href="login.html">Login</a>
           </div>
         </div>
+      </nav>
+    </div>
+  </header>
+
+  <section id="hero">
+    <div class="container hero-layout">
+      <div>
+        <h1>Travel like a subscription,<br>not a surprise.</h1>
+
+        <p class="hero-sub">
+          FlyLoop turns trips into a monthly habit. You pay a fixed fee; we plan
+          flights, hotels, and curated escapes to cities like LA, Miami, Montréal,
+          Vancouver, Cancun, Havana and more.
+        </p>
+
+        <div class="hero-actions">
+          <a href="pricing.html" class="btn-primary">View Plans</a>
+          <a href="how.html" class="btn-outline">How FlyLoop Works</a>
+        </div>
+
+        <div class="hero-meta">
+          <span class="hero-pill">✈️ Flights + hotels included (concept)</span>
+          <span class="hero-pill">🧡 Built as a portfolio-ready startup idea</span>
+          <span class="hero-pill">🌃 Dark / orange / blue visual identity</span>
+        </div>
+
+        <div class="pill-row">
+          <span>Domestic & US escapes</span>
+          <span>Credit-style membership model</span>
+          <span>Toronto-based concept</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="hero-card">
+          <div class="hero-card-top">
+            <div class="hero-badge">Concept • Subscription Travel</div>
+            <h3>“Netflix for travel” — but make it premium.</h3>
+            <p>
+              This site is a dark-themed portfolio demo of a travel subscription:
+              monthly payments, curated trips, and real destinations designed
+              like a real startup product.
+            </p>
+          </div>
+
+          <div class="hero-card-bottom">
+            <div class="hero-stat">
+              <strong>3 membership tiers</strong>
+              Basic, Standard and Premium for different budgets.
+            </div>
+            <div class="hero-stat">
+              <strong>8 sample destinations</strong>
+              Toronto, LA, Miami, Montréal, Québec, Cancun, Havana, Vancouver.
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<footer>
-  <div class="container">
-    © 2025 FlyLoop — Concept Travel Subscription Website
-  </div>
-</footer>
+  <footer>
+    <div class="container">
+      © 2025 FlyLoop — Concept Travel Subscription Website
+    </div>
+  </footer>
 
+  <script>
+    // Mobile "More" dropdown toggle
+    const navMore = document.getElementById('navMore');
+    if (navMore) {
+      const btn = navMore.querySelector('button');
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navMore.classList.toggle('open');
+      });
+
+      // close when tapping outside
+      document.addEventListener('click', (e) => {
+        if (!navMore.contains(e.target)) navMore.classList.remove('open');
+      });
+
+      // close when selecting a link inside the menu
+      navMore.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => navMore.classList.remove('open'));
+      });
+    }
+  </script>
 </body>
 </html>
