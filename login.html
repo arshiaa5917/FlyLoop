@@ -87,6 +87,29 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      min-width: 0;
+    }
+
+    /* ✅ Mobile menu button */
+    .menu-btn {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(2, 6, 23, 0.35);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+    }
+
+    .menu-btn:hover {
+      border-color: rgba(249, 115, 22, 0.7);
+      background: rgba(249, 115, 22, 0.08);
     }
 
     .logo-mark {
@@ -99,6 +122,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex: 0 0 auto;
     }
 
     .logo-mark img {
@@ -114,6 +138,9 @@
       font-size: 0.9rem;
       text-transform: uppercase;
       color: var(--primary-soft);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .nav-links {
@@ -122,6 +149,9 @@
       flex-wrap: wrap;
       gap: 18px;
       font-size: 0.9rem;
+      margin-left: auto;
+      justify-content: flex-end;
+      white-space: nowrap;
     }
 
     .nav-links a {
@@ -129,6 +159,7 @@
       font-weight: 500;
       position: relative;
       padding-bottom: 2px;
+      white-space: nowrap;
     }
 
     .nav-links a::after {
@@ -145,10 +176,114 @@
     .nav-links a:hover::after { width: 100%; }
     .nav-links a:hover        { color: var(--primary-soft); }
     .nav-links a.nav-active   { color: var(--primary); }
+    .nav-links a.nav-active::after { width: 100%; }
 
-    .nav-links a.nav-active::after {
-      width: 100%;
+    /* ✅ SIDEBAR (mobile only) */
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease-out;
+      z-index: 300;
     }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: min(86vw, 340px);
+      background: rgba(2, 6, 23, 0.96);
+      border-right: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+      transform: translateX(-105%);
+      transition: transform 0.22s ease-out;
+      z-index: 310;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .sidebar-title {
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--primary-soft);
+      font-size: 0.9rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-close {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(2, 6, 23, 0.35);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .sidebar-close:hover {
+      border-color: rgba(249, 115, 22, 0.7);
+      background: rgba(249, 115, 22, 0.08);
+    }
+
+    .sidebar-nav {
+      display: grid;
+      gap: 10px;
+      padding-top: 6px;
+    }
+
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(15, 23, 42, 0.35);
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .sidebar-nav a:hover {
+      border-color: rgba(249, 115, 22, 0.6);
+      background: rgba(249, 115, 22, 0.10);
+    }
+
+    .sidebar-nav a.active {
+      border-color: rgba(249, 115, 22, 0.85);
+      background: rgba(249, 115, 22, 0.14);
+      color: var(--primary-soft);
+    }
+
+    body.sidebar-open .sidebar-overlay { opacity: 1; pointer-events: auto; }
+    body.sidebar-open .sidebar { transform: translateX(0); }
 
     /* LAYOUT */
     section {
@@ -167,15 +302,11 @@
       letter-spacing: -0.03em;
     }
 
-    h1 {
-      font-size: clamp(2.0rem, 3vw, 2.4rem);
-    }
-
+    h1 { font-size: clamp(2.0rem, 3vw, 2.4rem); }
     p { margin: 0; }
 
     /* BUTTONS */
-    .btn-primary,
-    .btn-outline {
+    .btn-primary {
       padding: 11px 22px;
       border-radius: 999px;
       font-weight: 600;
@@ -188,14 +319,10 @@
       transition: 0.2s;
       border: none;
       white-space: nowrap;
-    }
-
-    .btn-primary {
       background: linear-gradient(135deg, #F97316, #DC2626);
       color: #0B0B0F;
       box-shadow: 0 12px 30px rgba(248, 113, 22, 0.55);
       width: 100%;
-      justify-content: center;
     }
 
     .btn-primary:hover {
@@ -272,117 +399,181 @@
       color: var(--muted);
     }
 
-    footer .container {
-      text-align: center;
-    }
+    footer .container { text-align: center; }
 
     /* RESPONSIVE */
     @media (max-width: 720px) {
+      .nav { padding: 10px 12px; }
       .nav-links { display: none; }
+      .menu-btn { display: inline-flex; }
+      body.sidebar-open { overflow: hidden; }
+      .nav-title { font-size: 0.85rem; letter-spacing: 0.14em; }
     }
   </style>
 </head>
+
 <body>
 
-<header>
-  <div class="nav">
-    <div class="nav-left">
-      <div class="logo-mark">
-        <img src="logo.png?v=2" alt="FlyLoop logo" />
+  <!-- ✅ Sidebar overlay + panel -->
+  <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+  <aside class="sidebar" id="sidebar" aria-label="Mobile sidebar navigation">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <div class="logo-mark" style="animation:none;">
+          <img src="logo.png?v=2" alt="FlyLoop logo" />
+        </div>
+        <div class="sidebar-title">FlyLoop</div>
       </div>
-      <div class="nav-title">FLYLOOP</div>
-    </div>
-<nav class="nav-links" aria-label="Main navigation">
-  <a href="index.html">Home</a>
-  <a href="how.html">How it works</a>
-  <a href="pricing.html">Pricing</a>
-  <a href="destinations.html">Destinations</a>
-  <a href="faq.html">FAQ</a>
-  <a href="waitlist.html">Waitlist</a>
-  <a href="login.html"class="nav-active">Login</a>
-</nav>
-
-  </div>
-</header>
-
-<section class="auth-wrapper">
-  <div class="auth-card">
-    <h1>Log in to FlyLoop</h1>
-    <p class="auth-sub">
-      This is a visual demo of what your member login could look like. In a real
-      product, this would connect to your backend authentication and sessions.
-    </p>
-
-    <form id="login-form" novalidate>
-      <input
-        type="email"
-        id="email"
-        placeholder="demo@flyloop.com"
-        autocomplete="email"
-        required
-      />
-      <input
-        type="password"
-        id="password"
-        placeholder="Password"
-        autocomplete="current-password"
-        required
-      />
-      <button class="btn-primary" type="submit">Log In</button>
-    </form>
-
-    <div class="auth-footer-text" style="margin-top: 8px;">
-      <strong>Demo credentials:</strong> demo@flyloop.com / demo123
+      <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">✕</button>
     </div>
 
-    <div
-      class="auth-footer-text"
-      id="login-error"
-      style="display:none; color:#FCA5A5;"
-    >
-      Incorrect demo login. Try: demo@flyloop.com / demo123
+    <nav class="sidebar-nav">
+      <a href="index.html">Home</a>
+      <a href="how.html">How it works</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="destinations.html">Destinations</a>
+      <a href="faq.html">FAQ</a>
+      <a href="waitlist.html">Waitlist</a>
+      <a href="login.html" class="active">Login</a>
+    </nav>
+  </aside>
+
+  <header>
+    <div class="nav">
+      <div class="nav-left">
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">☰</button>
+
+        <div class="logo-mark">
+          <img src="logo.png?v=2" alt="FlyLoop logo" />
+        </div>
+        <div class="nav-title">FLYLOOP</div>
+      </div>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="how.html">How it works</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="destinations.html">Destinations</a>
+        <a href="faq.html">FAQ</a>
+        <a href="waitlist.html">Waitlist</a>
+        <a href="login.html" class="nav-active">Login</a>
+      </nav>
     </div>
+  </header>
 
-    <div class="auth-footer-text">
-      Don’t have an account yet? In a live product, this would link to a full
-      sign-up and onboarding flow for FlyLoop members.
+  <section class="auth-wrapper">
+    <div class="auth-card">
+      <h1>Log in to FlyLoop</h1>
+      <p class="auth-sub">
+        This is a visual demo of what your member login could look like. In a real
+        product, this would connect to your backend authentication and sessions.
+      </p>
+
+      <form id="login-form" novalidate>
+        <input
+          type="email"
+          id="email"
+          placeholder="demo@flyloop.com"
+          autocomplete="email"
+          required
+        />
+        <input
+          type="password"
+          id="password"
+          placeholder="Password"
+          autocomplete="current-password"
+          required
+        />
+        <button class="btn-primary" type="submit">Log In</button>
+      </form>
+
+      <div class="auth-footer-text" style="margin-top: 8px;">
+        <strong>Demo credentials:</strong> demo@flyloop.com / demo123
+      </div>
+
+      <div
+        class="auth-footer-text"
+        id="login-error"
+        style="display:none; color:#FCA5A5;"
+      >
+        Incorrect demo login. Try: demo@flyloop.com / demo123
+      </div>
+
+      <div class="auth-footer-text">
+        Don’t have an account yet? In a live product, this would link to a full
+        sign-up and onboarding flow for FlyLoop members.
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<footer>
-  <div class="container">
-    © 2025 FlyLoop — Concept Travel Subscription Website
-  </div>
-</footer>
+  <footer>
+    <div class="container">
+      © 2025 FlyLoop — Concept Travel Subscription Website
+    </div>
+  </footer>
 
-<script>
-  // Simple demo login logic for portfolio purposes
-  (function () {
-    const form = document.getElementById('login-form');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const errorBox = document.getElementById('login-error');
+  <script>
+    // ✅ Sidebar open/close
+    (function () {
+      const body = document.body;
+      const menuBtn = document.getElementById("menuBtn");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("sidebarOverlay");
+      const closeBtn = document.getElementById("sidebarClose");
 
-    if (!form) return;
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      const email = (emailInput.value || '').trim();
-      const password = (passwordInput.value || '').trim();
-
-      // Demo credentials only
-      if (email === 'demo@flyloop.com' && password === 'demo123') {
-        errorBox.style.display = 'none';
-        // In a real app you'd set a token/session. Here we just redirect.
-        window.location.href = 'dashboard.html';
-      } else {
-        errorBox.style.display = 'block';
+      function openSidebar() {
+        body.classList.add("sidebar-open");
+        menuBtn?.setAttribute("aria-expanded", "true");
+        overlay?.setAttribute("aria-hidden", "false");
       }
-    });
-  })();
-</script>
+
+      function closeSidebar() {
+        body.classList.remove("sidebar-open");
+        menuBtn?.setAttribute("aria-expanded", "false");
+        overlay?.setAttribute("aria-hidden", "true");
+      }
+
+      menuBtn?.addEventListener("click", openSidebar);
+      closeBtn?.addEventListener("click", closeSidebar);
+      overlay?.addEventListener("click", closeSidebar);
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeSidebar();
+      });
+
+      sidebar?.addEventListener("click", (e) => {
+        const target = e.target;
+        if (target && target.tagName === "A") closeSidebar();
+      });
+    })();
+
+    // Simple demo login logic for portfolio purposes
+    (function () {
+      const form = document.getElementById('login-form');
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      const errorBox = document.getElementById('login-error');
+
+      if (!form) return;
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const email = (emailInput.value || '').trim();
+        const password = (passwordInput.value || '').trim();
+
+        // Demo credentials only
+        if (email === 'demo@flyloop.com' && password === 'demo123') {
+          errorBox.style.display = 'none';
+          // In a real app you'd set a token/session. Here we just redirect.
+          window.location.href = 'dashboard.html';
+        } else {
+          errorBox.style.display = 'block';
+        }
+      });
+    })();
+  </script>
 
 </body>
 </html>
