@@ -572,55 +572,58 @@
     }
 
     /* RESPONSIVE */
-    @media (max-width: 800px) {
+   @media (max-width: 800px) {
   .dashboard-layout {
     grid-template-columns: 1fr;
   }
 
+  /* Turn sidebar into a TOP TAB BAR */
   .sidebar {
-    flex-direction: row;
-    align-items: center;
-
-    /* key fixes */
-    flex-wrap: nowrap;              /* don’t wrap items to next line */
-    overflow-x: auto;               /* allow horizontal scroll */
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-
-    gap: 12px;
-    padding: 14px 12px;
+    flex-direction: column;
+    padding: 14px 14px 8px;
+    border-right: none;
+    border-bottom: 1px solid rgba(148,163,184,0.3);
+    background: #020617;
+    position: sticky;
+    top: 0;
+    z-index: 50;
   }
 
-  /* keep logo compact */
+  /* Keep logo centered */
   .sidebar-logo {
-    margin-bottom: 0;
-    flex: 0 0 auto;
+    justify-content: center;
+    margin-bottom: 10px;
   }
 
-  /* put title + buttons in one row that scrolls */
-  .sidebar-title {
-    margin: 0;
-    flex: 0 0 auto;
-    white-space: nowrap;
-  }
-
-  .sidebar-nav {
-    flex-direction: row;
-    flex: 0 0 auto;
-    gap: 8px;
-    white-space: nowrap;
-  }
-
-  /* prevent buttons from shrinking to nothing */
-  .sidebar-link {
-    flex: 0 0 auto;
-    white-space: nowrap;
-  }
-
+  /* Hide desktop-only things */
+  .sidebar-title,
   .sidebar-footer {
     display: none;
   }
+
+  /* The tabs row */
+  .sidebar-nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 equal tabs */
+    gap: 8px;
+  }
+
+  .sidebar-link {
+    justify-content: center;
+    text-align: center;
+    padding: 12px 8px;
+    font-size: 0.85rem;
+  }
+
+  .sidebar-link span.label {
+    justify-content: center;
+  }
+
+  .sidebar-link small {
+    display: none;
+  }
 }
+
 
   <!-- MAIN CONTENT -->
   <main class="dashboard-content">
