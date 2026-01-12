@@ -572,39 +572,35 @@
     }
 
     /* RESPONSIVE */
-   @media (max-width: 800px) {
+  /* Mobile portrait: tabs at top, always visible */
+@media (max-width: 800px) and (orientation: portrait) {
   .dashboard-layout {
     grid-template-columns: 1fr;
   }
 
-  /* Turn sidebar into a TOP TAB BAR */
   .sidebar {
     flex-direction: column;
-    padding: 14px 14px 8px;
+    padding: 14px 14px 10px;
     border-right: none;
     border-bottom: 1px solid rgba(148,163,184,0.3);
-    background: #020617;
     position: sticky;
     top: 0;
     z-index: 50;
   }
 
-  /* Keep logo centered */
-  .sidebar-logo {
-    justify-content: center;
-    margin-bottom: 10px;
-  }
-
-  /* Hide desktop-only things */
   .sidebar-title,
   .sidebar-footer {
     display: none;
   }
 
-  /* The tabs row */
+  .sidebar-logo {
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
   .sidebar-nav {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 equal tabs */
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
   }
 
@@ -612,11 +608,6 @@
     justify-content: center;
     text-align: center;
     padding: 12px 8px;
-    font-size: 0.85rem;
-  }
-
-  .sidebar-link span.label {
-    justify-content: center;
   }
 
   .sidebar-link small {
@@ -624,6 +615,20 @@
   }
 }
 
+/* Mobile landscape: if you still want the horizontal bar there */
+@media (max-width: 800px) and (orientation: landscape) {
+  .dashboard-layout { grid-template-columns: 1fr; }
+
+  .sidebar {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .sidebar-footer { display: none; }
+  /* you can keep your landscape behavior here */
+}
 
   <!-- MAIN CONTENT -->
   <main class="dashboard-content">
