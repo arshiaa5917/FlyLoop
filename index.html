@@ -329,9 +329,52 @@
       }
     }
 
-    @media (max-width: 720px) {
-      .nav-links { display: none; }
-    }
+    /* MOBILE NAV: keep tabs visible + auto-fit */
+@media (max-width: 720px) {
+  .nav {
+    padding: 10px 12px;
+    gap: 10px;
+    flex-wrap: wrap;         /* allows clean 2-row layout if needed */
+  }
+
+  .nav-left {
+    width: 100%;
+    justify-content: center; /* center logo/title on phone */
+  }
+
+  .nav-title {
+    font-size: clamp(0.75rem, 3.2vw, 0.9rem);
+  }
+
+  .nav-links {
+    width: 100%;
+    display: grid;           /* grid tabs */
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 8px;
+    padding-top: 8px;
+  }
+
+  .nav-links a {
+    text-align: center;
+    padding: 10px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    background: rgba(2, 6, 23, 0.35);
+    font-size: clamp(0.75rem, 2.9vw, 0.9rem);
+    white-space: nowrap;     /* keep each tab on one line */
+  }
+
+  .nav-links a::after {
+    display: none;           /* remove underline animation on tiny tabs */
+  }
+
+  .nav-links a.nav-active {
+    border-color: rgba(249, 115, 22, 0.75);
+    background: rgba(249, 115, 22, 0.12);
+    color: var(--primary-soft);
+  }
+}
+
   </style>
 </head>
 
