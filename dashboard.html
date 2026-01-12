@@ -2,32 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Member Dashboard – FlyLoop</title>
+  <title>Dashboard – FlyLoop</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta
-    name="description"
-    content="FlyLoop member dashboard concept: view your subscription plan, sample trips, hotel selection demo, and mock account/settings sections for portfolio use."
-  />
 
   <style>
-    html { scroll-behavior: smooth; }
-
     :root {
       --bg: #050505;
       --surface: #111111;
       --surface-alt: #18181B;
-      --primary: #F97316;      /* orange */
+      --primary: #F97316;
       --primary-soft: #FDBA74;
-      --accent-blue: #3B82F6;  /* blue */
-      --accent-red: #DC2626;   /* red */
+      --accent-blue: #3B82F6;
       --text: #F9FAFB;
       --muted: #9CA3AF;
-      --border-subtle: rgba(148, 163, 184, 0.35);
+      --border-subtle: rgba(148, 163, 184, 0.25);
       --radius-lg: 18px;
       --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.6);
     }
 
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
@@ -38,1006 +32,435 @@
     }
 
     a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; }
 
-    /* ANIMATIONS */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    @keyframes glowPulse {
-      0%   { box-shadow: 0 0 14px rgba(249, 115, 22, 0.5); }
-      50%  { box-shadow: 0 0 24px rgba(59, 130, 246, 0.7); }
-      100% { box-shadow: 0 0 14px rgba(249, 115, 22, 0.5); }
-    }
-
-    /* DASHBOARD LAYOUT */
-    .dashboard-layout {
+    /* ====== DASHBOARD LAYOUT ====== */
+    .app {
       display: grid;
-      grid-template-columns: 240px minmax(0, 1fr);
+      grid-template-columns: 280px 1fr;
       min-height: 100vh;
     }
 
-    /* SIDEBAR */
+    /* ====== SIDEBAR (Desktop visible) ====== */
     .sidebar {
-      background: #020617;
-      border-right: 1px solid rgba(148, 163, 184, 0.3);
-      padding: 24px 18px 24px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      background: rgba(2, 6, 23, 0.96);
+      border-right: 1px solid var(--border-subtle);
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 14px;
+      animation: fadeIn 0.25s ease-out both;
     }
 
-    .sidebar-logo {
+    .brand {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 26px;
+      padding: 10px;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: rgba(15, 23, 42, 0.35);
     }
 
-    .sidebar-logo img {
+    .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+    }
+
+    .logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .brand-title {
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--primary-soft);
+      font-size: 0.9rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .side-nav {
+      display: grid;
+      gap: 10px;
+      padding-top: 4px;
+    }
+
+    .side-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: rgba(15, 23, 42, 0.30);
+      color: var(--text);
+      font-weight: 650;
+      font-size: 0.95rem;
+      transition: 0.16s ease;
+    }
+
+    .side-link:hover {
+      border-color: rgba(249, 115, 22, 0.55);
+      background: rgba(249, 115, 22, 0.10);
+    }
+
+    .side-link.active {
+      border-color: rgba(249, 115, 22, 0.85);
+      background: rgba(249, 115, 22, 0.14);
+      color: var(--primary-soft);
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      display: grid;
+      gap: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(148, 163, 184, 0.18);
+    }
+
+    .logout-btn {
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: rgba(15, 23, 42, 0.30);
+      color: #fca5a5;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: 0.16s ease;
+    }
+
+    .logout-btn:hover {
+      border-color: rgba(252, 165, 165, 0.55);
+      background: rgba(220, 38, 38, 0.12);
+    }
+
+    /* ====== TOPBAR (Main area) ====== */
+    .main {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(15, 23, 42, 0.86);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .top-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .menu-btn {
+      display: none; /* mobile only */
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(2, 6, 23, 0.35);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+    }
+
+    .menu-btn:hover {
+      border-color: rgba(249, 115, 22, 0.7);
+      background: rgba(249, 115, 22, 0.08);
+    }
+
+    .page-title {
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      font-size: 1.05rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      background: rgba(2, 6, 23, 0.35);
+      color: #e5e7eb;
+    }
+
+    /* ====== CONTENT ====== */
+    .content {
+      padding: 20px 16px 50px;
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .card {
+      grid-column: span 6;
+      background: rgba(17, 17, 17, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 18px;
+      box-shadow: var(--shadow-soft);
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .card h3 { margin: 0 0 6px; font-size: 1.05rem; }
+    .card p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+
+    .card.full { grid-column: span 12; }
+
+    /* ====== MOBILE SIDEBAR (off-canvas) ====== */
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease-out;
+      z-index: 300;
+    }
+
+    .sidebar-mobile {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: min(86vw, 340px);
+      background: rgba(2, 6, 23, 0.96);
+      border-right: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+      transform: translateX(-105%);
+      transition: transform 0.22s ease-out;
+      z-index: 310;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .mobile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+    }
+
+    .close-btn {
       width: 40px;
       height: 40px;
       border-radius: 999px;
-      object-fit: cover;
-      animation: glowPulse 3s ease-in-out infinite;
-    }
-
-    .sidebar-logo span {
-      font-weight: 800;
-      letter-spacing: 0.18em;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      color: var(--primary-soft);
-    }
-
-    .sidebar-title {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: #6b7280;
-      margin-bottom: 4px;
-      margin-top: 6px;
-    }
-
-    .sidebar-nav {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .sidebar-link {
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      color: #e5e7eb;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(2, 6, 23, 0.35);
+      color: var(--text);
       cursor: pointer;
-      border: none;
-      background: transparent;
-      text-align: left;
-      transition: background 0.18s ease, transform 0.1s ease;
+      font-size: 18px;
     }
 
-    .sidebar-link span.label {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+    .close-btn:hover {
+      border-color: rgba(249, 115, 22, 0.7);
+      background: rgba(249, 115, 22, 0.08);
     }
 
-    .sidebar-link small {
-      font-size: 0.75rem;
-      color: #9ca3af;
-    }
-
-    .sidebar-link:hover {
-      background: rgba(148, 163, 184, 0.12);
-      transform: translateX(1px);
-    }
-
-    .sidebar-link.active {
-      background: linear-gradient(135deg, #F97316, #DC2626);
-      color: #fff;
-    }
-
-    .sidebar-link.active small {
-      color: #fee2e2;
-    }
-
-    .sidebar-footer {
-      margin-top: auto;
-      border-top: 1px solid rgba(55, 65, 81, 0.8);
-      padding-top: 14px;
-      font-size: 0.8rem;
-      color: #6b7280;
-    }
-
-    .logout-link {
-      margin-top: 8px;
-      display: inline-flex;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(239, 68, 68, 0.7);
-      color: #fee2e2;
-      font-size: 0.8rem;
-    }
-
-    /* MAIN DASHBOARD CONTENT */
-    .dashboard-content {
-      padding: 26px 28px 32px;
-      animation: fadeUp 0.5s ease-out both;
-    }
-
-    .dashboard-header-eyebrow {
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-
-    h1 {
-      margin: 0 0 6px;
-      font-size: clamp(2.1rem, 3vw, 2.6rem);
-      letter-spacing: -0.03em;
-    }
-
-    .dashboard-sub {
-      color: var(--muted);
-      max-width: 640px;
-      font-size: 0.97rem;
-      margin-bottom: 24px;
-    }
-
-    /* TOP PILLS */
-    .top-pills {
-      display: inline-flex;
-      gap: 10px;
-      margin-bottom: 26px;
-    }
-
-    .top-pill {
-      padding: 6px 14px;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      color: var(--muted);
-      background: rgba(15, 23, 42, 0.8);
-    }
-
-    .top-pill.main {
-      border-color: transparent;
-      background: linear-gradient(135deg, #F97316, #DC2626);
-      color: #020617;
-      font-weight: 600;
-    }
-
-    /* CARDS, GRID, DEST STYLES */
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 22px;
-      margin-bottom: 30px;
-    }
-
-    .plan-card {
-      background: var(--surface);
-      border-radius: var(--radius-lg);
-      padding: 22px 20px 20px;
-      box-shadow: var(--shadow-soft);
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .plan-tag {
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--primary-soft);
-    }
-
-    .plan-card h3 {
-      margin: 2px 0 4px;
-    }
-
-    .plan-price {
-      font-size: 1.7rem;
-      font-weight: 700;
-      color: var(--primary);
-    }
-
-    .plan-price span {
-      font-size: 0.9rem;
-      color: var(--muted);
-      font-weight: 500;
-    }
-
-    .plan-list {
-      font-size: 0.9rem;
-      color: var(--muted);
-      line-height: 1.7;
-      padding-left: 18px;
-      margin: 0;
-    }
-
-    .plan-list li { margin-bottom: 4px; }
-
-    .section-heading {
-      margin: 0 0 6px;
-      letter-spacing: -0.02em;
-      font-size: 1.4rem;
-    }
-
-    .section-sub {
-      color: var(--muted);
-      margin-bottom: 18px;
-      font-size: 0.9rem;
-    }
-
-    .dest-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
-    }
-
-    .dest-card {
-      background: var(--surface);
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: var(--shadow-soft);
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
-    }
-
-    .dest-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.85);
-    }
-
-    .dest-photo {
-      height: 140px;
-      background-size: cover;
-      background-position: center;
-      position: relative;
-    }
-
-    .dest-photo::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-    }
-
-    .dest-photo-label {
-      position: absolute;
-      left: 10px;
-      bottom: 10px;
-      z-index: 1;
-      color: #fff;
-      font-size: 0.82rem;
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.8);
-    }
-
-    .dest-body {
-      padding: 14px 16px 16px;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .dest-body h3 {
-      margin-bottom: 4px;
-      font-size: 1.02rem;
-      color: var(--text);
-    }
-
-    .dest-tier {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px 9px;
-      border-radius: 999px;
-      background: rgba(31, 41, 55, 0.95);
-      font-size: 0.78rem;
-      margin-top: 6px;
-    }
-
-    /* ACCOUNT & SETTINGS CARDS */
-    .account-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 22px;
-    }
+    body.sidebar-open .sidebar-overlay { opacity: 1; pointer-events: auto; }
+    body.sidebar-open .sidebar-mobile { transform: translateX(0); }
 
-    .simple-card {
-      background: var(--surface);
-      border-radius: var(--radius-lg);
-      padding: 18px 18px 16px;
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      font-size: 0.92rem;
-      color: var(--muted);
+    /* ====== RESPONSIVE ====== */
+    @media (max-width: 980px) {
+      .card { grid-column: span 12; }
     }
 
-    .simple-card h3 {
-      margin-top: 0;
-      margin-bottom: 6px;
-      color: var(--text);
-      font-size: 1.05rem;
+    @media (max-width: 820px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { display: none; }          /* hide desktop sidebar */
+      .menu-btn { display: inline-flex; } /* show hamburger */
+      body.sidebar-open { overflow: hidden; }
     }
-
-    .field-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 6px;
-      font-size: 0.9rem;
-    }
-
-    .field-label {
-      color: #9ca3af;
-    }
-
-    .field-value {
-      color: #e5e7eb;
-      font-weight: 500;
-    }
-
-    .pill-info {
-      display: inline-flex;
-      padding: 4px 9px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      font-size: 0.78rem;
-      color: #9ca3af;
-      margin-top: 6px;
-    }
-
-    .form-row {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-bottom: 10px;
-      font-size: 0.9rem;
-    }
-
-    label {
-      color: #d1d5db;
-      font-size: 0.85rem;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    select {
-      padding: 10px 11px;
-      border-radius: 10px;
-      border: 1px solid rgba(75, 85, 99, 0.9);
-      background: #020617;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 0.9rem;
-      outline: none;
-    }
-
-    input:focus,
-    select:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 1px rgba(248, 113, 22, 0.4);
-    }
-
-    .btn-primary {
-      padding: 10px 18px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      background: linear-gradient(135deg, #F97316, #DC2626);
-      color: #020617;
-      font-weight: 600;
-      font-size: 0.9rem;
-      box-shadow: 0 12px 30px rgba(248, 113, 22, 0.55);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 16px 40px rgba(248, 113, 22, 0.7);
-    }
-
-    .btn-outline {
-      padding: 9px 16px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      background: transparent;
-      color: #e5e7eb;
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-
-    .btn-outline.small {
-      padding: 6px 12px;
-      font-size: 0.8rem;
-      margin-top: 8px;
-    }
-
-    .btn-outline:hover {
-      background: rgba(148, 163, 184, 0.12);
-    }
-
-    .toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      font-size: 0.9rem;
-    }
-
-    .toggle-row span {
-      max-width: 220px;
-    }
-
-    .fake-toggle {
-      width: 38px;
-      height: 20px;
-      border-radius: 999px;
-      background: #0f172a;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      position: relative;
-    }
-
-    .fake-toggle::after {
-      content: "";
-      position: absolute;
-      width: 16px;
-      height: 16px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      top: 1px;
-      left: 1px;
-    }
-
-    .fake-toggle.on {
-      background: #16a34a;
-      border-color: #16a34a;
-    }
-
-    .fake-toggle.on::after {
-      left: 19px;
-      background: #f9fafb;
-    }
-
-    /* HOTEL OPTIONS INSIDE DEST CARD */
-    .hotel-options {
-      display: none;
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(55, 65, 81, 0.8);
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    .hotel-options.active {
-      display: block;
-    }
-
-    .hotel-options-title {
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: var(--text);
-      font-size: 0.9rem;
-    }
-
-    .hotel-option {
-      margin-bottom: 6px;
-      display: flex;
-      align-items: flex-start;
-      gap: 6px;
-    }
-
-    .hotel-option input {
-      margin-top: 3px;
-    }
-
-    .hotel-name {
-      font-weight: 500;
-      color: #e5e7eb;
-    }
-
-    .hotel-tag {
-      display: inline-flex;
-      padding: 2px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      font-size: 0.7rem;
-      margin-left: 6px;
-      color: #9ca3af;
-    }
-
-    .hotel-note {
-      font-size: 0.78rem;
-      color: #9ca3af;
-      margin-top: 4px;
-    }
-
-    /* SECTIONS VISIBILITY */
-    .section {
-      display: none;
-    }
-
-    .section.active-section {
-      display: block;
-    }
-
-
-    /* RESPONSIVE */
-
-/* =========================================
-   FlyLoop Mobile Portrait + Small Screens
-   Force tabs to always show (NO SCROLL)
-   Option B: shrink to fit (clamp)
-   ========================================= */
-/* RESPONSIVE */
-    @media (max-width: 800px) {
-  .dashboard-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    flex-direction: row;
-    align-items: center;
-    overflow-x: auto;
-  }
-
-  .sidebar-logo {
-    margin-bottom: 0;
-  }
-
-  .sidebar-footer {
-    display: none;
-  }
-}
-</style>
+  </style>
 </head>
 
 <body>
-  <div class="dashboard-layout">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar" aria-label="Dashboard navigation">
+  <!-- MOBILE overlay + mobile sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
 
-      <div class="sidebar-logo">
-        <img src="logo.png?v=2" alt="FlyLoop logo" />
-        <span>FLYLOOP</span>
+  <aside class="sidebar-mobile" id="sidebarMobile" aria-label="Dashboard mobile sidebar">
+    <div class="mobile-header">
+      <div class="brand" style="margin:0; flex:1;">
+        <div class="logo">
+          <img src="logo.png?v=2" alt="FlyLoop logo" />
+        </div>
+        <div class="brand-title">FlyLoop</div>
+      </div>
+      <button class="close-btn" id="sidebarClose" aria-label="Close menu">✕</button>
+    </div>
+
+    <nav class="side-nav">
+      <a class="side-link active" href="dashboard.html">Overview</a>
+      <a class="side-link" href="account.html">Account</a>
+      <a class="side-link" href="settings.html">Settings</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button class="logout-btn" id="logoutBtnMobile" type="button">Logout</button>
+    </div>
+  </aside>
+
+  <div class="app">
+    <!-- DESKTOP sidebar -->
+    <aside class="sidebar" aria-label="Dashboard sidebar">
+      <div class="brand">
+        <div class="logo">
+          <img src="logo.png?v=2" alt="FlyLoop logo" />
+        </div>
+        <div class="brand-title">FlyLoop</div>
       </div>
 
-      <div class="sidebar-title">Dashboard</div>
+      <nav class="side-nav">
+        <a class="side-link active" href="dashboard.html">Overview</a>
+        <a class="side-link" href="account.html">Account</a>
+        <a class="side-link" href="settings.html">Settings</a>
+      </nav>
 
-      <div class="sidebar-nav">
-        <button class="sidebar-link active" data-section="overview" type="button">
-          <span class="label">Overview</span>
-          <small>Trips &amp; plan</small>
-        </button>
-
-        <button class="sidebar-link" data-section="account" type="button">
-          <span class="label">Account</span>
-          <small>Profile &amp; billing</small>
-        </button>
-
-        <button class="sidebar-link" data-section="settings" type="button">
-          <span class="label">Settings</span>
-          <small>Preferences</small>
-        </button>
+      <div class="sidebar-bottom">
+        <button class="logout-btn" id="logoutBtn" type="button">Logout</button>
       </div>
-
-      <div class="sidebar-footer">
-        Logged in as <strong>demo@flyloop.com</strong><br />
-        <a href="login.html" class="logout-link">Log out</a>
-      </div>
-
     </aside>
 
-
-  <!-- MAIN CONTENT -->
-  <main class="dashboard-content">
-    <!-- OVERVIEW SECTION -->
-    <section id="section-overview" class="section active-section" aria-label="Overview">
-      <div class="dashboard-header-eyebrow">Member area</div>
-      <h1>Welcome back, Demo Member 👋</h1>
-      <p class="dashboard-sub">
-        This is a visual demo dashboard. In a real product, this page would show your
-        real trips, credits, upcoming bookings, and account controls.
-      </p>
-
-      <div class="top-pills">
-        <div class="top-pill main">Overview</div>
-        <div class="top-pill">Standard Loop • $109 / month</div>
-      </div>
-
-      <!-- TOP CARDS -->
-      <div class="pricing-grid">
-        <div class="plan-card">
-          <div class="plan-tag">Your Plan</div>
-          <h3>Standard Loop</h3>
-          <div class="plan-price">$109 <span>/ month</span></div>
-          <ul class="plan-list">
-            <li>2 trips / year included</li>
-            <li>Next renewal: 12 Feb 2026</li>
-            <li>Home hub: Toronto (YYZ)</li>
-          </ul>
+    <!-- MAIN -->
+    <main class="main">
+      <div class="topbar">
+        <div class="top-left">
+          <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-controls="sidebarMobile" aria-expanded="false">☰</button>
+          <div class="page-title">Overview</div>
         </div>
 
-        <div class="plan-card">
-          <div class="plan-tag">Trips This Year</div>
-          <h3>Trip usage</h3>
-          <ul class="plan-list">
-            <li>Trips used: <strong>1 / 2</strong></li>
-            <li>Next eligible trip: from 01 May 2026</li>
-            <li>Status: <span style="color: var(--primary-soft);">On track</span></li>
-          </ul>
-        </div>
-
-        <div class="plan-card">
-          <div class="plan-tag">Companion &amp; Guests</div>
-          <h3>Guest options</h3>
-          <ul class="plan-list">
-            <li>Add 1–2 guests per trip at Companion rates</li>
-            <li>Guests share your room to keep it affordable</li>
-            <li>Future idea: Companion Mini-Memberships for frequent guests</li>
-          </ul>
+        <div class="top-right">
+          <span class="chip">Demo Member</span>
         </div>
       </div>
 
-      <!-- UPCOMING & ELIGIBLE DESTINATIONS -->
-      <h2 class="section-heading">Your upcoming &amp; eligible trips</h2>
-      <p class="section-sub">
-        This is sample data to show how a real dashboard could visualize current bookings
-        and future options based on your membership.
-      </p>
+      <div class="content">
+        <h1 style="margin: 0 0 6px; font-size: 1.8rem;">Welcome back 👋</h1>
+        <p style="margin: 0; color: var(--muted); max-width: 720px;">
+          This is a dashboard UI demo. Here you’d see your plan, trip eligibility, and upcoming windows.
+        </p>
 
-      <div class="dest-grid">
-        <!-- MONTREAL -->
-        <div class="dest-card">
-          <div
-            class="dest-photo"
-            style="background-image:url('https://travel.home.sndimg.com/content/dam/images/travel/stock/2016/11/3/0/GettyImages-Holger-Mette-514723348-place-d-armes-montreal.jpg.rend.hgtvcom.1280.960.suffix/1491594537290.jpeg');"
-          >
-            <span class="dest-photo-label">Booked • March 2026</span>
+        <div class="grid">
+          <div class="card">
+            <h3>Your membership</h3>
+            <p><strong style="color: var(--primary-soft);">Standard Loop</strong> • 2 trips/year • Active</p>
           </div>
-          <div class="dest-body">
-            <h3>Montréal weekend</h3>
-            <p>3 nights in a central hotel. Flight + hotel confirmed.</p>
-            <div class="dest-tier">Status: Confirmed</div>
 
-            <button
-              class="btn-outline small hotel-toggle"
-              type="button"
-              data-hotel-panel="hotels-montreal"
-            >
-              Choose / view hotel
-            </button>
-
-            <div id="hotels-montreal" class="hotel-options">
-              <div class="hotel-options-title">Hotel options for Montréal</div>
-
-              <label class="hotel-option">
-                <input type="radio" name="hotel-montreal" checked />
-                <div>
-                  <div class="hotel-name">
-                    Hôtel Vieux-Port
-                    <span class="hotel-tag">Included • Boutique</span>
-                  </div>
-                  <div class="hotel-note">
-                    Charming rooms in Old Montréal, walkable to cafés and the riverfront.
-                  </div>
-                </div>
-              </label>
-
-              <label class="hotel-option">
-                <input type="radio" name="hotel-montreal" />
-                <div>
-                  <div class="hotel-name">
-                    Downtown Skyline Hotel
-                    <span class="hotel-tag">+$40 / stay • Upgrade</span>
-                  </div>
-                  <div class="hotel-note">
-                    Higher floors, modern design, quick metro access everywhere.
-                  </div>
-                </div>
-              </label>
-
-              <div class="hotel-note">
-                In a real build, your selection would be saved to your booking.
-              </div>
-            </div>
+          <div class="card">
+            <h3>Eligibility</h3>
+            <p>Next redeem window: <strong style="color: var(--primary-soft);">Mar 2026 (demo)</strong></p>
           </div>
-        </div>
 
-        <!-- MIAMI -->
-        <div class="dest-card">
-          <div
-            class="dest-photo"
-            style="background-image:url('https://th.bing.com/th/id/R.688a377e70ab56bfe74c3cb66d45a0e4?rik=h178sf7UHB3qHQ&pid=ImgRaw&r=0');"
-          >
-            <span class="dest-photo-label">Eligible • Summer 2026</span>
-          </div>
-          <div class="dest-body">
-            <h3>Miami escape</h3>
-            <p>Use your remaining 2026 trip for a 3–4 night Miami getaway.</p>
-            <div class="dest-tier">Tap “Request Trip” (future feature)</div>
-
-            <button
-              class="btn-outline small hotel-toggle"
-              type="button"
-              data-hotel-panel="hotels-miami"
-            >
-              Choose hotel for this trip
-            </button>
-
-            <div id="hotels-miami" class="hotel-options">
-              <div class="hotel-options-title">Hotel options for Miami</div>
-
-              <label class="hotel-option">
-                <input type="radio" name="hotel-miami" checked />
-                <div>
-                  <div class="hotel-name">
-                    South Beach Stay
-                    <span class="hotel-tag">Included • Near beach</span>
-                  </div>
-                  <div class="hotel-note">
-                    Simple but stylish, walking distance to the ocean and nightlife.
-                  </div>
-                </div>
-              </label>
-
-              <label class="hotel-option">
-                <input type="radio" name="hotel-miami" />
-                <div>
-                  <div class="hotel-name">
-                    Oceanfront Boutique
-                    <span class="hotel-tag">+$90 / stay • Upgrade</span>
-                  </div>
-                  <div class="hotel-note">
-                    Direct beach access, pool loungers, and later checkout when available.
-                  </div>
-                </div>
-              </label>
-
-              <div class="hotel-note">
-                Once you officially request this trip, your hotel choice would be locked in.
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CANCUN -->
-        <div class="dest-card">
-          <div
-            class="dest-photo"
-            style="background-image:url('https://images.odigoo.com/images/posts/que-hacer-en-cancun-35-actividades-para-tu-viaje/que-hacer-en-cancun-35-actividades-para-tu-viaje-header.jpg');"
-          >
-            <span class="dest-photo-label">Upgrade option</span>
-          </div>
-          <div class="dest-body">
-            <h3>Cancun (Premium upgrade)</h3>
-            <p>Upgrade to Premium Loop to unlock 1 sunny Cancun trip this year.</p>
-            <div class="dest-tier">Upgrade required</div>
-
-            <button
-              class="btn-outline small hotel-toggle"
-              type="button"
-              data-hotel-panel="hotels-cancun"
-            >
-              Preview Cancun hotels
-            </button>
-
-            <div id="hotels-cancun" class="hotel-options">
-              <div class="hotel-options-title">Sample Premium hotels for Cancun</div>
-
-              <label class="hotel-option">
-                <input type="radio" name="hotel-cancun" checked />
-                <div>
-                  <div class="hotel-name">
-                    All-Inclusive Resort Azul
-                    <span class="hotel-tag">Premium • Included with upgrade</span>
-                  </div>
-                  <div class="hotel-note">
-                    Beachfront, all-inclusive food &amp; drinks, curated for relaxing getaways.
-                  </div>
-                </div>
-              </label>
-
-              <label class="hotel-option">
-                <input type="radio" name="hotel-cancun" />
-                <div>
-                  <div class="hotel-name">
-                    Adults-Only Escape
-                    <span class="hotel-tag">Premium+ • Higher tier</span>
-                  </div>
-                  <div class="hotel-note">
-                    Quieter atmosphere with spa credits and late checkout when available.
-                  </div>
-                </div>
-              </label>
-
-              <div class="hotel-note">
-                These are concept examples — a real product would pull live inventory
-                and pricing once you upgrade your plan.
-              </div>
-            </div>
+          <div class="card full">
+            <h3>Upcoming trips</h3>
+            <p>No trips booked yet (demo). In the real product this would show booked itineraries + actions.</p>
           </div>
         </div>
       </div>
-    </section>
+    </main>
+  </div>
 
-    <!-- ACCOUNT SECTION -->
-    <section id="section-account" class="section" aria-label="Account">
-      <div class="dashboard-header-eyebrow">Account</div>
-      <h1>Your account details</h1>
-      <p class="dashboard-sub">
-        In a live product, this area would pull real data from your user profile and billing
-        system. For now it’s a static mockup you can show in your portfolio.
-      </p>
+  <script>
+    // ✅ Mobile sidebar open/close
+    (function () {
+      const body = document.body;
+      const menuBtn = document.getElementById("menuBtn");
+      const overlay = document.getElementById("sidebarOverlay");
+      const closeBtn = document.getElementById("sidebarClose");
+      const sidebarMobile = document.getElementById("sidebarMobile");
 
-      <div class="account-grid">
-        <div class="simple-card">
-          <h3>Profile</h3>
-          <div class="field-row">
-            <span class="field-label">Name</span>
-            <span class="field-value">Demo Member</span>
-          </div>
-          <div class="field-row">
-            <span class="field-label">Email</span>
-            <span class="field-value">demo@flyloop.com</span>
-          </div>
-          <div class="field-row">
-            <span class="field-label">Home airport</span>
-            <span class="field-value">Toronto (YYZ)</span>
-          </div>
-          <span class="pill-info">This info would be editable in a real product.</span>
-        </div>
+      function openSidebar() {
+        body.classList.add("sidebar-open");
+        menuBtn?.setAttribute("aria-expanded", "true");
+        overlay?.setAttribute("aria-hidden", "false");
+      }
 
-        <div class="simple-card">
-          <h3>Billing summary</h3>
-          <div class="field-row">
-            <span class="field-label">Plan</span>
-            <span class="field-value">Standard Loop</span>
-          </div>
-          <div class="field-row">
-            <span class="field-label">Price</span>
-            <span class="field-value">$109 / month</span>
-          </div>
-          <div class="field-row">
-            <span class="field-label">Next charge</span>
-            <span class="field-value">12 Feb 2026</span>
-          </div>
-          <button class="btn-outline" type="button">View invoices (demo)</button>
-        </div>
+      function closeSidebar() {
+        body.classList.remove("sidebar-open");
+        menuBtn?.setAttribute("aria-expanded", "false");
+        overlay?.setAttribute("aria-hidden", "true");
+      }
 
-        <div class="simple-card">
-          <h3>Companion access</h3>
-          <p style="margin-bottom: 8px;">
-            You can currently bring <strong>up to 2 guests</strong> on eligible trips at
-            Companion rates. In a future version, guests could have their own mini-accounts.
-          </p>
-          <ul class="plan-list">
-            <li>Guest 1: added to Montréal 2026</li>
-            <li>Guest 2: not assigned</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+      menuBtn?.addEventListener("click", openSidebar);
+      closeBtn?.addEventListener("click", closeSidebar);
+      overlay?.addEventListener("click", closeSidebar);
 
-    <!-- SETTINGS SECTION -->
-    <section id="section-settings" class="section" aria-label="Settings">
-      <div class="dashboard-header-eyebrow">Settings</div>
-      <h1>Dashboard &amp; notification settings</h1>
-      <p class="dashboard-sub">
-        This is a mock settings page to show product thinking: dashboard preferences,
-        notifications, and security controls.
-      </p>
-
-      <div class="account-grid">
-        <!-- Preferences -->
-        <div class="simple-card">
-          <h3>Dashboard preferences</h3>
-          <div class="toggle-row">
-            <span>Show “Trips this year” card</span>
-            <div class="fake-toggle on"></div>
-          </div>
-          <div class="toggle-row">
-            <span>Show upgrade suggestions (e.g. Cancun)</span>
-            <div class="fake-toggle on"></div>
-          </div>
-          <div class="toggle-row">
-            <span>Compact card layout</span>
-            <div class="fake-toggle"></div>
-          </div>
-          <span class="pill-info">
-            In a real build, toggles would update user settings via API.
-          </span>
-        </div>
-
-        <!-- Notifications -->
-        <div class="simple-card">
-          <h3>Notifications</h3>
-          <form>
-            <div class="form-row">
-              <label>Email alerts</label>
-              <select>
-                <option>Important updates only</option>
-                <option>All trip + promo emails</option>
-                <option>No marketing, only required emails</option>
-              </select>
-            </div>
-            <div class="form-row">
-              <label>SMS number (demo)</label>
-              <input type="text" placeholder="+1 (555) 000-0000" />
-            </div>
-            <button class="btn-primary" type="button">Save notification settings</button>
-          </form>
-        </div>
-
-        <!-- Security -->
-        <div class="simple-card">
-          <h3>Security</h3>
-          <form>
-            <div class="form-row">
-              <label>Current password</label>
-              <input type="password" placeholder="••••••••" />
-            </div>
-            <div class="form-row">
-              <label>New password</label>
-              <input type="password" placeholder="New password" />
-            </div>
-            <div class="form-row">
-              <label>Confirm new password</label>
-              <input type="password" placeholder="Confirm new password" />
-            </div>
-            <button class="btn-outline" type="button">Update password (demo)</button>
-          </form>
-        </div>
-      </div>
-    </section>
-  </main>
-</div>
-
-<script>
-  // Simple section switcher for sidebar links
-  const links = document.querySelectorAll('.sidebar-link');
-  const sections = {
-    overview: document.getElementById('section-overview'),
-    account: document.getElementById('section-account'),
-    settings: document.getElementById('section-settings'),
-  };
-
-  links.forEach(link => {
-    link.addEventListener('click', () => {
-      const target = link.getAttribute('data-section');
-
-      links.forEach(l => l.classList.remove('active'));
-      link.classList.add('active');
-
-      Object.keys(sections).forEach(key => {
-        sections[key].classList.toggle('active-section', key === target);
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeSidebar();
       });
-    });
-  });
 
-  // Hotel selection toggles
-  const hotelToggles = document.querySelectorAll('.hotel-toggle');
+      sidebarMobile?.addEventListener("click", (e) => {
+        const target = e.target;
+        if (target && target.tagName === "A") closeSidebar();
+      });
+    })();
 
-  hotelToggles.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const panelId = btn.getAttribute('data-hotel-panel');
-      const panel = document.getElementById(panelId);
-      if (!panel) return;
-      panel.classList.toggle('active');
-    });
-  });
-</script>
+    // ✅ Logout (demo)
+    (function () {
+      function doLogout() {
+        // Optional if you later store login state:
+        // localStorage.removeItem("flyloop_demo_logged_in");
+        window.location.href = "login.html";
+      }
+
+      document.getElementById("logoutBtn")?.addEventListener("click", doLogout);
+      document.getElementById("logoutBtnMobile")?.addEventListener("click", doLogout);
+    })();
+  </script>
 
 </body>
 </html>
