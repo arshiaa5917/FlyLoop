@@ -16,10 +16,10 @@
       --bg: #050505;
       --surface: #111111;
       --surface-alt: #18181B;
-      --primary: #F97316;      /* orange */
+      --primary: #F97316;
       --primary-soft: #FDBA74;
-      --accent-blue: #3B82F6;  /* blue */
-      --accent-red: #DC2626;   /* red */
+      --accent-blue: #3B82F6;
+      --accent-red: #DC2626;
       --text: #F9FAFB;
       --muted: #9CA3AF;
       --border-subtle: rgba(148, 163, 184, 0.35);
@@ -81,6 +81,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      min-width: 0;
     }
 
     .logo-mark {
@@ -93,6 +94,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex: 0 0 auto;
     }
 
     .logo-mark img {
@@ -108,14 +110,22 @@
       font-size: 0.9rem;
       text-transform: uppercase;
       color: var(--primary-soft);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
+    /* ✅ FIX: keep desktop tabs on the RIGHT, consistent everywhere */
     .nav-links {
       display: flex;
       align-items: center;
-      flex-wrap: wrap;
       gap: 18px;
       font-size: 0.9rem;
+
+      margin-left: auto;          /* pushes the links to the right */
+      justify-content: flex-end;  /* aligns them right */
+      flex-wrap: nowrap;          /* prevents wrapping into the middle */
+      white-space: nowrap;
     }
 
     .nav-links a {
@@ -123,6 +133,7 @@
       font-weight: 500;
       position: relative;
       padding-bottom: 2px;
+      white-space: nowrap;
     }
 
     .nav-links a::after {
@@ -141,6 +152,135 @@
     .nav-links a.nav-active { color: var(--primary); }
     .nav-links a.nav-active::after { width: 100%; }
 
+    /* ✅ Mobile menu button */
+    .menu-btn {
+      display: none; /* only mobile */
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(2, 6, 23, 0.35);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+    }
+
+    .menu-btn:hover {
+      border-color: rgba(249, 115, 22, 0.7);
+      background: rgba(249, 115, 22, 0.08);
+    }
+
+    /* ✅ SIDEBAR (mobile only) */
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease-out;
+      z-index: 200;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: min(86vw, 340px);
+      background: rgba(2, 6, 23, 0.96);
+      border-right: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+      transform: translateX(-105%);
+      transition: transform 0.22s ease-out;
+      z-index: 210;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .sidebar-title {
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--primary-soft);
+      font-size: 0.9rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-close {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(2, 6, 23, 0.35);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .sidebar-close:hover {
+      border-color: rgba(249, 115, 22, 0.7);
+      background: rgba(249, 115, 22, 0.08);
+    }
+
+    .sidebar-nav {
+      display: grid;
+      gap: 10px;
+      padding-top: 6px;
+    }
+
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(15, 23, 42, 0.35);
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .sidebar-nav a:hover {
+      border-color: rgba(249, 115, 22, 0.6);
+      background: rgba(249, 115, 22, 0.10);
+    }
+
+    .sidebar-nav a.active {
+      border-color: rgba(249, 115, 22, 0.85);
+      background: rgba(249, 115, 22, 0.14);
+      color: var(--primary-soft);
+    }
+
+    body.sidebar-open .sidebar-overlay { opacity: 1; pointer-events: auto; }
+    body.sidebar-open .sidebar { transform: translateX(0); }
+
     /* LAYOUT */
     section {
       padding: 80px 0;
@@ -158,10 +298,7 @@
       letter-spacing: -0.03em;
     }
 
-    h1 {
-      font-size: clamp(2.3rem, 3.5vw, 2.8rem);
-    }
-
+    h1 { font-size: clamp(2.3rem, 3.5vw, 2.8rem); }
     p { margin: 0; }
 
     /* GRID */
@@ -174,15 +311,11 @@
     }
 
     @media (max-width: 820px) {
-      .two-col {
-        grid-template-columns: minmax(0, 1fr);
-      }
+      .two-col { grid-template-columns: minmax(0, 1fr); }
     }
 
     /* FORM */
-    form {
-      margin-top: 6px;
-    }
+    form { margin-top: 6px; }
 
     .form-card {
       background: var(--surface);
@@ -200,14 +333,9 @@
       font-size: 0.9rem;
     }
 
-    label {
-      color: #d1d5db;
-      font-size: 0.85rem;
-    }
+    label { color: #d1d5db; font-size: 0.85rem; }
 
-    input,
-    select,
-    textarea {
+    input, select, textarea {
       padding: 10px 11px;
       border-radius: 10px;
       border: 1px solid rgba(75, 85, 99, 0.9);
@@ -219,38 +347,21 @@
       resize: vertical;
     }
 
-    textarea {
-      min-height: 80px;
-      max-height: 200px;
-    }
+    textarea { min-height: 80px; max-height: 200px; }
 
-    input:focus,
-    select:focus,
-    textarea:focus {
+    input:focus, select:focus, textarea:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 1px rgba(248, 113, 22, 0.4);
     }
 
-    .inline-cols {
-      display: flex;
-      gap: 10px;
-    }
-
-    .inline-cols > .form-row {
-      flex: 1;
-      margin-bottom: 0;
-    }
+    .inline-cols { display: flex; gap: 10px; }
+    .inline-cols > .form-row { flex: 1; margin-bottom: 0; }
 
     @media (max-width: 600px) {
-      .inline-cols {
-        flex-direction: column;
-      }
+      .inline-cols { flex-direction: column; }
     }
 
-    .helper-text {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
+    .helper-text { font-size: 0.8rem; color: var(--muted); }
 
     .btn-primary {
       padding: 11px 22px;
@@ -270,19 +381,9 @@
       box-shadow: 0 16px 40px rgba(248, 113, 22, 0.7);
     }
 
-    .status-message {
-      margin-top: 10px;
-      font-size: 0.85rem;
-      display: none;
-    }
-
-    .status-success {
-      color: #bbf7d0;
-    }
-
-    .status-error {
-      color: #fecaca;
-    }
+    .status-message { margin-top: 10px; font-size: 0.85rem; display: none; }
+    .status-success { color: #bbf7d0; }
+    .status-error { color: #fecaca; }
 
     .pill-list {
       margin-top: 18px;
@@ -310,21 +411,58 @@
       color: var(--muted);
     }
 
-    footer .container {
-      text-align: center;
+    footer .container { text-align: center; }
+
+    /* ✅ MOBILE: hide desktop links and show sidebar menu button */
+    @media (max-width: 720px) {
+      .nav { padding: 10px 12px; }
+      .nav-links { display: none; }
+      .menu-btn { display: inline-flex; }
+      body.sidebar-open { overflow: hidden; }
+      .nav-title { font-size: 0.85rem; letter-spacing: 0.14em; }
     }
   </style>
 </head>
 <body>
 
+  <!-- ✅ SIDEBAR overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+  <!-- ✅ SIDEBAR panel -->
+  <aside class="sidebar" id="sidebar" aria-label="Mobile sidebar navigation">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <div class="logo-mark" style="animation:none;">
+          <img src="logo.png?v=2" alt="FlyLoop logo" />
+        </div>
+        <div class="sidebar-title">FlyLoop</div>
+      </div>
+      <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">✕</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="index.html">Home</a>
+      <a href="how.html">How it works</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="destinations.html">Destinations</a>
+      <a href="faq.html">FAQ</a>
+      <a href="waitlist.html" class="active">Waitlist</a>
+      <a href="login.html">Login</a>
+    </nav>
+  </aside>
+
 <header>
   <div class="nav">
     <div class="nav-left">
+      <!-- ✅ Mobile menu button -->
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">☰</button>
+
       <div class="logo-mark">
         <img src="logo.png?v=2" alt="FlyLoop logo" />
       </div>
       <div class="nav-title">FLYLOOP</div>
     </div>
+
     <nav class="nav-links" aria-label="Main navigation">
       <a href="index.html">Home</a>
       <a href="how.html">How it works</a>
@@ -394,21 +532,11 @@
           <div class="inline-cols">
             <div class="form-row">
               <label for="home-airport">Home airport</label>
-              <input
-                id="home-airport"
-                name="home_airport"
-                type="text"
-                placeholder="e.g. Toronto (YYZ)"
-              />
+              <input id="home-airport" name="home_airport" type="text" placeholder="e.g. Toronto (YYZ)" />
             </div>
             <div class="form-row">
               <label for="country">Country of residence</label>
-              <input
-                id="country"
-                name="country"
-                type="text"
-                placeholder="e.g. Canada"
-              />
+              <input id="country" name="country" type="text" placeholder="e.g. Canada" />
             </div>
           </div>
 
@@ -445,11 +573,9 @@
             ></textarea>
           </div>
 
-          <!-- helpful extra metadata for you -->
           <input type="hidden" name="source" value="flyloop-waitlist-site" />
 
           <button class="btn-primary" type="submit">Join the waitlist</button>
-
           <div id="waitlist-status" class="status-message"></div>
         </form>
       </div>
@@ -464,6 +590,41 @@
 </footer>
 
 <script>
+  // ✅ SIDEBAR open/close
+  (function () {
+    const body = document.body;
+    const menuBtn = document.getElementById("menuBtn");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("sidebarOverlay");
+    const closeBtn = document.getElementById("sidebarClose");
+
+    function openSidebar() {
+      body.classList.add("sidebar-open");
+      menuBtn?.setAttribute("aria-expanded", "true");
+      overlay?.setAttribute("aria-hidden", "false");
+    }
+
+    function closeSidebar() {
+      body.classList.remove("sidebar-open");
+      menuBtn?.setAttribute("aria-expanded", "false");
+      overlay?.setAttribute("aria-hidden", "true");
+    }
+
+    menuBtn?.addEventListener("click", openSidebar);
+    closeBtn?.addEventListener("click", closeSidebar);
+    overlay?.addEventListener("click", closeSidebar);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeSidebar();
+    });
+
+    sidebar?.addEventListener("click", (e) => {
+      const target = e.target;
+      if (target && target.tagName === "A") closeSidebar();
+    });
+  })();
+
+  // ✅ WAITLIST form submit status (Formspree)
   const form = document.getElementById('waitlist-form');
   const statusEl = document.getElementById('waitlist-status');
 
@@ -475,8 +636,8 @@
     statusEl.className = 'status-message';
 
     const endpoint = form.getAttribute('action');
-    if (!endpoint || endpoint.includes('YOUR_ENDPOINT_HERE')) {
-      statusEl.textContent = 'Form endpoint not configured yet. Please add your real Formspree / form handler URL in the HTML.';
+    if (!endpoint) {
+      statusEl.textContent = 'Form endpoint not configured yet.';
       statusEl.classList.add('status-error');
       statusEl.style.display = 'block';
       return;
@@ -487,24 +648,22 @@
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          'Accept': 'application/json'
-        },
+        headers: { 'Accept': 'application/json' },
         body: formData
       });
 
       if (response.ok) {
         form.reset();
-        statusEl.textContent = 'Thank you! You’ve been added to the waitlist. We’ll reach out if FlyLoop moves forward.';
+        statusEl.textContent = 'Thank you! You’ve been added to the waitlist.';
         statusEl.classList.add('status-success');
         statusEl.style.display = 'block';
       } else {
-        statusEl.textContent = 'Something went wrong sending your details. Please try again in a moment.';
+        statusEl.textContent = 'Something went wrong. Please try again.';
         statusEl.classList.add('status-error');
         statusEl.style.display = 'block';
       }
     } catch (err) {
-      statusEl.textContent = 'Network error. Please check your connection and try again.';
+      statusEl.textContent = 'Network error. Please try again.';
       statusEl.classList.add('status-error');
       statusEl.style.display = 'block';
     }
