@@ -150,7 +150,7 @@ input:focus, select:focus{
 .swap-btn{
   width:56px;
   height:46px;
-  margin-top: 26px;     /* <-- this is the key alignment */
+  margin-top: 30px;     /* <-- this is the key alignment */
   border-radius:14px;
   border:1px solid rgba(148,163,184,.35);
   background:rgba(15,23,42,.55);
