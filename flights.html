@@ -29,6 +29,7 @@
       line-height:1.6;
     }
     a{color:inherit;text-decoration:none}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
 
     @keyframes glowPulse {
       0%   { box-shadow: 0 0 14px rgba(249, 115, 22, 0.5); }
@@ -182,7 +183,6 @@
     .sidebar-close{display:none;align-self:flex-end;border:1px solid rgba(148,163,184,.35);
       background:rgba(15,23,42,.55);color:#e5e7eb;border-radius:12px;padding:10px 12px;cursor:pointer;}
 
-    /* small helper text */
     .help{font-size:.82rem;color:#a1a1aa;margin:6px 0 0}
 
     @media (max-width: 900px){
@@ -265,9 +265,70 @@
       <div class="eyebrow">Flights</div>
       <h1>Live flight search (concept)</h1>
       <p class="sub">
-        This page calls <code>/api/flights</code>. If your backend returns demo data, you’ll see flights.
-        If it returns a real API response later, it will render the same way.
+        Pick airports from the list (or type to filter). This page calls <code>/api/flights</code>.
       </p>
+
+      <!-- ✅ Airport list for BOTH inputs -->
+      <datalist id="airportList">
+        <!-- Canada -->
+        <option value="YYZ">Toronto Pearson (YYZ)</option>
+        <option value="YTZ">Toronto Billy Bishop (YTZ)</option>
+        <option value="YUL">Montréal Trudeau (YUL)</option>
+        <option value="YVR">Vancouver (YVR)</option>
+        <option value="YYC">Calgary (YYC)</option>
+        <option value="YOW">Ottawa (YOW)</option>
+        <option value="YHZ">Halifax (YHZ)</option>
+        <option value="YEG">Edmonton (YEG)</option>
+
+        <!-- USA -->
+        <option value="JFK">New York (JFK)</option>
+        <option value="LGA">New York LaGuardia (LGA)</option>
+        <option value="EWR">Newark (EWR)</option>
+        <option value="BOS">Boston (BOS)</option>
+        <option value="MIA">Miami (MIA)</option>
+        <option value="FLL">Fort Lauderdale (FLL)</option>
+        <option value="MCO">Orlando (MCO)</option>
+        <option value="TPA">Tampa (TPA)</option>
+        <option value="ATL">Atlanta (ATL)</option>
+        <option value="ORD">Chicago O'Hare (ORD)</option>
+        <option value="MDW">Chicago Midway (MDW)</option>
+        <option value="DFW">Dallas/Fort Worth (DFW)</option>
+        <option value="IAH">Houston (IAH)</option>
+        <option value="DEN">Denver (DEN)</option>
+        <option value="LAS">Las Vegas (LAS)</option>
+        <option value="LAX">Los Angeles (LAX)</option>
+        <option value="SFO">San Francisco (SFO)</option>
+        <option value="SEA">Seattle (SEA)</option>
+        <option value="PHX">Phoenix (PHX)</option>
+        <option value="IAD">Washington Dulles (IAD)</option>
+        <option value="DCA">Washington Reagan (DCA)</option>
+
+        <!-- Europe -->
+        <option value="LHR">London Heathrow (LHR)</option>
+        <option value="LGW">London Gatwick (LGW)</option>
+        <option value="CDG">Paris Charles de Gaulle (CDG)</option>
+        <option value="ORY">Paris Orly (ORY)</option>
+        <option value="AMS">Amsterdam (AMS)</option>
+        <option value="FRA">Frankfurt (FRA)</option>
+        <option value="MUC">Munich (MUC)</option>
+        <option value="MAD">Madrid (MAD)</option>
+        <option value="BCN">Barcelona (BCN)</option>
+        <option value="FCO">Rome Fiumicino (FCO)</option>
+        <option value="MXP">Milan Malpensa (MXP)</option>
+        <option value="ZRH">Zurich (ZRH)</option>
+        <option value="VIE">Vienna (VIE)</option>
+
+        <!-- Middle East -->
+        <option value="DXB">Dubai (DXB)</option>
+        <option value="DOH">Doha (DOH)</option>
+
+        <!-- Asia -->
+        <option value="HND">Tokyo Haneda (HND)</option>
+        <option value="NRT">Tokyo Narita (NRT)</option>
+        <option value="ICN">Seoul (ICN)</option>
+        <option value="HKG">Hong Kong (HKG)</option>
+        <option value="SIN">Singapore (SIN)</option>
+      </datalist>
 
       <div class="grid">
         <!-- Search -->
@@ -277,12 +338,28 @@
           <form id="flightForm">
             <div class="row2">
               <div class="form-row">
-                <label for="fromIata">From (IATA)</label>
-                <input id="fromIata" name="fromIata" type="text" value="YYZ" maxlength="3" autocomplete="off" />
+                <label for="fromIata">From (airport / IATA)</label>
+                <input
+                  id="fromIata"
+                  name="fromIata"
+                  type="text"
+                  list="airportList"
+                  value="YYZ"
+                  placeholder="Type or pick (e.g., YYZ)"
+                  autocomplete="off"
+                />
               </div>
               <div class="form-row">
-                <label for="toIata">To (IATA)</label>
-                <input id="toIata" name="toIata" type="text" value="MIA" maxlength="3" autocomplete="off" />
+                <label for="toIata">To (airport / IATA)</label>
+                <input
+                  id="toIata"
+                  name="toIata"
+                  type="text"
+                  list="airportList"
+                  value="MIA"
+                  placeholder="Type or pick (e.g., MIA)"
+                  autocomplete="off"
+                />
               </div>
             </div>
 
@@ -308,7 +385,7 @@
             </div>
 
             <div class="help">
-              Tip: open <code>/api/flights?origin=YYZ&amp;destination=MIA&amp;date=2026-03-12&amp;adults=1</code> to test your backend.
+              Backend test: <code>/api/flights?origin=YYZ&amp;destination=MIA&amp;date=2026-03-12&amp;adults=1</code>
             </div>
           </form>
         </div>
@@ -317,7 +394,7 @@
         <div class="card">
           <h3>Results</h3>
           <div class="results" id="flightResults">
-            <div class="pill">Enter airports + date, then “Search flights”.</div>
+            <div class="pill">Pick airports + date, then “Search flights”.</div>
           </div>
         </div>
       </div>
@@ -349,12 +426,10 @@
       return /^[A-Z]{3}$/.test(v);
     }
 
-    // Accept either your demo API shape:
-    //   { flights: [...] }
-    // or your older shape:
-    //   { offers: [...] }
-    // or a raw array:
-    //   [...]
+    // Accept either:
+    //   { flights: [...] }  (recommended)
+    //   { offers: [...] }   (older)
+    //   [...]              (raw array)
     function pickItems(data){
       if (!data) return [];
       if (Array.isArray(data)) return data;
@@ -364,29 +439,14 @@
     }
 
     function mapToCardModel(item){
-      // Supports multiple possible backends:
-      // Demo backend: { airline, origin, destination, date, departure, arrival, duration, price, currency }
-      // Older backend: { airline, total, currency, stops, segments: [...] }
-      // Anything else: best effort fallback
-
-      // Price
       const currency = item.currency || "CAD";
-      const total =
-        item.total ??
-        item.price ??
-        item.amount ??
-        item.fare ??
-        "—";
-
-      // Airline
+      const total = item.total ?? item.price ?? item.amount ?? item.fare ?? "—";
       const airline = item.airline || item.carrier || item.airlineName || "Airline";
 
-      // Times / route
       let dep = item.departure || "";
       let arr = item.arrival || "";
-
-      // If segments exist (Amadeus-style / your older UI)
       let badge = item.badge || "";
+
       if (Array.isArray(item.segments) && item.segments.length){
         const first = item.segments[0];
         const last = item.segments[item.segments.length - 1];
@@ -399,13 +459,12 @@
         const stops = (item.stops != null) ? Number(item.stops) : Math.max(0, item.segments.length - 1);
         badge = badge || (stops === 0 ? "Nonstop" : `${stops} stop${stops>1?"s":""}`);
       } else {
-        // fallback if origin/destination exist
         const origin = item.origin || item.from || "";
         const destination = item.destination || item.to || "";
         const dur = item.duration ? ` • ${item.duration}` : "";
         badge = badge || (item.stops === 0 ? "Nonstop" : (item.stops ? `${item.stops} stops` : "Offer"));
-        if (!dep && origin && item.date) dep = `${origin} ${item.departureTime || "—"}`;
-        if (!arr && destination && item.date) arr = `${destination} ${item.arrivalTime || "—"}`;
+        if (!dep && origin) dep = `${origin} ${item.departureTime || "—"}`;
+        if (!arr && destination) arr = `${destination} ${item.arrivalTime || "—"}`;
         if (badge === "Offer" && dur) badge = `Offer${dur}`;
       }
 
@@ -461,14 +520,13 @@
       const date = String(document.getElementById("departDate").value || "").trim();
       const adults = String(document.getElementById("adults").value || "1").trim();
 
-      // quick front-end validation (prevents your "origin must be a 3-letter code" error)
       if (!isIata3(origin)) {
-        setFlightStatus("Origin must be a 3-letter IATA code (e.g., YYZ).");
+        setFlightStatus("Origin must be a 3-letter IATA code (pick from list).");
         renderFlights([]);
         return;
       }
       if (!isIata3(destination)) {
-        setFlightStatus("Destination must be a 3-letter IATA code (e.g., MIA).");
+        setFlightStatus("Destination must be a 3-letter IATA code (pick from list).");
         renderFlights([]);
         return;
       }
@@ -484,7 +542,6 @@
       try {
         const url = `/api/flights?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&date=${encodeURIComponent(date)}&adults=${encodeURIComponent(adults)}`;
         const res = await fetch(url, { headers: { "Accept": "application/json" } });
-
         const data = await res.json().catch(() => ({}));
 
         if (!res.ok) {
@@ -511,7 +568,6 @@
     clearFlightsBtn.addEventListener("click", () => {
       document.getElementById("fromIata").value = "YYZ";
       document.getElementById("toIata").value = "MIA";
-      // keep date/adults as-is
       flightResults.innerHTML = `<div class="pill">Results cleared.</div>`;
       setFlightStatus("", false);
     });
