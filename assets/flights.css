@@ -559,3 +559,15 @@ input:focus, select:focus{
   .row2 .form-row:last-child{ grid-column: auto; }
 }
 
+/* hide the concept note + description line */
+.sub { display: none !important; }
+h1 { visibility: hidden; position: relative; }
+h1::after {
+  content: "Live flight search";
+  visibility: visible;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+
