@@ -247,135 +247,57 @@
   }
 
   // ---------- render result cards (now real flight info + Select button) ----------
-  function renderFlights(items) {
-    const wrap = $("flightResults");
-    wrap.innerHTML = "";
+function renderFlights(flights) {
+  flightResults.innerHTML = "";
 
-    if (!items || items.length === 0) {
-      wrap.innerHTML = `<div class="pill">No flights found.</div>`;
-      return;
-    }
+  flights.forEach(f => {
+    const first = f.segments[0];
+    const last  = f.segments[f.segments.length - 1];
 
-    // if something is selected, show selection box first
-    const selected = items.find(x => x.id === selectedOfferId);
-    if (selected) setSelectedBox(selected);
+    const departTime = formatTime(first.departure);
+    const arriveTime = formatTime(last.arrival);
 
-    items.slice(0, 40).forEach(o => {
-      const price = fmtMoney(o.currency, o.total);
+    const route = `${first.from} → ${last.to}`;
+    const stops = f.stops === 0 ? "Direct" : `${f.stops} stop${f.stops > 1 ? "s" : ""}`;
 
-      const layoverLine = o.layovers
-        .filter(l => l.mins != null)
-        .map(l => `Layover ${l.at}: ${fmtDuration(l.mins)}`)
-        .join(" • ");
+    flightResults.innerHTML += `
+      <div class="flight-card modern">
 
-      const viaLine = o.stopAirports.length
-        ? `Via: ${o.stopAirports.join(", ")}`
-        : "Nonstop";
+        <div class="flight-left">
+          <div class="airline">${f.airline}</div>
+          <div class="flight-number">${f.segments.map(s => s.flightNumber).join(" · ")}</div>
+        </div>
 
-      const flightsLine = o.flightNums.length ? o.flightNums.join(" • ") : "";
+        <div class="flight-middle">
+          <div class="timeline">
+            <span class="time">${departTime}</span>
+            <span class="airport">${first.from}</span>
 
-      const isSelected = o.id === selectedOfferId;
+            <span class="line"></span>
+            <span class="plane">✈</span>
 
-      const card = document.createElement("div");
-      card.className = `flight-card flight-card-rich ${isSelected ? "selected" : ""}`;
-
-      card.innerHTML = `
-        <div class="flight-rich-top">
-          <div class="flight-left">
-            <div class="airline-line">
-              <div class="air-code">${escapeHtml(o.airline)}</div>
-              ${flightsLine ? `<div class="muted small">${escapeHtml(flightsLine)}</div>` : `<div class="muted small"> </div>`}
-            </div>
-
-            <div class="time-line">
-              <div class="tblock">
-                <div class="time">${escapeHtml(o.departTime)}</div>
-                <div class="muted">${escapeHtml(o.origin)}</div>
-              </div>
-
-              <div class="midblock">
-                <div class="muted small">${escapeHtml(o.duration)}</div>
-                <div class="routebar"><span class="plane">✈</span></div>
-                <div class="stops">${escapeHtml(o.stopsLabel)}</div>
-              </div>
-
-              <div class="tblock">
-                <div class="time">${escapeHtml(o.arriveTime)}</div>
-                <div class="muted">${escapeHtml(o.destination)}</div>
-              </div>
-            </div>
-
-            <div class="details-line muted small">
-              ${escapeHtml(viaLine)}${layoverLine ? ` • ${escapeHtml(layoverLine)}` : ""}
-            </div>
+            <span class="time">${arriveTime}</span>
+            <span class="airport">${last.to}</span>
           </div>
 
-          <div class="flight-right">
-            <div class="flight-price-big">${escapeHtml(price)}</div>
-            <button class="select-btn" type="button">${isSelected ? "Selected ✓" : "Select →"}</button>
+          <div class="meta">
+            <span>${f.durationLabel}</span>
+            <span>${stops}</span>
           </div>
         </div>
 
-        <div class="flight-expand muted small">
-          <button class="details-toggle" type="button">Details</button>
-          <div class="segments" style="display:none;"></div>
+        <div class="flight-right">
+          <div class="price">CAD ${f.total}</div>
+          <button class="select-btn" onclick='selectFlight(${JSON.stringify(f)})'>
+            Select →
+          </button>
         </div>
-      `;
 
-      // Select button
-      card.querySelector(".select-btn").addEventListener("click", () => {
-        selectedOfferId = o.id;
-        setSelectedBox(o);
-        renderWithSort();
-        $("resultsCard").scrollIntoView({ behavior: "smooth", block: "start" });
-      });
+      </div>
+    `;
+  });
+}
 
-      // Details toggle (segment list)
-      const segWrap = card.querySelector(".segments");
-      const toggle = card.querySelector(".details-toggle");
-
-      function renderSegments() {
-        if (!o.segments || !o.segments.length) {
-          segWrap.innerHTML = `<div class="pill" style="margin-top:8px;">No segment details returned by API yet.</div>`;
-          return;
-        }
-        segWrap.innerHTML = o.segments.map((s, idx) => {
-          const segLayover = (idx < o.segments.length - 1 && o.layovers[idx]?.mins != null)
-            ? `<div class="muted small" style="margin-top:6px;">Layover in <strong>${escapeHtml(o.layovers[idx].at)}</strong>: ${escapeHtml(fmtDuration(o.layovers[idx].mins))}</div>`
-            : "";
-
-          return `
-            <div class="segment-row">
-              <div>
-                <div class="segment-title">
-                  <strong>${escapeHtml((s.carrier || "").toUpperCase())}${escapeHtml(s.flightNumber || "")}</strong>
-                  <span class="muted">• ${escapeHtml(s.from)} → ${escapeHtml(s.to)}</span>
-                </div>
-                <div class="muted small">
-                  Depart ${escapeHtml(fmtTime(s.departAt))} • Arrive ${escapeHtml(fmtTime(s.arriveAt))}
-                </div>
-                ${segLayover}
-              </div>
-            </div>
-          `;
-        }).join("");
-      }
-
-      toggle.addEventListener("click", () => {
-        const open = segWrap.style.display !== "none";
-        if (open) {
-          segWrap.style.display = "none";
-          toggle.textContent = "Details";
-        } else {
-          renderSegments();
-          segWrap.style.display = "block";
-          toggle.textContent = "Hide details";
-        }
-      });
-
-      wrap.appendChild(card);
-    });
-  }
 
   function renderWithSort() {
     const sorted = applySort(currentOffers);
