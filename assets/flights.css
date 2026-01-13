@@ -518,3 +518,44 @@ input:focus, select:focus{
 
 /* make sure your old .flight-card doesn't accidentally style the new rows */
 .flight-row.flight-card{ all: unset; }
+
+
+/* OVERRIDE: make Date + Options align under From / (swap gap) / To */
+.row2{
+  display:grid;
+  grid-template-columns: 1fr 56px 1fr; /* match .swap-row */
+  gap:10px;
+  align-items:end; /* same baseline */
+}
+
+/* Put Departure date under the LEFT column (From) */
+.row2 .form-row:first-child{
+  grid-column: 1;
+}
+
+/* Put Options under the RIGHT column (To) */
+.row2 .form-row:last-child{
+  grid-column: 3;
+}
+
+/* Make the checkbox area look/feel like an input and align vertically */
+.row2 .checks{
+  display:flex;
+  gap:18px;
+  align-items:center;
+  flex-wrap:wrap;
+
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid rgba(75,85,99,.9);
+  background:#020617;
+  min-height:46px;
+}
+
+/* Mobile: stack */
+@media (max-width: 900px){
+  .row2{ grid-template-columns: 1fr; }
+  .row2 .form-row:first-child,
+  .row2 .form-row:last-child{ grid-column: auto; }
+}
+
