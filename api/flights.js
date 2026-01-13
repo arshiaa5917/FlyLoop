@@ -12,8 +12,24 @@ function normalizeIata(v) {
   return String(v || "").trim().toUpperCase();
 }
 
+function isIata3(v) {
+  return /^[A-Z]{3}$/.test(String(v || "").trim().toUpperCase());
+}
+
 function isIsoDate(v) {
   return /^\d{4}-\d{2}-\d{2}$/.test(String(v || "").trim());
+}
+
+function pickBaseUrl() {
+  const env = (process.env.AMADEUS_ENV || "test").toLowerCase();
+  return env === "prod" ? "https://api.amadeus.com" : "https://test.api.amadeus.com";
+}
+
+function setCors(res) {
+  // Safe default for your use (same-domain). This also allows testing from elsewhere.
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 }
 
 async function getAccessToken() {
@@ -25,10 +41,10 @@ async function getAccessToken() {
   }
 
   const now = Date.now();
-  if (cachedToken && cachedTokenExpMs - now > 30_000) return cachedToken;
+  // refresh 60s early (safer than 30s)
+  if (cachedToken && cachedTokenExpMs - now > 60_000) return cachedToken;
 
-  const env = (process.env.AMADEUS_ENV || "test").toLowerCase();
-  const base = env === "prod" ? "https://api.amadeus.com" : "https://test.api.amadeus.com";
+  const base = pickBaseUrl();
 
   const body = new URLSearchParams({
     grant_type: "client_credentials",
@@ -43,53 +59,84 @@ async function getAccessToken() {
   });
 
   const t = await r.json().catch(() => ({}));
+
   if (!r.ok) {
-    throw new Error(t?.error_description || t?.error || "Failed to get access token");
+    throw new Error(t?.error_description || t?.error || `Failed to get access token (${r.status})`);
   }
 
   cachedToken = t.access_token;
-  cachedTokenExpMs = Date.now() + (Number(t.expires_in || 0) * 1000);
+  const expiresSec = Number(t.expires_in || 0);
+  cachedTokenExpMs = Date.now() + (expiresSec > 0 ? expiresSec * 1000 : 15 * 60 * 1000); // fallback 15m
   return cachedToken;
 }
 
 module.exports = async (req, res) => {
   try {
+    setCors(res);
+
+    // Preflight support (good practice)
+    if (req.method === "OPTIONS") {
+      return send(res, 204, {});
+    }
+
     if (req.method !== "GET") {
-      res.setHeader("Allow", "GET");
+      res.setHeader("Allow", "GET, OPTIONS");
       return send(res, 405, { error: "Method not allowed. Use GET." });
     }
 
     const origin = normalizeIata(req.query.origin);
     const destination = normalizeIata(req.query.destination);
     const date = String(req.query.date || "").trim();
+
     const adults = Math.max(1, Math.min(9, parseInt(req.query.adults || "1", 10) || 1));
     const currency = String(req.query.currency || "CAD").trim().toUpperCase();
 
-    if (!origin || origin.length !== 3)
+    // New: allow cabin + max
+    const cabin = String(req.query.cabin || "").trim().toUpperCase(); // ECONOMY, PREMIUM_ECONOMY, BUSINESS, FIRST
+    const max = Math.max(1, Math.min(50, parseInt(req.query.max || "20", 10) || 20));
+
+    if (!isIata3(origin)) {
       return send(res, 400, { error: "origin must be a 3-letter IATA code (e.g., YYZ)." });
+    }
 
-    if (!destination || destination.length !== 3)
+    if (!isIata3(destination)) {
       return send(res, 400, { error: "destination must be a 3-letter IATA code (e.g., MIA)." });
+    }
 
-    if (!isIsoDate(date))
+    if (origin === destination) {
+      return send(res, 400, { error: "origin and destination cannot be the same." });
+    }
+
+    if (!isIsoDate(date)) {
       return send(res, 400, { error: "date must be YYYY-MM-DD." });
+    }
 
-    const env = (process.env.AMADEUS_ENV || "test").toLowerCase();
-    const base = env === "prod" ? "https://api.amadeus.com" : "https://test.api.amadeus.com";
-
+    // Build query for Amadeus
+    const base = pickBaseUrl();
     const token = await getAccessToken();
 
-    const qs = new URLSearchParams({
+    const qsObj = {
       originLocationCode: origin,
       destinationLocationCode: destination,
       departureDate: date,
       adults: String(adults),
       currencyCode: currency,
-      max: "10",
-    }).toString();
+      max: String(max),
+    };
+
+    // Amadeus expects travelClass values:
+    // ECONOMY | PREMIUM_ECONOMY | BUSINESS | FIRST
+    if (cabin && ["ECONOMY", "PREMIUM_ECONOMY", "BUSINESS", "FIRST"].includes(cabin)) {
+      qsObj.travelClass = cabin;
+    }
+
+    const qs = new URLSearchParams(qsObj).toString();
 
     const r = await fetch(`${base}/v2/shopping/flight-offers?${qs}`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
     });
 
     const data = await r.json().catch(() => ({}));
@@ -97,16 +144,25 @@ module.exports = async (req, res) => {
     if (!r.ok) {
       const err = data?.errors?.[0];
       return send(res, r.status, {
-        error: err?.detail || err?.title || "Flight search failed",
+        error:
+          err?.detail ||
+          err?.title ||
+          err?.code ||
+          `Flight search failed (${r.status})`,
+        // keep raw for debugging, you can remove later:
         raw: data,
       });
     }
 
-    // ✅ interpret here
+    // Convert Amadeus shape -> your frontend shape
     const offers = interpretAmadeus(data);
 
     res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
-    return send(res, 200, { query: { origin, destination, date, adults, currency }, offers });
+
+    return send(res, 200, {
+      query: { origin, destination, date, adults, currency, cabin: cabin || null, max },
+      offers,
+    });
   } catch (e) {
     return send(res, 500, { error: e?.message || "Server error" });
   }
