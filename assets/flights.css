@@ -98,8 +98,31 @@ input:focus, select:focus{
   box-shadow:0 0 0 1px rgba(248,113,22,.4);
 }
 
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media (max-width: 900px){ .row2{grid-template-columns:1fr} }
+/* Date + Options row */
+.row2{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+  align-items:end;   /* THIS is the key: align both to same bottom line */
+}
+
+@media (max-width: 900px){
+  .row2{ grid-template-columns:1fr; }
+}
+
+/* Make Options look and align like an input field */
+.checks{
+  display:flex;
+  gap:18px;
+  align-items:center;
+  flex-wrap:wrap;
+
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid rgba(75,85,99,.9);
+  background:#020617;
+  min-height:46px;   /* matches input height */
+}
 
 .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px;}
 .btn-primary{
