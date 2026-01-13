@@ -138,24 +138,39 @@ input:focus, select:focus{
 
 /* NEW: swap row */
 /* NEW: swap row */
+/* NEW: swap row (align swap to input level, not label level) */
 .swap-row{
   display:grid;
   grid-template-columns: 1fr 56px 1fr;
   gap:10px;
-  align-items:end;
+  align-items:start; /* important: don't baseline to labels */
 }
-@media (max-width:900px){ .swap-row{grid-template-columns:1fr} }
 
+/* Push swap down by (label height + gap) so it sits centered on inputs */
 .swap-btn{
-  height:42px;
+  width:56px;
+  height:46px;
+  margin-top: 26px;     /* <-- this is the key alignment */
   border-radius:14px;
   border:1px solid rgba(148,163,184,.35);
   background:rgba(15,23,42,.55);
   color:#e5e7eb;
   cursor:pointer;
   font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 .swap-btn:hover{background:rgba(148,163,184,.12)}
+
+/* Mobile: stack nicely */
+@media (max-width:900px){
+  .swap-row{ grid-template-columns:1fr; }
+  .swap-btn{
+    width:100%;
+    margin-top: 0;
+  }
+}
 
 /* NEW: checkboxes */
 .checks{display:flex;gap:14px;flex-wrap:wrap}
