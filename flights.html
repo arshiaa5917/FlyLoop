@@ -162,6 +162,61 @@
       border:1px solid rgba(148,163,184,.35);color:#cbd5e1;font-size:.76rem;
     }
 
+    /* ✅ Custom searchable dropdown (combobox) */
+    .combo{position:relative;}
+    .combo-input{
+      width:100%;
+      padding-right:40px;
+    }
+    .combo-caret{
+      position:absolute; right:10px; top:50%; transform:translateY(-50%);
+      width:28px; height:28px; border-radius:10px;
+      border:1px solid rgba(148,163,184,.25);
+      background:rgba(15,23,42,.35);
+      display:flex;align-items:center;justify-content:center;
+      color:#e5e7eb;
+      pointer-events:none;
+    }
+    .combo-panel{
+      position:absolute; left:0; right:0; top:calc(100% + 8px);
+      z-index:50;
+      background:#020617;
+      border:1px solid rgba(148,163,184,.25);
+      border-radius:14px;
+      box-shadow:0 26px 70px rgba(0,0,0,.7);
+      overflow:hidden;
+      display:none;
+    }
+    .combo-panel.open{display:block;}
+    .combo-list{
+      max-height:260px;
+      overflow:auto;
+      padding:6px;
+    }
+    .combo-item{
+      display:flex; justify-content:space-between; gap:12px;
+      padding:10px 10px;
+      border-radius:12px;
+      cursor:pointer;
+      color:#e5e7eb;
+    }
+    .combo-item:hover, .combo-item.active{
+      background:rgba(148,163,184,.14);
+    }
+    .combo-item .left{display:flex;flex-direction:column;gap:2px;min-width:0;}
+    .combo-item .name{font-weight:700; font-size:.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .combo-item .meta{font-size:.78rem; color:#9ca3af; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .combo-item .code{
+      font-weight:800;
+      color:var(--primary-soft);
+      flex:0 0 auto;
+    }
+    .combo-empty{
+      padding:12px 12px;
+      color:#9ca3af;
+      font-size:.85rem;
+    }
+
     /* Mobile: sidebar becomes off-canvas */
     .mobile-topbar{display:none;position:sticky;top:0;z-index:40;background:rgba(2,6,23,.88);
       backdrop-filter:blur(10px);border-bottom:1px solid rgba(148,163,184,.22);padding:12px 14px;}
@@ -237,17 +292,14 @@
           <span class="label">Overview</span>
           <small>Trips &amp; plan</small>
         </a>
-
         <a class="sidebar-link" href="dashboard.html#account">
           <span class="label">Account</span>
           <small>Profile &amp; billing</small>
         </a>
-
         <a class="sidebar-link active" href="flights.html">
           <span class="label">Flights</span>
           <small>Live search</small>
         </a>
-
         <a class="sidebar-link" href="dashboard.html#settings">
           <span class="label">Settings</span>
           <small>Preferences</small>
@@ -265,70 +317,8 @@
       <div class="eyebrow">Flights</div>
       <h1>Live flight search (concept)</h1>
       <p class="sub">
-        Pick airports from the list (or type to filter). This page calls <code>/api/flights</code>.
+        Search airports by city/airport name (Toronto, Miami, JFK…). We submit the IATA code to <code>/api/flights</code>.
       </p>
-
-      <!-- ✅ Airport list for BOTH inputs -->
-      <datalist id="airportList">
-        <!-- Canada -->
-        <option value="YYZ">Toronto Pearson (YYZ)</option>
-        <option value="YTZ">Toronto Billy Bishop (YTZ)</option>
-        <option value="YUL">Montréal Trudeau (YUL)</option>
-        <option value="YVR">Vancouver (YVR)</option>
-        <option value="YYC">Calgary (YYC)</option>
-        <option value="YOW">Ottawa (YOW)</option>
-        <option value="YHZ">Halifax (YHZ)</option>
-        <option value="YEG">Edmonton (YEG)</option>
-
-        <!-- USA -->
-        <option value="JFK">New York (JFK)</option>
-        <option value="LGA">New York LaGuardia (LGA)</option>
-        <option value="EWR">Newark (EWR)</option>
-        <option value="BOS">Boston (BOS)</option>
-        <option value="MIA">Miami (MIA)</option>
-        <option value="FLL">Fort Lauderdale (FLL)</option>
-        <option value="MCO">Orlando (MCO)</option>
-        <option value="TPA">Tampa (TPA)</option>
-        <option value="ATL">Atlanta (ATL)</option>
-        <option value="ORD">Chicago O'Hare (ORD)</option>
-        <option value="MDW">Chicago Midway (MDW)</option>
-        <option value="DFW">Dallas/Fort Worth (DFW)</option>
-        <option value="IAH">Houston (IAH)</option>
-        <option value="DEN">Denver (DEN)</option>
-        <option value="LAS">Las Vegas (LAS)</option>
-        <option value="LAX">Los Angeles (LAX)</option>
-        <option value="SFO">San Francisco (SFO)</option>
-        <option value="SEA">Seattle (SEA)</option>
-        <option value="PHX">Phoenix (PHX)</option>
-        <option value="IAD">Washington Dulles (IAD)</option>
-        <option value="DCA">Washington Reagan (DCA)</option>
-
-        <!-- Europe -->
-        <option value="LHR">London Heathrow (LHR)</option>
-        <option value="LGW">London Gatwick (LGW)</option>
-        <option value="CDG">Paris Charles de Gaulle (CDG)</option>
-        <option value="ORY">Paris Orly (ORY)</option>
-        <option value="AMS">Amsterdam (AMS)</option>
-        <option value="FRA">Frankfurt (FRA)</option>
-        <option value="MUC">Munich (MUC)</option>
-        <option value="MAD">Madrid (MAD)</option>
-        <option value="BCN">Barcelona (BCN)</option>
-        <option value="FCO">Rome Fiumicino (FCO)</option>
-        <option value="MXP">Milan Malpensa (MXP)</option>
-        <option value="ZRH">Zurich (ZRH)</option>
-        <option value="VIE">Vienna (VIE)</option>
-
-        <!-- Middle East -->
-        <option value="DXB">Dubai (DXB)</option>
-        <option value="DOH">Doha (DOH)</option>
-
-        <!-- Asia -->
-        <option value="HND">Tokyo Haneda (HND)</option>
-        <option value="NRT">Tokyo Narita (NRT)</option>
-        <option value="ICN">Seoul (ICN)</option>
-        <option value="HKG">Hong Kong (HKG)</option>
-        <option value="SIN">Singapore (SIN)</option>
-      </datalist>
 
       <div class="grid">
         <!-- Search -->
@@ -338,28 +328,37 @@
           <form id="flightForm">
             <div class="row2">
               <div class="form-row">
-                <label for="fromIata">From (airport / IATA)</label>
-                <input
-                  id="fromIata"
-                  name="fromIata"
-                  type="text"
-                  list="airportList"
-                  value="YYZ"
-                  placeholder="Type or pick (e.g., YYZ)"
-                  autocomplete="off"
-                />
+                <label for="fromText">From (city / airport)</label>
+
+                <!-- ✅ Visible search input -->
+                <div class="combo" data-combo="origin">
+                  <input id="fromText" class="combo-input" type="text" placeholder="Type Toronto, YYZ, Pearson..." autocomplete="off" />
+                  <div class="combo-caret">▾</div>
+                  <div class="combo-panel" role="listbox" aria-label="Origin airports">
+                    <div class="combo-list"></div>
+                    <div class="combo-empty" style="display:none;">No matches.</div>
+                  </div>
+                </div>
+
+                <!-- ✅ Hidden IATA value that we submit -->
+                <input id="fromIata" type="hidden" value="YYZ">
+                <div class="help" id="fromPicked">Selected: <code>YYZ</code></div>
               </div>
+
               <div class="form-row">
-                <label for="toIata">To (airport / IATA)</label>
-                <input
-                  id="toIata"
-                  name="toIata"
-                  type="text"
-                  list="airportList"
-                  value="MIA"
-                  placeholder="Type or pick (e.g., MIA)"
-                  autocomplete="off"
-                />
+                <label for="toText">To (city / airport)</label>
+
+                <div class="combo" data-combo="destination">
+                  <input id="toText" class="combo-input" type="text" placeholder="Type Miami, MIA, JFK..." autocomplete="off" />
+                  <div class="combo-caret">▾</div>
+                  <div class="combo-panel" role="listbox" aria-label="Destination airports">
+                    <div class="combo-list"></div>
+                    <div class="combo-empty" style="display:none;">No matches.</div>
+                  </div>
+                </div>
+
+                <input id="toIata" type="hidden" value="MIA">
+                <div class="help" id="toPicked">Selected: <code>MIA</code></div>
               </div>
             </div>
 
@@ -402,6 +401,68 @@
   </div>
 
   <script>
+    // ===== Airport data (expand this list whenever you want) =====
+    const AIRPORTS = [
+      // Canada
+      { code:"YYZ", city:"Toronto", name:"Pearson International", country:"Canada" },
+      { code:"YTZ", city:"Toronto", name:"Billy Bishop", country:"Canada" },
+      { code:"YUL", city:"Montréal", name:"Trudeau", country:"Canada" },
+      { code:"YVR", city:"Vancouver", name:"International", country:"Canada" },
+      { code:"YYC", city:"Calgary", name:"International", country:"Canada" },
+      { code:"YOW", city:"Ottawa", name:"International", country:"Canada" },
+      { code:"YHZ", city:"Halifax", name:"Stanfield", country:"Canada" },
+      { code:"YEG", city:"Edmonton", name:"International", country:"Canada" },
+
+      // USA
+      { code:"JFK", city:"New York", name:"John F. Kennedy", country:"USA" },
+      { code:"LGA", city:"New York", name:"LaGuardia", country:"USA" },
+      { code:"EWR", city:"Newark", name:"Liberty", country:"USA" },
+      { code:"BOS", city:"Boston", name:"Logan", country:"USA" },
+      { code:"MIA", city:"Miami", name:"International", country:"USA" },
+      { code:"FLL", city:"Fort Lauderdale", name:"Hollywood", country:"USA" },
+      { code:"MCO", city:"Orlando", name:"International", country:"USA" },
+      { code:"TPA", city:"Tampa", name:"International", country:"USA" },
+      { code:"ATL", city:"Atlanta", name:"Hartsfield–Jackson", country:"USA" },
+      { code:"ORD", city:"Chicago", name:"O'Hare", country:"USA" },
+      { code:"MDW", city:"Chicago", name:"Midway", country:"USA" },
+      { code:"DFW", city:"Dallas", name:"Fort Worth", country:"USA" },
+      { code:"IAH", city:"Houston", name:"George Bush", country:"USA" },
+      { code:"DEN", city:"Denver", name:"International", country:"USA" },
+      { code:"LAS", city:"Las Vegas", name:"Harry Reid", country:"USA" },
+      { code:"LAX", city:"Los Angeles", name:"International", country:"USA" },
+      { code:"SFO", city:"San Francisco", name:"International", country:"USA" },
+      { code:"SEA", city:"Seattle", name:"Tacoma", country:"USA" },
+      { code:"PHX", city:"Phoenix", name:"Sky Harbor", country:"USA" },
+      { code:"IAD", city:"Washington", name:"Dulles", country:"USA" },
+      { code:"DCA", city:"Washington", name:"Reagan National", country:"USA" },
+
+      // Europe
+      { code:"LHR", city:"London", name:"Heathrow", country:"UK" },
+      { code:"LGW", city:"London", name:"Gatwick", country:"UK" },
+      { code:"CDG", city:"Paris", name:"Charles de Gaulle", country:"France" },
+      { code:"ORY", city:"Paris", name:"Orly", country:"France" },
+      { code:"AMS", city:"Amsterdam", name:"Schiphol", country:"Netherlands" },
+      { code:"FRA", city:"Frankfurt", name:"International", country:"Germany" },
+      { code:"MUC", city:"Munich", name:"International", country:"Germany" },
+      { code:"MAD", city:"Madrid", name:"Barajas", country:"Spain" },
+      { code:"BCN", city:"Barcelona", name:"El Prat", country:"Spain" },
+      { code:"FCO", city:"Rome", name:"Fiumicino", country:"Italy" },
+      { code:"MXP", city:"Milan", name:"Malpensa", country:"Italy" },
+      { code:"ZRH", city:"Zurich", name:"International", country:"Switzerland" },
+      { code:"VIE", city:"Vienna", name:"International", country:"Austria" },
+
+      // Middle East
+      { code:"DXB", city:"Dubai", name:"International", country:"UAE" },
+      { code:"DOH", city:"Doha", name:"Hamad", country:"Qatar" },
+
+      // Asia
+      { code:"HND", city:"Tokyo", name:"Haneda", country:"Japan" },
+      { code:"NRT", city:"Tokyo", name:"Narita", country:"Japan" },
+      { code:"ICN", city:"Seoul", name:"Incheon", country:"Korea" },
+      { code:"HKG", city:"Hong Kong", name:"International", country:"China" },
+      { code:"SIN", city:"Singapore", name:"Changi", country:"Singapore" },
+    ];
+
     // ===== Helpers =====
     function escapeHtml(str){
       return String(str)
@@ -411,25 +472,15 @@
         .replaceAll('"',"&quot;")
         .replaceAll("'","&#039;");
     }
-
     function setFlightStatus(msg, show = true){
       const el = document.getElementById("flightStatus");
       el.style.display = show ? "inline-flex" : "none";
       el.textContent = msg;
     }
+    function normalizeIata(v){ return String(v || "").trim().toUpperCase(); }
+    function isIata3(v){ return /^[A-Z]{3}$/.test(v); }
 
-    function normalizeIata(v){
-      return String(v || "").trim().toUpperCase();
-    }
-
-    function isIata3(v){
-      return /^[A-Z]{3}$/.test(v);
-    }
-
-    // Accept either:
-    //   { flights: [...] }  (recommended)
-    //   { offers: [...] }   (older)
-    //   [...]              (raw array)
+    // Accept either: { flights:[...] } or { offers:[...] } or [...]
     function pickItems(data){
       if (!data) return [];
       if (Array.isArray(data)) return data;
@@ -442,11 +493,9 @@
       const currency = item.currency || "CAD";
       const total = item.total ?? item.price ?? item.amount ?? item.fare ?? "—";
       const airline = item.airline || item.carrier || item.airlineName || "Airline";
-
       let dep = item.departure || "";
       let arr = item.arrival || "";
       let badge = item.badge || "";
-
       if (Array.isArray(item.segments) && item.segments.length){
         const first = item.segments[0];
         const last = item.segments[item.segments.length - 1];
@@ -461,36 +510,23 @@
       } else {
         const origin = item.origin || item.from || "";
         const destination = item.destination || item.to || "";
-        const dur = item.duration ? ` • ${item.duration}` : "";
         badge = badge || (item.stops === 0 ? "Nonstop" : (item.stops ? `${item.stops} stops` : "Offer"));
         if (!dep && origin) dep = `${origin} ${item.departureTime || "—"}`;
         if (!arr && destination) arr = `${destination} ${item.arrivalTime || "—"}`;
-        if (badge === "Offer" && dur) badge = `Offer${dur}`;
       }
-
-      return {
-        airline,
-        currency,
-        total,
-        dep: dep || "—",
-        arr: arr || "—",
-        badge: badge || "Offer"
-      };
+      return { airline, currency, total, dep: dep || "—", arr: arr || "—", badge: badge || "Offer" };
     }
 
     function renderFlights(items){
       const flightResults = document.getElementById("flightResults");
       flightResults.innerHTML = "";
-
       if(!items || items.length === 0){
         flightResults.innerHTML = `<div class="pill">No flights found.</div>`;
         return;
       }
-
       items.slice(0, 10).forEach((raw) => {
         const f = mapToCardModel(raw);
         const price = `${escapeHtml(f.currency)} ${escapeHtml(f.total)}`;
-
         flightResults.innerHTML += `
           <div class="flight-card">
             <div class="flight-top">
@@ -507,7 +543,148 @@
       });
     }
 
-    // ===== Main: Submit -> Call API =====
+    // ===== ✅ Custom Combobox =====
+    function airportLabel(a){
+      return `${a.city} — ${a.name} (${a.code})`;
+    }
+    function airportMeta(a){
+      return `${a.country}`;
+    }
+    function filterAirports(q){
+      const s = String(q || "").trim().toLowerCase();
+      if (!s) return AIRPORTS.slice(0, 50);
+      return AIRPORTS.filter(a => {
+        const hay = `${a.code} ${a.city} ${a.name} ${a.country}`.toLowerCase();
+        return hay.includes(s);
+      }).slice(0, 50);
+    }
+
+    function setupCombo({ wrapSelector, inputId, hiddenIataId, pickedId, defaultCode }) {
+      const wrap = document.querySelector(wrapSelector);
+      const input = document.getElementById(inputId);
+      const hidden = document.getElementById(hiddenIataId);
+      const picked = document.getElementById(pickedId);
+      const panel = wrap.querySelector(".combo-panel");
+      const list = wrap.querySelector(".combo-list");
+      const empty = wrap.querySelector(".combo-empty");
+
+      let activeIndex = -1;
+      let current = [];
+
+      function open() {
+        panel.classList.add("open");
+        render(input.value);
+      }
+      function close() {
+        panel.classList.remove("open");
+        activeIndex = -1;
+      }
+      function setPicked(code) {
+        const found = AIRPORTS.find(a => a.code === code);
+        hidden.value = code;
+        picked.innerHTML = `Selected: <code>${escapeHtml(code)}</code>${found ? ` — ${escapeHtml(found.city)} (${escapeHtml(found.name)})` : ""}`;
+      }
+      function choose(item) {
+        input.value = airportLabel(item);
+        setPicked(item.code);
+        close();
+      }
+
+      function render(q) {
+        current = filterAirports(q);
+        list.innerHTML = "";
+        activeIndex = -1;
+
+        if (!current.length) {
+          empty.style.display = "block";
+          return;
+        }
+        empty.style.display = "none";
+
+        current.forEach((a, idx) => {
+          const div = document.createElement("div");
+          div.className = "combo-item";
+          div.setAttribute("role", "option");
+          div.innerHTML = `
+            <div class="left">
+              <div class="name">${escapeHtml(airportLabel(a))}</div>
+              <div class="meta">${escapeHtml(airportMeta(a))}</div>
+            </div>
+            <div class="code">${escapeHtml(a.code)}</div>
+          `;
+          div.addEventListener("mousedown", (e) => {
+            e.preventDefault(); // stop blur before select
+            choose(a);
+          });
+          list.appendChild(div);
+        });
+      }
+
+      input.addEventListener("focus", open);
+      input.addEventListener("input", () => {
+        if (!panel.classList.contains("open")) open();
+        render(input.value);
+      });
+
+      input.addEventListener("keydown", (e) => {
+        if (!panel.classList.contains("open") && (e.key === "ArrowDown" || e.key === "Enter")) {
+          open();
+          e.preventDefault();
+          return;
+        }
+        const items = Array.from(list.querySelectorAll(".combo-item"));
+        if (!items.length) return;
+
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          activeIndex = Math.min(activeIndex + 1, items.length - 1);
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          activeIndex = Math.max(activeIndex - 1, 0);
+        } else if (e.key === "Enter") {
+          if (activeIndex >= 0 && current[activeIndex]) {
+            e.preventDefault();
+            choose(current[activeIndex]);
+          }
+          return;
+        } else if (e.key === "Escape") {
+          close();
+          return;
+        } else {
+          return;
+        }
+
+        items.forEach((el, i) => el.classList.toggle("active", i === activeIndex));
+        if (activeIndex >= 0) items[activeIndex].scrollIntoView({ block: "nearest" });
+      });
+
+      // Close when clicking outside
+      document.addEventListener("mousedown", (e) => {
+        if (!wrap.contains(e.target)) close();
+      });
+
+      // Init defaults
+      setPicked(defaultCode);
+      const found = AIRPORTS.find(a => a.code === defaultCode);
+      input.value = found ? airportLabel(found) : defaultCode;
+    }
+
+    setupCombo({
+      wrapSelector: '[data-combo="origin"]',
+      inputId: "fromText",
+      hiddenIataId: "fromIata",
+      pickedId: "fromPicked",
+      defaultCode: "YYZ"
+    });
+    setupCombo({
+      wrapSelector: '[data-combo="destination"]',
+      inputId: "toText",
+      hiddenIataId: "toIata",
+      pickedId: "toPicked",
+      defaultCode: "MIA"
+    });
+
+    // ===== Submit -> Call API using hidden IATA codes =====
     const flightForm = document.getElementById("flightForm");
     const clearFlightsBtn = document.getElementById("clearFlightsBtn");
     const flightResults = document.getElementById("flightResults");
@@ -520,21 +697,9 @@
       const date = String(document.getElementById("departDate").value || "").trim();
       const adults = String(document.getElementById("adults").value || "1").trim();
 
-      if (!isIata3(origin)) {
-        setFlightStatus("Origin must be a 3-letter IATA code (pick from list).");
-        renderFlights([]);
-        return;
-      }
-      if (!isIata3(destination)) {
-        setFlightStatus("Destination must be a 3-letter IATA code (pick from list).");
-        renderFlights([]);
-        return;
-      }
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-        setFlightStatus("Date must be YYYY-MM-DD.");
-        renderFlights([]);
-        return;
-      }
+      if (!isIata3(origin)) { setFlightStatus("Pick a valid origin airport (IATA)."); renderFlights([]); return; }
+      if (!isIata3(destination)) { setFlightStatus("Pick a valid destination airport (IATA)."); renderFlights([]); return; }
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) { setFlightStatus("Date must be YYYY-MM-DD."); renderFlights([]); return; }
 
       setFlightStatus("Searching…");
       flightResults.innerHTML = `<div class="pill">Loading…</div>`;
@@ -566,8 +731,16 @@
     });
 
     clearFlightsBtn.addEventListener("click", () => {
+      // reset selections
       document.getElementById("fromIata").value = "YYZ";
       document.getElementById("toIata").value = "MIA";
+      const yyz = AIRPORTS.find(a => a.code === "YYZ");
+      const mia = AIRPORTS.find(a => a.code === "MIA");
+      document.getElementById("fromText").value = yyz ? airportLabel(yyz) : "YYZ";
+      document.getElementById("toText").value = mia ? airportLabel(mia) : "MIA";
+      document.getElementById("fromPicked").innerHTML = `Selected: <code>YYZ</code> — Toronto (Pearson International)`;
+      document.getElementById("toPicked").innerHTML = `Selected: <code>MIA</code> — Miami (International)`;
+
       flightResults.innerHTML = `<div class="pill">Results cleared.</div>`;
       setFlightStatus("", false);
     });
