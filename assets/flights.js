@@ -320,6 +320,36 @@ function renderFlights(flights) {
   });
 }
 
+  // handle Select + Details with event delegation
+$("flightResults").addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-action]");
+  if (!btn) return;
+
+  const row = e.target.closest(".flight-row");
+  if (!row) return;
+
+  const id = row.getAttribute("data-offer-id");
+  const offer = currentOffers.find(o => o.id === id);
+  if (!offer) return;
+
+  const action = btn.getAttribute("data-action");
+
+  if (action === "select") {
+    selectedOfferId = offer.id;
+    setSelectedBox(offer);
+    renderWithSort();
+    return;
+  }
+
+  if (action === "details") {
+    const panel = row.querySelector(".details-panel");
+    const open = panel.style.display !== "none";
+    panel.style.display = open ? "none" : "block";
+    btn.textContent = open ? "Details" : "Hide details";
+  }
+});
+
+
 // details content (segments + layovers)
 function renderDetailsHtml(o) {
   const segs = o.segments || [];
