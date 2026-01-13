@@ -205,5 +205,27 @@
   <!-- Data + logic -->
   <script src="assets/airports.js"></script>
   <script src="assets/flights.js"></script>
+<script>
+  function toISODateLocal(d = new Date()) {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  const departDate = document.getElementById("departDate");
+
+  const today = toISODateLocal();
+
+  // Block past dates
+  departDate.min = today;
+
+  // If value is already in the past, snap it to today
+  if (departDate.value && departDate.value < today) {
+    departDate.value = today;
+  }
+</script>
+
+  
 </body>
 </html>
