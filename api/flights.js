@@ -1,4 +1,5 @@
 // api/flights.js (Vercel Serverless Function - CommonJS)
+const { interpretAmadeus } = require("./interpreter.js");
 
 let cachedToken = null;
 let cachedTokenExpMs = 0;
@@ -64,9 +65,14 @@ module.exports = async (req, res) => {
     const adults = Math.max(1, Math.min(9, parseInt(req.query.adults || "1", 10) || 1));
     const currency = String(req.query.currency || "CAD").trim().toUpperCase();
 
-    if (!origin || origin.length !== 3) return send(res, 400, { error: "origin must be a 3-letter IATA code (e.g., YYZ)." });
-    if (!destination || destination.length !== 3) return send(res, 400, { error: "destination must be a 3-letter IATA code (e.g., MIA)." });
-    if (!isIsoDate(date)) return send(res, 400, { error: "date must be YYYY-MM-DD." });
+    if (!origin || origin.length !== 3)
+      return send(res, 400, { error: "origin must be a 3-letter IATA code (e.g., YYZ)." });
+
+    if (!destination || destination.length !== 3)
+      return send(res, 400, { error: "destination must be a 3-letter IATA code (e.g., MIA)." });
+
+    if (!isIsoDate(date))
+      return send(res, 400, { error: "date must be YYYY-MM-DD." });
 
     const env = (process.env.AMADEUS_ENV || "test").toLowerCase();
     const base = env === "prod" ? "https://api.amadeus.com" : "https://test.api.amadeus.com";
@@ -87,31 +93,17 @@ module.exports = async (req, res) => {
     });
 
     const data = await r.json().catch(() => ({}));
+
     if (!r.ok) {
       const err = data?.errors?.[0];
-      return send(res, r.status, { error: err?.detail || err?.title || "Flight search failed", raw: data });
+      return send(res, r.status, {
+        error: err?.detail || err?.title || "Flight search failed",
+        raw: data,
+      });
     }
 
-    const offers = (data.data || []).map((offer) => {
-      const itinerary = offer?.itineraries?.[0];
-      const segs = (itinerary?.segments || []).map((s) => ({
-        from: s?.departure?.iataCode,
-        to: s?.arrival?.iataCode,
-        departure: s?.departure?.at,
-        arrival: s?.arrival?.at,
-        carrier: s?.carrierCode,
-        flightNumber: s?.number,
-      }));
-
-      return {
-        id: offer?.id,
-        total: offer?.price?.total,
-        currency: offer?.price?.currency,
-        airline: segs[0]?.carrier || offer?.validatingAirlineCodes?.[0] || "",
-        segments: segs,
-        stops: Math.max(0, segs.length - 1),
-      };
-    });
+    // ✅ interpret here
+    const offers = interpretAmadeus(data);
 
     res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
     return send(res, 200, { query: { origin, destination, date, adults, currency }, offers });
