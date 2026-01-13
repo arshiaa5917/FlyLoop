@@ -127,10 +127,12 @@
       box-shadow:0 0 0 1px rgba(248,113,22,.4);
     }
     .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+    .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
     .btn-primary{
       padding:10px 18px;border-radius:999px;border:none;cursor:pointer;
       background:linear-gradient(135deg,#F97316,#DC2626);
-      color:#020617;font-weight:600;font-size:.9rem;
+      color:#020617;font-weight:700;font-size:.9rem;
       box-shadow:0 12px 30px rgba(248,113,22,.55);
     }
     .btn-outline{
@@ -179,6 +181,10 @@
     .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:60;}
     .sidebar-close{display:none;align-self:flex-end;border:1px solid rgba(148,163,184,.35);
       background:rgba(15,23,42,.55);color:#e5e7eb;border-radius:12px;padding:10px 12px;cursor:pointer;}
+
+    /* small helper text */
+    .help{font-size:.82rem;color:#a1a1aa;margin:6px 0 0}
+
     @media (max-width: 900px){
       .layout{grid-template-columns:1fr}
       .mobile-topbar{display:block}
@@ -196,47 +202,9 @@
     }
   </style>
 </head>
-  <div style="max-width:900px;margin:40px auto;color:white;">
-  <h1>Live Flights</h1>
-
-  <div style="display:flex;gap:10px;margin-bottom:20px;">
-    <input id="origin" placeholder="From (e.g. YYZ)" value="YYZ">
-    <input id="destination" placeholder="To (e.g. MIA)" value="MIA">
-    <input id="date" type="date" value="2026-03-12">
-    <button onclick="searchFlights()">Search</button>
-  </div>
-
-  <div id="results"></div>
-</div>
-
-<script>
-async function searchFlights() {
-  const o = document.getElementById("origin").value;
-  const d = document.getElementById("destination").value;
-  const date = document.getElementById("date").value;
-
-  document.getElementById("results").innerHTML = "Loading…";
-
-  const res = await fetch(`/api/flights?origin=${o}&destination=${d}&date=${date}&adults=1`);
-  const data = await res.json();
-
-  if (!data.offers) {
-    document.getElementById("results").innerText = "No flights found.";
-    return;
-  }
-
-  document.getElementById("results").innerHTML = data.offers.map(f => `
-    <div style="border:1px solid #333;padding:12px;margin-bottom:10px;border-radius:10px;">
-      <strong>${f.airline}</strong> — $${f.total} ${f.currency}<br>
-      Stops: ${f.stops}<br>
-      ${f.segments.map(s => `${s.from} → ${s.to} (${s.departure.slice(11,16)})`).join(" → ")}
-    </div>
-  `).join("");
-}
-</script>
-
 
 <body>
+  <!-- Mobile top bar -->
   <header class="mobile-topbar" aria-label="Mobile header">
     <div class="mobile-topbar-inner">
       <button class="hamburger" id="openNavBtn" type="button" aria-label="Open menu" aria-controls="sidebarNav" aria-expanded="false">
@@ -254,6 +222,7 @@ async function searchFlights() {
   <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
 
   <div class="layout">
+    <!-- Sidebar -->
     <aside class="sidebar" id="sidebarNav" aria-label="Dashboard navigation">
       <button class="sidebar-close" id="closeNavBtn" type="button" aria-label="Close menu">Close ✕</button>
 
@@ -262,29 +231,28 @@ async function searchFlights() {
         <span>FLYLOOP</span>
       </div>
 
-     <div class="sidebar-title">Dashboard</div>
-<div class="sidebar-nav">
-  <a class="sidebar-link" href="dashboard.html#overview">
-    <span class="label">Overview</span>
-    <small>Trips &amp; plan</small>
-  </a>
+      <div class="sidebar-title">Dashboard</div>
+      <div class="sidebar-nav">
+        <a class="sidebar-link" href="dashboard.html#overview">
+          <span class="label">Overview</span>
+          <small>Trips &amp; plan</small>
+        </a>
 
-  <a class="sidebar-link" href="dashboard.html#account">
-    <span class="label">Account</span>
-    <small>Profile &amp; billing</small>
-  </a>
+        <a class="sidebar-link" href="dashboard.html#account">
+          <span class="label">Account</span>
+          <small>Profile &amp; billing</small>
+        </a>
 
-  <a class="sidebar-link active" href="flights.html">
-    <span class="label">Flights</span>
-    <small>Live search</small>
-  </a>
+        <a class="sidebar-link active" href="flights.html">
+          <span class="label">Flights</span>
+          <small>Live search</small>
+        </a>
 
-  <a class="sidebar-link" href="dashboard.html#settings">
-    <span class="label">Settings</span>
-    <small>Preferences</small>
-  </a>
-</div>
-
+        <a class="sidebar-link" href="dashboard.html#settings">
+          <span class="label">Settings</span>
+          <small>Preferences</small>
+        </a>
+      </div>
 
       <div class="sidebar-footer">
         Logged in as <strong>demo@flyloop.com</strong><br />
@@ -292,37 +260,40 @@ async function searchFlights() {
       </div>
     </aside>
 
+    <!-- Main content -->
     <main class="content">
       <div class="eyebrow">Flights</div>
       <h1>Live flight search (concept)</h1>
       <p class="sub">
-        This page is designed to connect to a real flight API (Amadeus/Duffel/etc).
-        For now, it shows the UI and a demo response. When you’re ready, we plug in the backend.
+        This page calls <code>/api/flights</code>. If your backend returns demo data, you’ll see flights.
+        If it returns a real API response later, it will render the same way.
       </p>
 
       <div class="grid">
+        <!-- Search -->
         <div class="card">
           <h3>Search flights</h3>
+
           <form id="flightForm">
             <div class="row2">
               <div class="form-row">
-                <label>From (IATA)</label>
-                <input id="fromIata" type="text" value="YYZ" maxlength="3" />
+                <label for="fromIata">From (IATA)</label>
+                <input id="fromIata" name="fromIata" type="text" value="YYZ" maxlength="3" autocomplete="off" />
               </div>
               <div class="form-row">
-                <label>To (IATA)</label>
-                <input id="toIata" type="text" value="MIA" maxlength="3" />
+                <label for="toIata">To (IATA)</label>
+                <input id="toIata" name="toIata" type="text" value="MIA" maxlength="3" autocomplete="off" />
               </div>
             </div>
 
             <div class="row2">
               <div class="form-row">
-                <label>Departure date (YYYY-MM-DD)</label>
-                <input id="departDate" type="text" value="2026-03-12" />
+                <label for="departDate">Departure date</label>
+                <input id="departDate" name="departDate" type="date" value="2026-03-12" />
               </div>
               <div class="form-row">
-                <label>Adults</label>
-                <select id="adults">
+                <label for="adults">Adults</label>
+                <select id="adults" name="adults">
                   <option value="1" selected>1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
@@ -330,17 +301,23 @@ async function searchFlights() {
               </div>
             </div>
 
-            <button class="btn-primary" type="submit">Search flights</button>
-            <button class="btn-outline" id="clearFlightsBtn" type="button" style="margin-top:10px;">Clear</button>
+            <div class="actions">
+              <button class="btn-primary" type="submit">Search flights</button>
+              <button class="btn-outline" id="clearFlightsBtn" type="button">Clear</button>
+              <span id="flightStatus" class="pill" style="display:none;"></span>
+            </div>
 
-            <div id="flightStatus" class="pill" style="display:none; margin-top:12px;"></div>
+            <div class="help">
+              Tip: open <code>/api/flights?origin=YYZ&amp;destination=MIA&amp;date=2026-03-12&amp;adults=1</code> to test your backend.
+            </div>
           </form>
         </div>
 
+        <!-- Results -->
         <div class="card">
           <h3>Results</h3>
           <div class="results" id="flightResults">
-            <div class="pill">Tip: connect backend later → /api/flights</div>
+            <div class="pill">Enter airports + date, then “Search flights”.</div>
           </div>
         </div>
       </div>
@@ -348,17 +325,7 @@ async function searchFlights() {
   </div>
 
   <script>
-    // Demo UI only (API placeholder)
-    const flightForm = document.getElementById("flightForm");
-    const flightResults = document.getElementById("flightResults");
-    const flightStatus = document.getElementById("flightStatus");
-    const clearFlightsBtn = document.getElementById("clearFlightsBtn");
-
-    function setFlightStatus(msg, show=true){
-      flightStatus.style.display = show ? "inline-flex" : "none";
-      flightStatus.textContent = msg;
-    }
-
+    // ===== Helpers =====
     function escapeHtml(str){
       return String(str)
         .replaceAll("&","&amp;")
@@ -368,61 +335,188 @@ async function searchFlights() {
         .replaceAll("'","&#039;");
     }
 
+    function setFlightStatus(msg, show = true){
+      const el = document.getElementById("flightStatus");
+      el.style.display = show ? "inline-flex" : "none";
+      el.textContent = msg;
+    }
+
+    function normalizeIata(v){
+      return String(v || "").trim().toUpperCase();
+    }
+
+    function isIata3(v){
+      return /^[A-Z]{3}$/.test(v);
+    }
+
+    // Accept either your demo API shape:
+    //   { flights: [...] }
+    // or your older shape:
+    //   { offers: [...] }
+    // or a raw array:
+    //   [...]
+    function pickItems(data){
+      if (!data) return [];
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(data.flights)) return data.flights;
+      if (Array.isArray(data.offers)) return data.offers;
+      return [];
+    }
+
+    function mapToCardModel(item){
+      // Supports multiple possible backends:
+      // Demo backend: { airline, origin, destination, date, departure, arrival, duration, price, currency }
+      // Older backend: { airline, total, currency, stops, segments: [...] }
+      // Anything else: best effort fallback
+
+      // Price
+      const currency = item.currency || "CAD";
+      const total =
+        item.total ??
+        item.price ??
+        item.amount ??
+        item.fare ??
+        "—";
+
+      // Airline
+      const airline = item.airline || item.carrier || item.airlineName || "Airline";
+
+      // Times / route
+      let dep = item.departure || "";
+      let arr = item.arrival || "";
+
+      // If segments exist (Amadeus-style / your older UI)
+      let badge = item.badge || "";
+      if (Array.isArray(item.segments) && item.segments.length){
+        const first = item.segments[0];
+        const last = item.segments[item.segments.length - 1];
+        const from = first.from || first.origin || item.origin || "";
+        const to = last.to || last.destination || item.destination || "";
+        const depT = first.departure || first.departureAt || "";
+        const arrT = last.arrival || last.arrivalAt || "";
+        dep = dep || `${from} ${String(depT).slice(11,16) || ""}`.trim();
+        arr = arr || `${to} ${String(arrT).slice(11,16) || ""}`.trim();
+        const stops = (item.stops != null) ? Number(item.stops) : Math.max(0, item.segments.length - 1);
+        badge = badge || (stops === 0 ? "Nonstop" : `${stops} stop${stops>1?"s":""}`);
+      } else {
+        // fallback if origin/destination exist
+        const origin = item.origin || item.from || "";
+        const destination = item.destination || item.to || "";
+        const dur = item.duration ? ` • ${item.duration}` : "";
+        badge = badge || (item.stops === 0 ? "Nonstop" : (item.stops ? `${item.stops} stops` : "Offer"));
+        if (!dep && origin && item.date) dep = `${origin} ${item.departureTime || "—"}`;
+        if (!arr && destination && item.date) arr = `${destination} ${item.arrivalTime || "—"}`;
+        if (badge === "Offer" && dur) badge = `Offer${dur}`;
+      }
+
+      return {
+        airline,
+        currency,
+        total,
+        dep: dep || "—",
+        arr: arr || "—",
+        badge: badge || "Offer"
+      };
+    }
+
     function renderFlights(items){
+      const flightResults = document.getElementById("flightResults");
       flightResults.innerHTML = "";
+
       if(!items || items.length === 0){
-        flightResults.innerHTML = `<div class="pill">No offers found.</div>`;
+        flightResults.innerHTML = `<div class="pill">No flights found.</div>`;
         return;
       }
-      items.slice(0,8).forEach(f=>{
+
+      items.slice(0, 10).forEach((raw) => {
+        const f = mapToCardModel(raw);
         const price = `${escapeHtml(f.currency)} ${escapeHtml(f.total)}`;
-        const airline = escapeHtml(f.airline || "Airline");
-        const dep = escapeHtml(f.departure || "—");
-        const arr = escapeHtml(f.arrival || "—");
-        const badge = escapeHtml(f.badge || "Offer");
 
         flightResults.innerHTML += `
           <div class="flight-card">
             <div class="flight-top">
-              <div style="font-weight:700;">${airline}</div>
+              <div style="font-weight:700;">${escapeHtml(f.airline)}</div>
               <div class="flight-price">${price}</div>
             </div>
             <div class="flight-meta">
-              <div><span>Depart:</span> ${dep}</div>
-              <div><span>Arrive:</span> ${arr}</div>
+              <div><span>Depart:</span> ${escapeHtml(f.dep)}</div>
+              <div><span>Arrive:</span> ${escapeHtml(f.arr)}</div>
             </div>
-            <div class="flight-badge">${badge}</div>
+            <div class="flight-badge">${escapeHtml(f.badge)}</div>
           </div>
         `;
       });
     }
 
-    flightForm.addEventListener("submit", async (e)=>{
+    // ===== Main: Submit -> Call API =====
+    const flightForm = document.getElementById("flightForm");
+    const clearFlightsBtn = document.getElementById("clearFlightsBtn");
+    const flightResults = document.getElementById("flightResults");
+
+    flightForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const from = document.getElementById("fromIata").value.trim().toUpperCase();
-      const to = document.getElementById("toIata").value.trim().toUpperCase();
-      const date = document.getElementById("departDate").value.trim();
-      const adults = document.getElementById("adults").value;
+      const origin = normalizeIata(document.getElementById("fromIata").value);
+      const destination = normalizeIata(document.getElementById("toIata").value);
+      const date = String(document.getElementById("departDate").value || "").trim();
+      const adults = String(document.getElementById("adults").value || "1").trim();
 
-      setFlightStatus("Searching… (demo mode)");
+      // quick front-end validation (prevents your "origin must be a 3-letter code" error)
+      if (!isIata3(origin)) {
+        setFlightStatus("Origin must be a 3-letter IATA code (e.g., YYZ).");
+        renderFlights([]);
+        return;
+      }
+      if (!isIata3(destination)) {
+        setFlightStatus("Destination must be a 3-letter IATA code (e.g., MIA).");
+        renderFlights([]);
+        return;
+      }
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        setFlightStatus("Date must be YYYY-MM-DD.");
+        renderFlights([]);
+        return;
+      }
 
-      // DEMO results (replace later with: fetch(`/api/flights?...`))
-      await new Promise(r => setTimeout(r, 500));
-      setFlightStatus("Showing demo results (connect API later).");
-      renderFlights([
-        { airline: "Demo Air", currency: "CAD", total: "327", departure: `${from} 08:10`, arrival: `${to} 12:35`, badge: "Nonstop" },
-        { airline: "Loop Airways", currency: "CAD", total: "289", departure: `${from} 10:40`, arrival: `${to} 16:05`, badge: "1 stop" },
-        { airline: "Sky Sample", currency: "CAD", total: "412", departure: `${from} 14:20`, arrival: `${to} 20:55`, badge: "Nonstop" }
-      ]);
+      setFlightStatus("Searching…");
+      flightResults.innerHTML = `<div class="pill">Loading…</div>`;
+
+      try {
+        const url = `/api/flights?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&date=${encodeURIComponent(date)}&adults=${encodeURIComponent(adults)}`;
+        const res = await fetch(url, { headers: { "Accept": "application/json" } });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          setFlightStatus(data && data.error ? data.error : `API error (${res.status}).`);
+          renderFlights([]);
+          return;
+        }
+
+        const items = pickItems(data);
+        if (!items.length) {
+          setFlightStatus("No flights found.");
+          renderFlights([]);
+          return;
+        }
+
+        setFlightStatus(`Found ${items.length} offer${items.length>1?"s":""}.`);
+        renderFlights(items);
+      } catch (err) {
+        setFlightStatus("Network error calling /api/flights.");
+        renderFlights([]);
+      }
     });
 
-    clearFlightsBtn.addEventListener("click", ()=>{
+    clearFlightsBtn.addEventListener("click", () => {
+      document.getElementById("fromIata").value = "YYZ";
+      document.getElementById("toIata").value = "MIA";
+      // keep date/adults as-is
       flightResults.innerHTML = `<div class="pill">Results cleared.</div>`;
       setFlightStatus("", false);
     });
 
-    // Mobile sidebar (off-canvas)
+    // ===== Mobile sidebar (off-canvas) =====
     const sidebar = document.getElementById('sidebarNav');
     const overlay = document.getElementById('sidebarOverlay');
     const openBtn = document.getElementById('openNavBtn');
