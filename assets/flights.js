@@ -247,56 +247,118 @@
   }
 
   // ---------- render result cards (now real flight info + Select button) ----------
+// ---------- render result cards (Skyscanner-ish row layout) ----------
 function renderFlights(flights) {
+  const flightResults = $("flightResults");
   flightResults.innerHTML = "";
 
-  flights.forEach(f => {
-    const first = f.segments[0];
-    const last  = f.segments[f.segments.length - 1];
+  flights.forEach((o) => {
+    const first = o.segments?.[0];
+    const last  = o.segments?.[o.segments.length - 1];
 
-    const departTime = formatTime(first.departure);
-    const arriveTime = formatTime(last.arrival);
+    const origin = first?.from || o.origin || "—";
+    const destination = last?.to || o.destination || "—";
 
-    const route = `${first.from} → ${last.to}`;
-    const stops = f.stops === 0 ? "Direct" : `${f.stops} stop${f.stops > 1 ? "s" : ""}`;
+    const airline = o.airline || "—";
+    const flightNums = (o.flightNums && o.flightNums.length)
+      ? o.flightNums.join(" · ")
+      : (first?.carrier && first?.flightNumber ? `${first.carrier}${first.flightNumber}` : "—");
+
+    const price = fmtMoney(o.currency, o.total);
+
+    const selected = o.id === selectedOfferId;
 
     flightResults.innerHTML += `
-      <div class="flight-card modern">
+      <div class="flight-row ${selected ? "is-selected" : ""}" data-offer-id="${escapeHtml(o.id)}">
 
         <div class="flight-left">
-          <div class="airline">${f.airline}</div>
-          <div class="flight-number">${f.segments.map(s => s.flightNumber).join(" · ")}</div>
+          <div class="airline">${escapeHtml(airline)}</div>
+          <div class="flight-number">${escapeHtml(flightNums)}</div>
         </div>
 
         <div class="flight-middle">
           <div class="timeline">
-            <span class="time">${departTime}</span>
-            <span class="airport">${first.from}</span>
+            <div class="tblock">
+              <div class="time">${escapeHtml(o.departTime)}</div>
+              <div class="airport">${escapeHtml(origin)}</div>
+            </div>
 
-            <span class="line"></span>
-            <span class="plane">✈</span>
+            <div class="midline">
+              <div class="duration">${escapeHtml(o.duration)}</div>
+              <div class="stops">${escapeHtml(o.stopsLabel)}</div>
+              <div class="line"></div>
+            </div>
 
-            <span class="time">${arriveTime}</span>
-            <span class="airport">${last.to}</span>
+            <div class="tblock">
+              <div class="time">${escapeHtml(o.arriveTime)}</div>
+              <div class="airport">${escapeHtml(destination)}</div>
+            </div>
           </div>
 
-          <div class="meta">
-            <span>${f.durationLabel}</span>
-            <span>${stops}</span>
+          <div class="submeta">
+            ${o.stopAirports?.length ? `<span>Via: ${escapeHtml(o.stopAirports.join(" · "))}</span>` : `<span>Nonstop</span>`}
+            ${o.layovers?.some(x => x.mins != null) ? `<span>Layovers: ${escapeHtml(o.layovers.map(l => `${l.at} ${fmtDuration(l.mins)}`).join(" · "))}</span>` : ""}
           </div>
         </div>
 
         <div class="flight-right">
-          <div class="price">CAD ${f.total}</div>
-          <button class="select-btn" onclick='selectFlight(${JSON.stringify(f)})'>
-            Select →
+          <div class="price">${escapeHtml(price)}</div>
+          <button class="select-btn" type="button" data-action="select">
+            ${selected ? "Selected ✓" : "Select →"}
           </button>
+          <button class="details-btn" type="button" data-action="details">
+            Details
+          </button>
+        </div>
+
+        <div class="details-panel" style="display:none;">
+          ${renderDetailsHtml(o)}
         </div>
 
       </div>
     `;
   });
 }
+
+// details content (segments + layovers)
+function renderDetailsHtml(o) {
+  const segs = o.segments || [];
+  if (!segs.length) return `<div class="pill">No segment details.</div>`;
+
+  const rows = segs.map((s, idx) => {
+    const dep = fmtTime(s.departAt);
+    const arr = fmtTime(s.arriveAt);
+    const code = (s.carrier && s.flightNumber) ? `${s.carrier}${s.flightNumber}` : "—";
+    const from = s.from || "—";
+    const to = s.to || "—";
+
+    let lay = "";
+    if (idx < segs.length - 1) {
+      const layMins = minsBetween(s.arriveAt, segs[idx + 1]?.departAt);
+      if (layMins != null && layMins > 0) {
+        lay = `<div class="layover">Layover in <strong>${escapeHtml(to)}</strong>: ${escapeHtml(fmtDuration(layMins))}</div>`;
+      }
+    }
+
+    return `
+      <div class="seg-row">
+        <div class="seg-code">${escapeHtml(code)}</div>
+        <div class="seg-route">
+          <div><strong>${escapeHtml(from)}</strong> ${escapeHtml(dep)} → <strong>${escapeHtml(to)}</strong> ${escapeHtml(arr)}</div>
+        </div>
+      </div>
+      ${lay}
+    `;
+  }).join("");
+
+  return `
+    <div class="details-inner">
+      <div class="details-title">Trip details</div>
+      ${rows}
+    </div>
+  `;
+}
+
 
 
   function renderWithSort() {
