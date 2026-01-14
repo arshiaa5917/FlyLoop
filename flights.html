@@ -6,16 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="FlyLoop flight search concept page (UI + API-ready layout)." />
 
-  <!-- Old design base styles are kept here; the new UI extras are in flights.css -->
   <link rel="stylesheet" href="assets/flights.css" />
 </head>
-  
 
 <body>
   <!-- Mobile top bar -->
   <header class="mobile-topbar" aria-label="Mobile header">
     <div class="mobile-topbar-inner">
-      <button class="hamburger" id="openNavBtn" type="button" aria-label="Open menu" aria-controls="sidebarNav" aria-expanded="false">
+      <button class="hamburger" id="openNavBtn" type="button"
+              aria-label="Open menu" aria-controls="sidebarNav" aria-expanded="false">
         <span class="hamburger-icon" aria-hidden="true"><span></span></span>
         Menu
       </button>
@@ -32,7 +31,9 @@
   <div class="layout">
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebarNav" aria-label="Dashboard navigation">
-      <button class="sidebar-close" id="closeNavBtn" type="button" aria-label="Close menu">Close ✕</button>
+      <button class="sidebar-close" id="closeNavBtn" type="button" aria-label="Close menu">
+        Close ✕
+      </button>
 
       <div class="sidebar-logo">
         <img src="logo.png?v=2" alt="FlyLoop logo" />
@@ -40,24 +41,28 @@
       </div>
 
       <div class="sidebar-title">Dashboard</div>
-      <div class="sidebar-nav">
+
+      <nav class="sidebar-nav" aria-label="Dashboard pages">
         <a class="sidebar-link" href="dashboard.html#overview">
           <span class="label">Overview</span>
           <small>Trips &amp; plan</small>
         </a>
+
         <a class="sidebar-link" href="dashboard.html#account">
           <span class="label">Account</span>
           <small>Profile &amp; billing</small>
         </a>
-        <a class="sidebar-link active" href="flights.html">
+
+        <a class="sidebar-link active" href="flights.html" aria-current="page">
           <span class="label">Flights</span>
           <small>Live search</small>
         </a>
+
         <a class="sidebar-link" href="dashboard.html#settings">
           <span class="label">Settings</span>
           <small>Preferences</small>
         </a>
-      </div>
+      </nav>
 
       <div class="sidebar-footer">
         Logged in as <strong>demo@flyloop.com</strong><br />
@@ -68,24 +73,26 @@
     <!-- Main content -->
     <main class="content">
       <div class="eyebrow">Flights</div>
-<h1>Live flight search</h1>
+      <h1>Live flight search</h1>
 
-       
-      </p>
-
-      <!-- NEW: top buttons (same idea as the screenshot) -->
+      <!-- Top tabs -->
       <div class="top-tabs" role="tablist" aria-label="Product tabs">
-        <button class="tab-btn active" id="tabFlights" type="button" aria-selected="true">✈️ Flights</button>
-        <button class="tab-btn" id="tabHotels" type="button" aria-selected="false">🛏️ Hotels</button>
-        <button class="tab-btn" id="tabCars" type="button" aria-selected="false">🚗 Cars</button>
+        <button class="tab-btn active" id="tabFlights" type="button" role="tab" aria-selected="true">
+          ✈️ Flights
+        </button>
+        <button class="tab-btn" id="tabHotels" type="button" role="tab" aria-selected="false">
+          🛏️ Hotels
+        </button>
+        <button class="tab-btn" id="tabCars" type="button" role="tab" aria-selected="false">
+          🚗 Cars
+        </button>
       </div>
 
       <div class="grid">
         <!-- Search -->
-        <div class="card">
+        <section class="card" aria-label="Flight search">
           <h3>Search</h3>
 
-          <!-- NEW: trip type + travelers (kept light) -->
           <div class="mini-row">
             <select id="tripType" class="mini-select" aria-label="Trip type">
               <option value="oneway" selected>One way</option>
@@ -107,19 +114,23 @@
             </select>
           </div>
 
-          <form id="flightForm">
+          <form id="flightForm" novalidate>
             <!-- From / Swap / To -->
             <div class="swap-row">
               <div class="form-row">
                 <label for="fromText">From</label>
+
                 <div class="combo" data-combo="origin">
-                  <input id="fromText" class="combo-input" type="text" placeholder="Type city or IATA (YYZ)" autocomplete="off" />
+                  <input id="fromText" class="combo-input" type="text"
+                         placeholder="Type city or IATA (YYZ)" autocomplete="off" />
                   <button class="combo-clear" id="fromClear" type="button" aria-label="Clear origin">✕</button>
+
                   <div class="combo-panel" role="listbox" aria-label="Origin airports">
                     <div class="combo-list"></div>
                     <div class="combo-empty">No matches.</div>
                   </div>
                 </div>
+
                 <input id="fromIata" type="hidden" value="YYZ" />
               </div>
 
@@ -127,33 +138,37 @@
 
               <div class="form-row">
                 <label for="toText">To</label>
+
                 <div class="combo" data-combo="destination">
-                  <input id="toText" class="combo-input" type="text" placeholder="Type city or IATA (MIA)" autocomplete="off" />
+                  <input id="toText" class="combo-input" type="text"
+                         placeholder="Type city or IATA (MIA)" autocomplete="off" />
                   <button class="combo-clear" id="toClear" type="button" aria-label="Clear destination">✕</button>
+
                   <div class="combo-panel" role="listbox" aria-label="Destination airports">
                     <div class="combo-list"></div>
                     <div class="combo-empty">No matches.</div>
                   </div>
                 </div>
+
                 <input id="toIata" type="hidden" value="MIA" />
               </div>
             </div>
 
-            <!-- Date + package toggles -->
+            <!-- Date + options -->
             <div class="row2">
-  <div class="form-row depart-col">
-    <label for="departDate">Departure date</label>
-    <input id="departDate" type="date" value="2026-03-12" />
-  </div>
+              <div class="form-row depart-col">
+                <label for="departDate">Departure date</label>
+                <input id="departDate" type="date" value="2026-03-12" />
+              </div>
 
-  <div class="form-row options-col">
-    <label>Options</label>
-    <div class="checks">
-      <label class="check"><input id="nearbyFrom" type="checkbox"> Nearby airports</label>
-      <label class="check"><input id="addHotel" type="checkbox"> Add a hotel</label>
-    </div>
-  </div>
-</div>
+              <div class="form-row options-col">
+                <label>Options</label>
+                <div class="checks">
+                  <label class="check"><input id="nearbyFrom" type="checkbox"> Nearby airports</label>
+                  <label class="check"><input id="addHotel" type="checkbox"> Add a hotel</label>
+                </div>
+              </div>
+            </div>
 
             <div class="actions">
               <button class="btn-primary" type="submit">Search</button>
@@ -161,14 +176,13 @@
               <span id="statusPill" class="pill" style="display:none;"></span>
             </div>
           </form>
-        </div>
+        </section>
 
-        <!-- Results BELOW search (old request) -->
-        <div class="card" id="resultsCard">
+        <!-- Results -->
+        <section class="card" id="resultsCard" aria-label="Results">
           <div class="results-head">
             <h3 style="margin:0;">Results</h3>
 
-            <!-- NEW: sort drop-down like the screenshot -->
             <div class="sort-inline">
               <label for="sortSelect" class="sort-label">Sort</label>
               <select id="sortSelect" class="mini-select">
@@ -180,7 +194,6 @@
             </div>
           </div>
 
-          <!-- NEW: Best/Cheapest/Fastest pills (light) -->
           <div class="summary-row" id="summaryRow" style="display:none;">
             <button class="summary-pill active" type="button" data-preset="best">Best <span id="bestMeta">—</span></button>
             <button class="summary-pill" type="button" data-preset="price">Cheapest <span id="cheapMeta">—</span></button>
@@ -190,42 +203,41 @@
           <div class="results" id="flightResults">
             <div class="pill">Search to see results.</div>
           </div>
-        </div>
+        </section>
 
-        <!-- Optional: Package box (future-ready) -->
-        <div class="card" id="packageCard" style="display:none;">
-          <h3>Package ( + Hotel)</h3>
+        <!-- Package (optional) -->
+        <section class="card" id="packageCard" style="display:none;" aria-label="Package">
+          <h3>Package (+ Hotel)</h3>
           <div class="pill">UI placeholder — later: hotel search + combined price.</div>
           <div id="hotelResults" class="results" style="margin-top:10px;"></div>
-        </div>
+        </section>
       </div>
     </main>
   </div>
 
-  <!-- Data + logic -->
+  <!-- Scripts -->
   <script src="assets/airports.js"></script>
-  <script src="assets/.js"></script>
-<script>
-  function toISODateLocal(d = new Date()) {
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
 
-  const departDate = document.getElementById("departDate");
+  <!-- IMPORTANT: replace this with your real JS file name -->
+  <script src="assets/flights.js"></script>
 
-  const today = toISODateLocal();
+  <!-- Date min guard -->
+  <script>
+    function toISODateLocal(d = new Date()) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
 
-  // Block past dates
-  departDate.min = today;
+    const departDate = document.getElementById("departDate");
+    const today = toISODateLocal();
 
-  // If value is already in the past, snap it to today
-  if (departDate.value && departDate.value < today) {
-    departDate.value = today;
-  }
-</script>
+    departDate.min = today;
 
-  
+    if (departDate.value && departDate.value < today) {
+      departDate.value = today;
+    }
+  </script>
 </body>
 </html>
