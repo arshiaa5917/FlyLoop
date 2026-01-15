@@ -698,8 +698,11 @@
 
     try {
       // ✅ FIX: use from/to keys (NOT origin/destination)
-      const url =
-        `/api/flights?from=${encodeURIComponent(origin)}&to=${encodeURIComponent(destination)}&date=${encodeURIComponent(date)}&adults=${encodeURIComponent(adults)}&cabin=${encodeURIComponent(cabin)}`;
+     const url =
+  `/api/flights?` +
+  `origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}` +   // backend-friendly
+  `&from=${encodeURIComponent(origin)}&to=${encodeURIComponent(destination)}` +            // frontend-friendly (optional)
+  `&date=${encodeURIComponent(date)}&adults=${encodeURIComponent(adults)}&cabin=${encodeURIComponent(cabin)}`;
 
       const res = await fetch(url, { headers: { Accept: "application/json" } });
 
