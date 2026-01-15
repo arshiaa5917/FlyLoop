@@ -217,6 +217,8 @@
 
   <!-- Scripts -->
   <script src="assets/airports.js"></script>
+
+  <!-- IMPORTANT: replace this with your real JS file name -->
   <script src="assets/flights.js"></script>
 
   <!-- Date min guard -->
