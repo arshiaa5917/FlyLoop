@@ -207,7 +207,7 @@
                     <label>Options</label>
                     <div class="checks">
                       <label class="check"><input id="nearbyFrom" type="checkbox"> Nearby airports</label>
-                      <label class="check"><input id="addHotel" type="checkbox"> Add a hotel</label>
+                      
 
                      
                     </div>
@@ -227,6 +227,14 @@
             <section class="card" id="resultsCard" aria-label="Results">
               <div class="results-head">
                 <h3 style="margin:0;">Results</h3>
+
+               <div class="actions" style="margin-top:12px;">
+               <button class="btn-primary" id="flightContinueBtn" type="button" disabled>
+               Continue
+              </button>
+              <span class="pill" id="flightContinuePill" style="display:none;"></span>
+               </div>
+
 
                 <div class="sort-inline">
                   <label for="sortSelect" class="sort-label">Sort</label>
