@@ -115,11 +115,13 @@
                 aria-selected="false" aria-controls="panelHotels">
           🛏️ Hotels
         </button>
-        <button class="tab-btn" id="tabCars" type="button" role="tab"
-                aria-selected="false" aria-controls="panelCars">
-          🚗 Cars
-        </button>
+        <button class="tab-btn" id="tabPackage" type="button" role="tab" aria-selected="false" aria-controls="panelPackage">
+  📦 Package
+</button>
+
       </div>
+
+     
 
       <!-- ✅ TAB PANELS WRAPPER (THIS IS THE "CONNECT IT" PART) -->
       <div class="tab-panels">
@@ -299,21 +301,31 @@
         </section>
 
         <!-- =========================
-             CARS TAB PANEL (placeholder)
+             PACKAGE TAB PANEL (placeholder)
         ========================== -->
-        <section id="panelCars" role="tabpanel" aria-labelledby="tabCars" hidden>
-          <div class="grid">
-            <section class="card" aria-label="Cars">
-              <h3>Cars</h3>
-              <div class="pill">Coming soon.</div>
-            </section>
-          </div>
-        </section>
+     
 
+ <section id="panelPackage" role="tabpanel" aria-labelledby="tabPackage" hidden>
+  <div class="grid">
+    <!-- Package (moved here) -->
+    <section class="card" id="packageCard" aria-label="Package">
+      <h3>Package (+ Hotel)</h3>
+      <div class="pill">UI placeholder — later: hotel search + combined price.</div>
+      <div id="hotelResults" class="results" style="margin-top:10px;"></div>
+    </section>
+
+    <!-- Optional: package search controls -->
+    <section class="card" aria-label="Package search">
+      <h3>Build a package</h3>
+      <div class="pill">Use the Flights tab to search flights. Then come here to add a hotel.</div>
+
+      <div class="actions" style="margin-top:12px;">
+        <button class="btn-primary" id="packageLoadFromFlight" type="button">Use current flight search</button>
+        <button class="btn-outline" id="packageDemoHotels" type="button">Show demo hotels</button>
       </div>
-      <!-- /tab-panels -->
-    </main>
+    </section>
   </div>
+</section>
 
   <!-- Scripts -->
   <script src="assets/airports.js"></script>
