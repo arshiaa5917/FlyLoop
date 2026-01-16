@@ -26,30 +26,29 @@
 }
 .hotel-actions{ display:flex; gap:10px; margin-top: 12px; flex-wrap:wrap; }
 
-/* Floating Continue button */
+/* Bottom-right Continue button */
 .floating-continue{
   position: fixed;
   right: 22px;
   bottom: 22px;
-  z-index: 9999;
-
+  z-index: 999;
   padding: 14px 18px;
   border-radius: 999px;
-
-  border: 1px solid rgba(249,115,22,.35);
-  background: linear-gradient(180deg, rgba(249,115,22,.95), rgba(249,115,22,.72));
-  color: #0b0b0b;
-  font-weight: 900;
+  border: 0;
   cursor: pointer;
-
+  font-weight: 800;
   box-shadow: 0 18px 40px rgba(0,0,0,.55);
 }
-.floating-continue:hover { transform: translateY(-1px); }
 
-@media (max-width: 760px){
-  .floating-continue{
-    right: 14px;
-    bottom: 14px;
-    padding: 12px 16px;
-  }
+/* Make it look like your orange primary */
+.floating-continue{
+  background: linear-gradient(90deg, #F97316, #EA580C);
+  color: #0b0b0b;
+}
+
+.floating-continue:disabled{
+  opacity: .6;
+  cursor: not-allowed;
+}
+
 }
