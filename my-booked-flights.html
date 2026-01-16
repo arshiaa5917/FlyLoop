@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Booked Flights – FlyLoop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="assets/flights.css" />
+</head>
+<body>
+  <div class="layout">
+    <main class="content" style="padding-top:30px;">
+      <div class="eyebrow">Dashboard</div>
+      <h1>My Booked Flights</h1>
+
+      <section class="card" aria-label="Booked flights">
+        <div class="results" id="orders">
+          <div class="pill">Loading…</div>
+        </div>
+      </section>
+
+      <div class="actions" style="margin-top:16px;">
+        <a class="btn-outline" href="dashboard.html#overview">Back to Dashboard</a>
+        <a class="btn-primary" href="flights.html">Book another flight</a>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const ORDERS_KEY = "flyloop_booked_flights";
+    const ordersEl = document.getElementById("orders");
+
+    const orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
+
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    if (!orders.length) {
+      ordersEl.innerHTML = `<div class="pill">No booked flights yet.</div>`;
+    } else {
+      ordersEl.innerHTML = orders.map(o => {
+        const route = `${o.origin || "—"} → ${o.destination || "—"}`;
+        const date = o.departDate || "—";
+        const price = o.priceText || "CAD —";
+        const id = o.id || "—";
+        return `
+          <div class="hotel-item">
+            <div class="hotel-top">
+              <div>
+                <div class="hotel-name">${escapeHtml(route)} <span class="pill" style="margin-left:8px;">${escapeHtml(o.status || "Booked")}</span></div>
+                <div class="hotel-sub">Departure: ${escapeHtml(date)} • Cabin: ${escapeHtml(o.cabin || "ECONOMY")} • Pax: ${escapeHtml(o.adults || 1)}</div>
+                <div class="hotel-sub">Order: ${escapeHtml(id)}</div>
+              </div>
+              <div class="pill">${escapeHtml(price)}</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+  </script>
+</body>
+</html>
