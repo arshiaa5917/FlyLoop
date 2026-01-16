@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -13,7 +13,7 @@
     .tab-panels { margin-top: 0; }
     .tab-panels [role="tabpanel"][hidden] { display: none !important; }
 
-    /* Hotels demo results (uses your existing .results container too) */
+    /* Hotels demo results */
     .hotel-item{
       border: 1px solid rgba(148,163,184,.25);
       border-radius: 14px;
@@ -21,9 +21,7 @@
       background: rgba(2,6,23,.35);
       margin: 10px 0;
     }
-    .hotel-top{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
-    }
+    .hotel-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
     .hotel-name{ font-weight: 800; }
     .hotel-sub{ opacity:.78; font-size: 13px; margin-top: 2px; }
     .hotel-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top: 10px; }
@@ -111,24 +109,22 @@
                 aria-selected="true" aria-controls="panelFlights">
           ✈️ Flights
         </button>
+
         <button class="tab-btn" id="tabHotels" type="button" role="tab"
                 aria-selected="false" aria-controls="panelHotels">
           🛏️ Hotels
         </button>
-        <button class="tab-btn" id="tabPackage" type="button" role="tab" aria-selected="false" aria-controls="panelPackage">
-  📦 Package
-</button>
 
+        <button class="tab-btn" id="tabPackage" type="button" role="tab"
+                aria-selected="false" aria-controls="panelPackage">
+          📦 Package
+        </button>
       </div>
 
-     
-
-      <!-- ✅ TAB PANELS WRAPPER (THIS IS THE "CONNECT IT" PART) -->
+      <!-- TAB PANELS -->
       <div class="tab-panels">
 
-        <!-- =========================
-             FLIGHTS TAB PANEL (your existing content)
-        ========================== -->
+        <!-- FLIGHTS PANEL -->
         <section id="panelFlights" role="tabpanel" aria-labelledby="tabFlights">
           <div class="grid">
             <!-- Search -->
@@ -207,13 +203,10 @@
                     <label>Options</label>
                     <div class="checks">
                       <label class="check"><input id="nearbyFrom" type="checkbox"> Nearby airports</label>
-                      
-
-                     
+                      <!-- ✅ Removed Add hotel (you asked to remove it) -->
                     </div>
                   </div>
                 </div>
-
 
                 <div class="actions">
                   <button class="btn-primary" type="submit">Search</button>
@@ -228,14 +221,6 @@
               <div class="results-head">
                 <h3 style="margin:0;">Results</h3>
 
-               <div class="actions" style="margin-top:12px;">
-               <button class="btn-primary" id="flightContinueBtn" type="button" disabled>
-               Continue
-              </button>
-              <span class="pill" id="flightContinuePill" style="display:none;"></span>
-               </div>
-
-
                 <div class="sort-inline">
                   <label for="sortSelect" class="sort-label">Sort</label>
                   <select id="sortSelect" class="mini-select">
@@ -245,6 +230,12 @@
                     <option value="depart">Depart time</option>
                   </select>
                 </div>
+              </div>
+
+              <!-- ✅ Continue area (kept, but moved OUT of results-head to avoid layout issues) -->
+              <div class="actions" style="margin-top:12px;">
+                <button class="btn-primary" id="flightContinueBtn" type="button" disabled>Continue</button>
+                <span class="pill" id="flightContinuePill" style="display:none;"></span>
               </div>
 
               <div class="summary-row" id="summaryRow" style="display:none;">
@@ -257,31 +248,22 @@
                 <div class="pill">Search to see results.</div>
               </div>
             </section>
-
-            <!-- Package (optional) -->
-            <section class="card" id="packageCard" style="display:none;" aria-label="Package">
-              <h3>Package (+ Hotel)</h3>
-              <div class="pill">UI placeholder — later: hotel search + combined price.</div>
-              <div id="hotelResults" class="results" style="margin-top:10px;"></div>
-            </section>
           </div>
         </section>
 
-        <!-- =========================
-             HOTELS TAB PANEL (new)
-        ========================== -->
+        <!-- HOTELS PANEL -->
         <section id="panelHotels" role="tabpanel" aria-labelledby="tabHotels" hidden>
           <div class="grid">
             <section class="card" aria-label="Hotel search">
               <h3>Hotels</h3>
 
               <div class="mini-row">
-               <input id="hotelCity" class="mini-select" style="width:100%;" type="text"
-                list="hotelCities" placeholder="Choose a city…" autocomplete="off" />
-               <datalist id="hotelCities"></datalist>
+                <input id="hotelCity" class="mini-select" style="width:100%;" type="text"
+                       list="hotelCities" placeholder="Choose a city…" autocomplete="off" />
+                <datalist id="hotelCities"></datalist>
 
-               <input id="hotelCheckin" class="mini-select" style="width:100%;" type="date" aria-label="Check-in" />
-<input id="hotelCheckout" class="mini-select" style="width:100%;" type="date" aria-label="Check-out" />
+                <input id="hotelCheckin" class="mini-select" style="width:100%;" type="date" aria-label="Check-in" />
+                <input id="hotelCheckout" class="mini-select" style="width:100%;" type="date" aria-label="Check-out" />
 
                 <select id="hotelGuests" class="mini-select" aria-label="Guests">
                   <option value="1">1 guest</option>
@@ -311,38 +293,42 @@
           </div>
         </section>
 
-        <!-- =========================
-             PACKAGE TAB PANEL (placeholder)
-        ========================== -->
-     
+        <!-- PACKAGE PANEL -->
+        <section id="panelPackage" role="tabpanel" aria-labelledby="tabPackage" hidden>
+          <div class="grid">
+            <section class="card" id="packageCard" aria-label="Package">
+              <h3>Package (+ Hotel)</h3>
+              <div class="pill">UI placeholder — later: hotel search + combined price.</div>
 
- <section id="panelPackage" role="tabpanel" aria-labelledby="tabPackage" hidden>
-  <div class="grid">
-    <!-- Package (moved here) -->
-    <section class="card" id="packageCard" aria-label="Package">
-      <h3>Package (+ Hotel)</h3>
-      <div class="pill">UI placeholder — later: hotel search + combined price.</div>
-      <div id="hotelResults" class="results" style="margin-top:10px;"></div>
-    </section>
+              <!-- ✅ IMPORTANT: unique ID (you had duplicate "hotelResults") -->
+              <div id="packageHotelResults" class="results" style="margin-top:10px;">
+                <div class="pill">Choose a tour/package to see details.</div>
+              </div>
+            </section>
 
-    <!-- Optional: package search controls -->
-    <section class="card" aria-label="Package search">
-      <h3>Build a package</h3>
-      <div class="pill">Use the Flights tab to search flights. Then come here to add a hotel.</div>
+            <section class="card" aria-label="Package search">
+              <h3>Build a package</h3>
+              <div class="pill">In the future: tours with flights + hotels included, with upgrades.</div>
 
-      <div class="actions" style="margin-top:12px;">
-        <button class="btn-primary" id="packageLoadFromFlight" type="button">Use current flight search</button>
-        <button class="btn-outline" id="packageDemoHotels" type="button">Show demo hotels</button>
+              <div class="actions" style="margin-top:12px;">
+                <button class="btn-primary" id="packageLoadFromFlight" type="button">Use current flight search</button>
+                <button class="btn-outline" id="packageDemoHotels" type="button">Show demo packages</button>
+              </div>
+            </section>
+          </div>
+        </section>
+
       </div>
-    </section>
+      <!-- /tab-panels -->
+    </main>
   </div>
-</section>
+  <!-- /layout -->
 
   <!-- Scripts -->
   <script src="assets/airports.js"></script>
   <script src="assets/flights.js"></script>
 
-  <!-- Date min guard -->
+  <!-- Date min guard (Flights depart date) -->
   <script>
     function toISODateLocal(d = new Date()) {
       const year = d.getFullYear();
@@ -359,21 +345,22 @@
     }
   </script>
 
-  <!-- ✅ Tabs + Hotels demo logic -->
+  <!-- Tabs + Hotels UX -->
   <script>
     (() => {
-   
-const TABS = [
-  { btn: "tabFlights",  panel: "panelFlights"  },
-  { btn: "tabHotels",   panel: "panelHotels"   },
-  { btn: "tabPackage",  panel: "panelPackage"  },
-];
+      const $ = (id) => document.getElementById(id);
+
+      const TABS = [
+        { btn: "tabFlights",  panel: "panelFlights"  },
+        { btn: "tabHotels",   panel: "panelHotels"   },
+        { btn: "tabPackage",  panel: "panelPackage"  },
+      ];
 
       function setActive(tabBtnId) {
         TABS.forEach(t => {
-          const btn = document.getElementById(t.btn);
-          const panel = document.getElementById(t.panel);
-          const on = t.btn === tabBtnId;
+          const btn = $(t.btn);
+          const panel = $(t.panel);
+          const on = (t.btn === tabBtnId);
 
           if (btn) {
             btn.classList.toggle("active", on);
@@ -386,21 +373,9 @@ const TABS = [
 
       // Click handlers
       TABS.forEach(t => {
-        const btn = document.getElementById(t.btn);
+        const btn = $(t.btn);
         if (btn) btn.addEventListener("click", () => setActive(t.btn));
       });
-
-     // ✅ When "Add a hotel" is checked → switch to Package tab
-const addHotelCheckbox = document.getElementById("addHotel");
-
-if (addHotelCheckbox) {
-  addHotelCheckbox.addEventListener("change", () => {
-    if (addHotelCheckbox.checked) {
-      setActive("tabPackage");
-    }
-  });
-}
-
 
       // Keyboard support (left/right arrows)
       const tablist = document.querySelector(".top-tabs");
@@ -408,11 +383,11 @@ if (addHotelCheckbox) {
         tablist.addEventListener("keydown", (e) => {
           if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
 
-          const buttons = TABS.map(t => document.getElementById(t.btn)).filter(Boolean);
+          const buttons = TABS.map(t => $(t.btn)).filter(Boolean);
           const idx = buttons.findIndex(b => b.getAttribute("aria-selected") === "true");
           if (idx < 0) return;
 
-          const nextIdx = e.key === "ArrowRight"
+          const nextIdx = (e.key === "ArrowRight")
             ? (idx + 1) % buttons.length
             : (idx - 1 + buttons.length) % buttons.length;
 
@@ -424,9 +399,7 @@ if (addHotelCheckbox) {
       // Init default
       setActive("tabFlights");
 
-      // Hotels demo
-      const $ = (id) => document.getElementById(id);
-
+      // ---------- Hotels helpers ----------
       function showHotelStatus(msg, show = true) {
         const el = $("hotelStatus");
         if (!el) return;
@@ -442,108 +415,73 @@ if (addHotelCheckbox) {
           .replaceAll('"', "&quot;")
           .replaceAll("'", "&#039;");
       }
-     // ----------------------------
-// Hotels: City dropdown + date guards
-// ----------------------------
-(function initHotelsUX() {
-  const cityInput = document.getElementById("hotelCity");
-  const cityList  = document.getElementById("hotelCities");
-  const checkIn   = document.getElementById("hotelCheckin");
-  const checkOut  = document.getElementById("hotelCheckout");
 
-  // If Hotels panel isn't on this page, just skip.
-  if (!cityInput || !cityList || !checkIn || !checkOut) return;
+      // Hotels: city dropdown + date guards
+      (function initHotelsUX() {
+        const cityInput = $("hotelCity");
+        const cityList  = $("hotelCities");
+        const checkIn   = $("hotelCheckin");
+        const checkOut  = $("hotelCheckout");
+        if (!cityInput || !cityList || !checkIn || !checkOut) return;
 
-  function toISODateLocal(d = new Date()) {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${y}-${m}-${day}`;
-  }
+        function toISODateLocal2(d = new Date()) {
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, "0");
+          const day = String(d.getDate()).padStart(2, "0");
+          return `${y}-${m}-${day}`;
+        }
 
-  function addDaysISO(iso, days) {
-    const [y, m, d] = iso.split("-").map(Number);
-    const dt = new Date(y, (m - 1), d);
-    dt.setDate(dt.getDate() + days);
-    return toISODateLocal(dt);
-  }
+        function addDaysISO(iso, days) {
+          const [y, m, d] = iso.split("-").map(Number);
+          const dt = new Date(y, (m - 1), d);
+          dt.setDate(dt.getDate() + days);
+          return toISODateLocal2(dt);
+        }
 
-  // 1) City dropdown from airports.js (same dataset as flights)
-  const AIRPORTS = window.AIRPORTS || [];
-  const uniqueCities = Array.from(
-    new Set(
-      AIRPORTS
-        .map(a => (a && a.city ? String(a.city).trim() : ""))
-        .filter(Boolean)
-    )
-  ).sort((a, b) => a.localeCompare(b));
+        // City dropdown from airports.js
+        const AIRPORTS = window.AIRPORTS || [];
+        const uniqueCities = Array.from(
+          new Set(
+            AIRPORTS
+              .map(a => (a && a.city ? String(a.city).trim() : ""))
+              .filter(Boolean)
+          )
+        ).sort((a, b) => a.localeCompare(b));
 
-  cityList.innerHTML = uniqueCities
-    .map(c => `<option value="${c.replaceAll('"', "&quot;")}"></option>`)
-    .join("");
+        cityList.innerHTML = uniqueCities
+          .map(c => `<option value="${c.replaceAll('"', "&quot;")}"></option>`)
+          .join("");
 
-  // 2) Date restrictions:
-  // - no date before today
-  // - checkout must be strictly after checkin (>= checkin+1 day)
-  const today = toISODateLocal();
-  checkIn.min = today;
+        // Date restrictions
+        const today = toISODateLocal2();
+        checkIn.min = today;
 
-  // If check-in empty or in the past, set it to today
-  if (!checkIn.value || checkIn.value < today) {
-    checkIn.value = today;
-  }
+        if (!checkIn.value || checkIn.value < today) checkIn.value = today;
 
-  // Checkout must be at least next day (strictly greater than)
-  function syncCheckoutMin() {
-    const minCheckout = addDaysISO(checkIn.value, 1);
-    checkOut.min = minCheckout;
+        function syncCheckoutMin() {
+          const minCheckout = addDaysISO(checkIn.value, 1);
+          checkOut.min = minCheckout;
+          if (!checkOut.value || checkOut.value < minCheckout) checkOut.value = minCheckout;
+        }
 
-    // If checkout empty or invalid, auto-fix to minCheckout
-    if (!checkOut.value || checkOut.value < minCheckout) {
-      checkOut.value = minCheckout;
-    }
-  }
+        checkIn.addEventListener("change", () => {
+          if (checkIn.value < today) checkIn.value = today;
+          syncCheckoutMin();
+        });
 
-  // Also disallow checkout before today+1 if checkin changes
-  checkIn.addEventListener("change", () => {
-    if (checkIn.value < today) checkIn.value = today;
-    syncCheckoutMin();
-  });
+        checkOut.addEventListener("change", () => {
+          const minCheckout = addDaysISO(checkIn.value, 1);
+          if (checkOut.value < minCheckout) checkOut.value = minCheckout;
+        });
 
-  checkOut.addEventListener("change", () => {
-    const minCheckout = addDaysISO(checkIn.value, 1);
-    if (checkOut.value < minCheckout) checkOut.value = minCheckout;
-  });
-
-  // Initialize
-  syncCheckoutMin();
-
-  // Optional: validate city is in list (if you want strict cities only)
-  // If you want to force only known cities, uncomment below:
-  /*
-  cityInput.addEventListener("blur", () => {
-    const v = cityInput.value.trim();
-    if (!v) return;
-    const ok = uniqueCities.some(c => c.toLowerCase() === v.toLowerCase());
-    if (!ok) cityInput.value = "";
-  });
-  */
-})();
-/////////////////////////////
-     const inDate = document.getElementById("hotelCheckin").value;
-const outDate = document.getElementById("hotelCheckout").value;
-
-if (!inDate || !outDate || outDate <= inDate) {
-  showHotelStatus("Fix dates: checkout must be after check-in.");
-  return;
-}
-////////////////
+        syncCheckoutMin();
+      })();
 
       function renderHotels(city) {
         const results = $("hotelsResults");
         if (!results) return;
 
-        const c = city.trim() || "Your city";
+        const c = (city || "").trim() || "Your city";
         results.innerHTML = `
           <div class="hotel-item">
             <div class="hotel-top">
@@ -609,6 +547,15 @@ if (!inDate || !outDate || outDate <= inDate) {
 
       if (hotelSearchBtn) {
         hotelSearchBtn.addEventListener("click", () => {
+          const inDate = $("hotelCheckin")?.value || "";
+          const outDate = $("hotelCheckout")?.value || "";
+
+          // ✅ Date validation MUST be inside the click handler (yours was outside and broke the whole script)
+          if (!inDate || !outDate || outDate <= inDate) {
+            showHotelStatus("Fix dates: checkout must be after check-in.");
+            return;
+          }
+
           showHotelStatus("Searching…");
           const city = ($("hotelCity")?.value || "").trim();
           renderHotels(city);
@@ -619,11 +566,38 @@ if (!inDate || !outDate || outDate <= inDate) {
       if (hotelClearBtn) {
         hotelClearBtn.addEventListener("click", () => {
           if ($("hotelCity")) $("hotelCity").value = "";
-          if ($("hotelCheckin")) $("hotelCheckin").value = "";
-          if ($("hotelCheckout")) $("hotelCheckout").value = "";
+          // Keep date mins; clearing dates is OK but UX is nicer to keep them valid:
+          // We'll reset to today + next day.
+          const ci = $("hotelCheckin");
+          const co = $("hotelCheckout");
+          if (ci && co) {
+            const today = (function(d=new Date()){
+              const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
+              return `${y}-${m}-${day}`;
+            })();
+            ci.value = today;
+            // set checkout to tomorrow
+            const dt = new Date();
+            dt.setDate(dt.getDate()+1);
+            const y=dt.getFullYear(), m=String(dt.getMonth()+1).padStart(2,"0"), day=String(dt.getDate()).padStart(2,"0");
+            co.value = `${y}-${m}-${day}`;
+          }
+
           if ($("hotelGuests")) $("hotelGuests").value = "2";
           if ($("hotelsResults")) $("hotelsResults").innerHTML = `<div class="pill">Search to see results.</div>`;
           showHotelStatus("", false);
+        });
+      }
+
+      // Package demo button (optional)
+      const packageDemoHotels = $("packageDemoHotels");
+      if (packageDemoHotels) {
+        packageDemoHotels.addEventListener("click", () => {
+          const box = $("packageHotelResults");
+          if (!box) return;
+          box.innerHTML = `
+            <div class="pill">Demo tours coming next: flight + hotel bundles with upgrades.</div>
+          `;
         });
       }
     })();
