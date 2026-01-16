@@ -263,9 +263,13 @@
               <h3>Hotels</h3>
 
               <div class="mini-row">
-                <input id="hotelCity" class="mini-select" style="width:100%;" type="text" placeholder="City (e.g., Paris)" />
-                <input id="hotelCheckin" class="mini-select" style="width:100%;" type="date" aria-label="Check-in" />
-                <input id="hotelCheckout" class="mini-select" style="width:100%;" type="date" aria-label="Check-out" />
+               <input id="hotelCity" class="mini-select" style="width:100%;" type="text"
+                list="hotelCities" placeholder="Choose a city…" autocomplete="off" />
+               <datalist id="hotelCities"></datalist>
+
+               <input id="hotelCheckin" class="mini-select" style="width:100%;" type="date" aria-label="Check-in" />
+<input id="hotelCheckout" class="mini-select" style="width:100%;" type="date" aria-label="Check-out" />
+
                 <select id="hotelGuests" class="mini-select" aria-label="Guests">
                   <option value="1">1 guest</option>
                   <option value="2" selected>2 guests</option>
@@ -402,6 +406,102 @@
           .replaceAll('"', "&quot;")
           .replaceAll("'", "&#039;");
       }
+     // ----------------------------
+// Hotels: City dropdown + date guards
+// ----------------------------
+(function initHotelsUX() {
+  const cityInput = document.getElementById("hotelCity");
+  const cityList  = document.getElementById("hotelCities");
+  const checkIn   = document.getElementById("hotelCheckin");
+  const checkOut  = document.getElementById("hotelCheckout");
+
+  // If Hotels panel isn't on this page, just skip.
+  if (!cityInput || !cityList || !checkIn || !checkOut) return;
+
+  function toISODateLocal(d = new Date()) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  }
+
+  function addDaysISO(iso, days) {
+    const [y, m, d] = iso.split("-").map(Number);
+    const dt = new Date(y, (m - 1), d);
+    dt.setDate(dt.getDate() + days);
+    return toISODateLocal(dt);
+  }
+
+  // 1) City dropdown from airports.js (same dataset as flights)
+  const AIRPORTS = window.AIRPORTS || [];
+  const uniqueCities = Array.from(
+    new Set(
+      AIRPORTS
+        .map(a => (a && a.city ? String(a.city).trim() : ""))
+        .filter(Boolean)
+    )
+  ).sort((a, b) => a.localeCompare(b));
+
+  cityList.innerHTML = uniqueCities
+    .map(c => `<option value="${c.replaceAll('"', "&quot;")}"></option>`)
+    .join("");
+
+  // 2) Date restrictions:
+  // - no date before today
+  // - checkout must be strictly after checkin (>= checkin+1 day)
+  const today = toISODateLocal();
+  checkIn.min = today;
+
+  // If check-in empty or in the past, set it to today
+  if (!checkIn.value || checkIn.value < today) {
+    checkIn.value = today;
+  }
+
+  // Checkout must be at least next day (strictly greater than)
+  function syncCheckoutMin() {
+    const minCheckout = addDaysISO(checkIn.value, 1);
+    checkOut.min = minCheckout;
+
+    // If checkout empty or invalid, auto-fix to minCheckout
+    if (!checkOut.value || checkOut.value < minCheckout) {
+      checkOut.value = minCheckout;
+    }
+  }
+
+  // Also disallow checkout before today+1 if checkin changes
+  checkIn.addEventListener("change", () => {
+    if (checkIn.value < today) checkIn.value = today;
+    syncCheckoutMin();
+  });
+
+  checkOut.addEventListener("change", () => {
+    const minCheckout = addDaysISO(checkIn.value, 1);
+    if (checkOut.value < minCheckout) checkOut.value = minCheckout;
+  });
+
+  // Initialize
+  syncCheckoutMin();
+
+  // Optional: validate city is in list (if you want strict cities only)
+  // If you want to force only known cities, uncomment below:
+  /*
+  cityInput.addEventListener("blur", () => {
+    const v = cityInput.value.trim();
+    if (!v) return;
+    const ok = uniqueCities.some(c => c.toLowerCase() === v.toLowerCase());
+    if (!ok) cityInput.value = "";
+  });
+  */
+})();
+/////////////////////////////
+     const inDate = document.getElementById("hotelCheckin").value;
+const outDate = document.getElementById("hotelCheckout").value;
+
+if (!inDate || !outDate || outDate <= inDate) {
+  showHotelStatus("Fix dates: checkout must be after check-in.");
+  return;
+}
+////////////////
 
       function renderHotels(city) {
         const results = $("hotelsResults");
