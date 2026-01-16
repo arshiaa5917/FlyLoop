@@ -208,9 +208,12 @@
                     <div class="checks">
                       <label class="check"><input id="nearbyFrom" type="checkbox"> Nearby airports</label>
                       <label class="check"><input id="addHotel" type="checkbox"> Add a hotel</label>
+
+                     
                     </div>
                   </div>
                 </div>
+
 
                 <div class="actions">
                   <button class="btn-primary" type="submit">Search</button>
@@ -351,11 +354,12 @@
   <!-- ✅ Tabs + Hotels demo logic -->
   <script>
     (() => {
-      const TABS = [
-        { btn: "tabFlights", panel: "panelFlights" },
-        { btn: "tabHotels",  panel: "panelHotels"  },
-        { btn: "tabCars",    panel: "panelCars"    },
-      ];
+   
+const TABS = [
+  { btn: "tabFlights",  panel: "panelFlights"  },
+  { btn: "tabHotels",   panel: "panelHotels"   },
+  { btn: "tabPackage",  panel: "panelPackage"  },
+];
 
       function setActive(tabBtnId) {
         TABS.forEach(t => {
@@ -377,6 +381,18 @@
         const btn = document.getElementById(t.btn);
         if (btn) btn.addEventListener("click", () => setActive(t.btn));
       });
+
+     // ✅ When "Add a hotel" is checked → switch to Package tab
+const addHotelCheckbox = document.getElementById("addHotel");
+
+if (addHotelCheckbox) {
+  addHotelCheckbox.addEventListener("change", () => {
+    if (addHotelCheckbox.checked) {
+      setActive("tabPackage");
+    }
+  });
+}
+
 
       // Keyboard support (left/right arrows)
       const tablist = document.querySelector(".top-tabs");
