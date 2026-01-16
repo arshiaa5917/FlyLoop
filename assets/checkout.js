@@ -1,105 +1,95 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Checkout – FlyLoop</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="assets/flights.css" />
-</head>
-<body>
-  <div class="layout">
-    <main class="content" style="padding-top:30px;">
-      <div class="eyebrow">Checkout</div>
-      <h1>Pay with FlyLoop credits</h1>
+// assets/checkout.js
+(() => {
+  const PENDING_KEY = "flyloop_pending_flight";
+  const $ = (id) => document.getElementById(id);
 
-      <section class="card" aria-label="Checkout">
-        <h3 style="margin-top:0;">Payment</h3>
+  const resultsRoot = $("flightResults");
+  const floatingBtn = $("floatingContinue");
 
-        <div class="pill" id="checkoutSummary">—</div>
+  if (!resultsRoot || !floatingBtn) return;
 
-        <div class="mini-row" style="margin-top:12px;">
-          <div class="pill" style="width:100%;">Available credits: <strong id="creditBalance">CAD 500.00</strong></div>
-          <label class="check" style="width:100%; display:flex; align-items:center; gap:10px;">
-            <input id="useCredits" type="checkbox" checked />
-            Use credits for this booking
-          </label>
-        </div>
+  function normalize(s){ return String(s || "").toLowerCase().replace(/\s+/g, " ").trim(); }
 
-        <div class="actions" style="margin-top:16px;">
-          <a class="btn-outline" href="flight-review.html">Back</a>
-          <button class="btn-primary" id="bookBtn" type="button">Book now (Demo)</button>
-          <span class="pill" id="status" style="display:none;"></span>
-        </div>
-      </section>
-    </main>
-  </div>
+  function extractFlightFromCard(card) {
+    const text = (card?.innerText || "").replace(/\s+/g, " ").trim();
 
-  <script>
-    const PENDING_KEY = "flyloop_pending_flight";
-    const ORDERS_KEY  = "flyloop_booked_flights";
-    const CREDITS_KEY = "flyloop_credits";
+    // price (CAD 123.45 / $123.45)
+    const priceMatch = text.match(/\bCAD\s*([0-9]+(?:\.[0-9]{1,2})?)\b/i) || text.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
+    const price = priceMatch ? Number(priceMatch[1]) : null;
 
-    const pending = JSON.parse(localStorage.getItem(PENDING_KEY) || "null");
+    // IATA codes
+    const iatas = [...text.matchAll(/\b[A-Z]{3}\b/g)].map(m => m[0]);
+    const origin = iatas[0] || "";
+    const destination = iatas[1] || "";
 
-    let credits = Number(localStorage.getItem(CREDITS_KEY) || "500");
-    const useCredits = document.getElementById("useCredits");
-    const creditBalance = document.getElementById("creditBalance");
-    const summary = document.getElementById("checkoutSummary");
-    const status = document.getElementById("status");
-    const bookBtn = document.getElementById("bookBtn");
+    const departDate = $("#departDate")?.value || "";
+    const cabin = $("#cabin")?.value || "ECONOMY";
+    const adults = Number($("#adults")?.value || "1");
 
-    function showStatus(msg, show=true){
-      status.style.display = show ? "inline-flex" : "none";
-      status.textContent = msg;
-    }
+    return {
+      id: "FL-" + Math.random().toString(16).slice(2, 10).toUpperCase(),
+      createdAt: new Date().toISOString(),
+      origin,
+      destination,
+      departDate,
+      cabin,
+      adults,
+      price,
+      priceText: typeof price === "number" ? `CAD ${price.toFixed(2)}` : "CAD —",
+      rawSummary: text.slice(0, 600)
+    };
+  }
 
-    function dueToday(price, use){
-      if (!use) return price;
-      return Math.max(0, price - credits);
-    }
+  // Track “selected” UI so we can show Continue only after selection
+  let hasSelection = false;
 
-    function refresh(){
-      creditBalance.textContent = `CAD ${credits.toFixed(2)}`;
-      if (!pending) {
-        summary.textContent = "No flight selected.";
-        bookBtn.disabled = true;
-        return;
-      }
-      const price = (typeof pending.price === "number") ? pending.price : null;
-      if (!price) {
-        summary.textContent = `Selected flight: ${pending.priceText} (demo)`;
-        return;
-      }
-      const due = dueToday(price, useCredits.checked);
-      summary.textContent = `Total: CAD ${price.toFixed(2)} • Due today: CAD ${due.toFixed(2)} • Credits used: ${useCredits.checked ? "Yes" : "No"}`;
-    }
+  function showContinue(show) {
+    floatingBtn.hidden = !show;
+    floatingBtn.disabled = !show;
+    hasSelection = !!show;
+  }
 
-    useCredits.addEventListener("change", refresh);
+  // Default: hidden
+  showContinue(false);
 
-    bookBtn.addEventListener("click", () => {
-      if (!pending) return;
+  // When user clicks Apply/Select on a flight
+  resultsRoot.addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
 
-      // Save order
-      const orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
-      orders.unshift({ ...pending, status: "Booked", bookedAt: new Date().toISOString() });
-      localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+    const label = normalize(btn.textContent);
+    const isSelect =
+      label.includes("apply") ||
+      label.includes("select") ||
+      label.includes("selected");
 
-      // Deduct credits if possible
-      if (useCredits.checked && typeof pending.price === "number") {
-        credits = Math.max(0, credits - pending.price);
-        localStorage.setItem(CREDITS_KEY, String(credits));
-      }
+    if (!isSelect) return;
 
-      // Clear pending
-      localStorage.removeItem(PENDING_KEY);
+    // Try to find the whole flight “card”
+    const card =
+      btn.closest(".flight-card") ||
+      btn.closest(".result-item") ||
+      btn.closest(".result") ||
+      btn.closest("article") ||
+      btn.closest("section") ||
+      btn.closest("div");
 
-      showStatus("Booked ✅ Added to My Booked Flights", true);
+    // Save selected flight
+    const pending = extractFlightFromCard(card);
+    localStorage.setItem(PENDING_KEY, JSON.stringify(pending));
 
-      // Go to booked flights page after booking
-      window.location.href = "my-booked-flights.html";
-    });
+    // ✅ Show Continue bottom-right
+    showContinue(true);
 
-    refresh();
-  </script>
-</body>
-</html>
+    // OPTIONAL: you can also visually highlight the card if needed
+    // (only if your flight cards share a class like .flight-card)
+    document.querySelectorAll(".flight-card.selected").forEach(el => el.classList.remove("selected"));
+    if (card && card.classList) card.classList.add("selected");
+  }, true);
+
+  // Continue → go to review page
+  floatingBtn.addEventListener("click", () => {
+    if (!hasSelection) return;
+    window.location.href = "flight-review.html";
+  });
+})();
