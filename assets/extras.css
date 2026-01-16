@@ -1,0 +1,55 @@
+/* assets/extras.css */
+
+/* Tabs panels */
+.tab-panels { margin-top: 0; }
+.tab-panels [role="tabpanel"][hidden] { display: none !important; }
+
+/* Hotels demo results */
+.hotel-item{
+  border: 1px solid rgba(148,163,184,.25);
+  border-radius: 14px;
+  padding: 12px 12px;
+  background: rgba(2,6,23,.35);
+  margin: 10px 0;
+}
+.hotel-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+.hotel-name{ font-weight: 800; }
+.hotel-sub{ opacity:.78; font-size: 13px; margin-top: 2px; }
+.hotel-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top: 10px; }
+.hotel-tag{
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,.25);
+  background: rgba(255,255,255,.03);
+  opacity: .9;
+}
+.hotel-actions{ display:flex; gap:10px; margin-top: 12px; flex-wrap:wrap; }
+
+/* Floating Continue button */
+.floating-continue{
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 9999;
+
+  padding: 14px 18px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(249,115,22,.35);
+  background: linear-gradient(180deg, rgba(249,115,22,.95), rgba(249,115,22,.72));
+  color: #0b0b0b;
+  font-weight: 900;
+  cursor: pointer;
+
+  box-shadow: 0 18px 40px rgba(0,0,0,.55);
+}
+.floating-continue:hover { transform: translateY(-1px); }
+
+@media (max-width: 760px){
+  .floating-continue{
+    right: 14px;
+    bottom: 14px;
+    padding: 12px 16px;
+  }
+}
