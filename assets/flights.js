@@ -18,7 +18,16 @@
     const pill = $("statusPill");
     if (!pill) return;
     pill.style.display = show ? "inline-flex" : "none";
-    pill.textContent = msg;
+    pill.textContent = msg || "";
+  }
+
+  function pickItems(data) {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data.offers)) return data.offers;
+    if (Array.isArray(data.flights)) return data.flights;
+    if (Array.isArray(data.data)) return data.data;
+    return [];
   }
 
   // ----- dropdown / combo -----
@@ -33,7 +42,9 @@
     const s = String(q || "").trim().toLowerCase();
     if (!s) return AIRPORTS.slice(0, 80);
     return AIRPORTS
-      .filter((a) => (`${a.code} ${a.city} ${a.name} ${a.country}`).toLowerCase().includes(s))
+      .filter((a) =>
+        `${a.code} ${a.city} ${a.name} ${a.country}`.toLowerCase().includes(s)
+      )
       .slice(0, 80);
   }
 
@@ -49,6 +60,9 @@
     const list = wrap.querySelector(".combo-list");
     const empty = wrap.querySelector(".combo-empty");
 
+    // if HTML doesn't include the panel structure, don't crash
+    if (!panel || !list || !empty) return;
+
     let activeIndex = -1;
     let current = [];
 
@@ -62,11 +76,12 @@
     }
 
     function choose(a) {
-      hidden.value = a.code;
-      input.value = airportLabel(a);
-      input.focus({ preventScroll: true });
-      input.select();
+      hidden.value = a.code;            // real IATA for submit
+      input.value = airportLabel(a);    // pretty label for user
       close();
+      // keep focus nice
+      input.focus({ preventScroll: true });
+      input.setSelectionRange(0, input.value.length);
     }
 
     function render(q) {
@@ -90,17 +105,28 @@
           </div>
           <div class="code">${escapeHtml(a.code)}</div>
         `;
-        div.addEventListener("mousedown", (e) => {
+
+        // IMPORTANT: use pointerdown so it beats document handlers
+        div.addEventListener("pointerdown", (e) => {
           e.preventDefault();
+          e.stopPropagation();
           choose(a);
         });
+
         list.appendChild(div);
       });
     }
 
+    // stop clicks inside from closing it
+    wrap.addEventListener("pointerdown", (e) => {
+      e.stopPropagation();
+    });
+
     input.addEventListener("focus", () => {
       open();
-      requestAnimationFrame(() => input.select());
+      requestAnimationFrame(() => {
+        input.setSelectionRange(0, input.value.length);
+      });
     });
 
     // key fix: clear hidden when typing so we don't submit stale IATA
@@ -112,6 +138,7 @@
 
     input.addEventListener("keydown", (e) => {
       const items = Array.from(list.querySelectorAll(".combo-item"));
+
       if (!panel.classList.contains("open") && (e.key === "ArrowDown" || e.key === "Enter")) {
         open();
         e.preventDefault();
@@ -149,9 +176,8 @@
       open();
     });
 
-    document.addEventListener("mousedown", (e) => {
-      if (!wrap.contains(e.target)) close();
-    });
+    // click outside closes it
+    document.addEventListener("pointerdown", () => close());
 
     // init default
     hidden.value = defaultCode;
@@ -179,37 +205,81 @@
   $("swapBtn")?.addEventListener("click", () => {
     const fromI = $("fromIata");
     const toI = $("toIata");
+    if (!fromI || !toI) return;
+
     const tmp = fromI.value;
     fromI.value = toI.value;
     toI.value = tmp;
 
     const f = AIRPORTS.find((a) => a.code === fromI.value);
     const t = AIRPORTS.find((a) => a.code === toI.value);
-    $("fromText").value = f ? airportLabel(f) : fromI.value;
-    $("toText").value = t ? airportLabel(t) : toI.value;
+
+    const fromText = $("fromText");
+    const toText = $("toText");
+    if (fromText) fromText.value = f ? airportLabel(f) : fromI.value;
+    if (toText) toText.value = t ? airportLabel(t) : toI.value;
   });
 
-  // submit (just to prove it works; backend may still 401)
+  // submit (REAL fetch)
   $("flightForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    let origin = normalizeIata($("fromIata").value);
-    let destination = normalizeIata($("toIata").value);
+    let origin = normalizeIata($("fromIata")?.value);
+    let destination = normalizeIata($("toIata")?.value);
 
-    const typedFrom = normalizeIata($("fromText").value);
-    const typedTo = normalizeIata($("toText").value);
+    const typedFrom = normalizeIata($("fromText")?.value);
+    const typedTo = normalizeIata($("toText")?.value);
 
+    // allow typing IATA manually
     if (!isIata3(origin) && isIata3(typedFrom)) origin = typedFrom;
     if (!isIata3(destination) && isIata3(typedTo)) destination = typedTo;
 
-    const date = String($("departDate").value || "").trim();
+    const date = String($("departDate")?.value || "").trim();
+    const adults = String($("adults")?.value || "1").trim();
+    const cabin = String($("cabin")?.value || "ECONOMY").trim();
 
     if (!isIata3(origin)) return setStatus("Pick a valid origin (IATA).", true);
     if (!isIata3(destination)) return setStatus("Pick a valid destination (IATA).", true);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return setStatus("Pick a valid date.", true);
 
-    setStatus(`Submitting: ${origin} → ${destination} on ${date}`, true);
+    const resultsEl = $("flightResults");
+    if (resultsEl) resultsEl.innerHTML = `<div class="pill">Loading…</div>`;
 
-    // Your backend call can stay here; right now Amadeus is returning 401 anyway.
+    setStatus(`Searching ${origin} → ${destination}…`, true);
+
+    const url =
+      `/api/flights?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}` +
+      `&date=${encodeURIComponent(date)}&adults=${encodeURIComponent(adults)}&cabin=${encodeURIComponent(cabin)}`;
+
+    try {
+      const res = await fetch(url, { headers: { Accept: "application/json" } });
+
+      const text = await res.text();
+      let data = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        data = { error: text };
+      }
+
+      if (!res.ok) {
+        setStatus(data?.error || `API error (${res.status})`, true);
+        if (resultsEl) resultsEl.innerHTML = `<div class="pill">No flights found.</div>`;
+        return;
+      }
+
+      const items = pickItems(data);
+      setStatus(`Found ${items.length} results`, true);
+
+      // minimal display so you SEE it works even before fancy render
+      if (resultsEl) {
+        if (!items.length) resultsEl.innerHTML = `<div class="pill">No flights found.</div>`;
+        else resultsEl.innerHTML = `<div class="pill">✅ API returned ${items.length} offers</div>`;
+      }
+    } catch (err) {
+      console.error(err);
+      setStatus("Network error calling /api/flights", true);
+      if (resultsEl) resultsEl.innerHTML = `<div class="pill">Network error.</div>`;
+    }
   });
 })();
