@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Checkout – FlyLoop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="assets/flights.css" />
+  <link rel="stylesheet" href="assets/review.css" />
+</head>
+<body>
+  <main class="review-wrap">
+    <div class="eyebrow">CHECKOUT</div>
+    <h1>Checkout</h1>
+
+    <div class="review-grid">
+      <section class="card">
+        <h3 style="margin-top:0;">Pay with credits (Demo)</h3>
+
+        <div class="review-row">
+          <div class="review-k">Total</div>
+          <div class="review-v" id="total">—</div>
+        </div>
+
+        <label class="check" style="display:flex; gap:10px; align-items:center; margin-top:12px;">
+          <input id="useCredits" type="checkbox" checked />
+          Use FlyLoop credits
+        </label>
+
+        <div class="pill" style="margin-top:12px;">Available credits: <strong id="credits">CAD 500.00</strong></div>
+
+        <div class="actions" style="margin-top:16px;">
+          <a class="btn-outline" href="flight-review.html">Back</a>
+          <button class="btn-primary" id="bookBtn" type="button">Book now (Demo)</button>
+          <span class="pill" id="status" style="display:none;"></span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3 style="margin-top:0;">Booking result</h3>
+        <div class="pill">After booking, you’ll be redirected to <strong>My Orders</strong>.</div>
+      </section>
+    </div>
+  </main>
+
+  <script src="assets/checkout-page.js"></script>
+</body>
+</html>
