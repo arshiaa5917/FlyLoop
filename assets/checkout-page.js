@@ -39,7 +39,7 @@
 
     localStorage.removeItem(PENDING_KEY);
     showStatus("Booked ✅ Added to My Orders", true);
+window.location.href = "my-booked-flights.html";
 
-    window.location.href = "my-orders.html";
   });
 })();
