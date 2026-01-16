@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hotels – FlyLoop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Search hotels and save your favorites in FlyLoop." />
+
+  <style>
+    html { scroll-behavior: smooth; }
+
+    :root{
+      --bg:#050505;
+      --surface:#111111;
+      --surface-alt:#18181B;
+      --primary:#F97316;
+      --primary-soft:#FDBA74;
+      --text:#F9FAFB;
+      --muted:#9CA3AF;
+      --border-subtle:rgba(148,163,184,.35);
+      --radius-lg:18px;
+      --shadow-soft:0 18px 40px rgba(0,0,0,.6);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Inter",sans-serif;
+      background: radial-gradient(circle at top left, #111827, #020617 55%);
+      color:var(--text);
+      line-height:1.6;
+    }
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
+
+    /* Layout */
+    .layout{
+      display:grid;
+      grid-template-columns:240px minmax(0,1fr);
+      min-height:100vh;
+    }
+
+    /* Sidebar */
+    .sidebar{
+      background:#020617;
+      border-right:1px solid rgba(255,255,255,.06);
+      padding:18px 14px;
+      position:sticky;
+      top:0;
+      height:100vh;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 10px 18px;
+    }
+    .brand-logo{
+      width:40px;height:40px;border-radius:12px;
+      background: linear-gradient(135deg, rgba(249,115,22,.9), rgba(59,130,246,.55));
+      box-shadow: 0 12px 30px rgba(0,0,0,.45);
+      display:grid;place-items:center;
+      font-weight:800;
+    }
+    .brand h1{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.2px;
+      line-height:1.1;
+    }
+    .brand p{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+    }
+    nav{margin-top:10px}
+    .navlink{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 12px;
+      border-radius:12px;
+      color:rgba(249,250,251,.92);
+      border:1px solid transparent;
+      margin:6px 0;
+      transition:.2s ease;
+    }
+    .navlink:hover{
+      background: rgba(255,255,255,.04);
+      border-color: rgba(255,255,255,.06);
+    }
+    .navlink.active{
+      background: rgba(249,115,22,.12);
+      border-color: rgba(249,115,22,.25);
+      box-shadow: 0 10px 26px rgba(0,0,0,.35);
+    }
+    .pill{
+      font-size:12px;
+      color: rgba(249,250,251,.88);
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      padding:3px 8px;
+      border-radius:999px;
+    }
+    .pill.orange{
+      background: rgba(249,115,22,.16);
+      border-color: rgba(249,115,22,.25);
+    }
+
+    /* Main */
+    .main{
+      padding:22px 22px 34px;
+    }
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:18px;
+    }
+    .pageTitle{
+      margin:0;
+      font-size:22px;
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    /* Search card */
+    .card{
+      background: rgba(17,17,17,.78);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      padding:16px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr 1fr 1fr .8fr auto;
+      gap:10px;
+      align-items:end;
+    }
+    label{
+      display:block;
+      font-size:12px;
+      color: rgba(249,250,251,.86);
+      margin:0 0 6px;
+    }
+    .field{
+      width:100%;
+      padding:11px 12px;
+      border-radius:12px;
+      background: rgba(2,6,23,.7);
+      border:1px solid rgba(255,255,255,.08);
+      color: var(--text);
+      outline:none;
+    }
+    .field:focus{
+      border-color: rgba(249,115,22,.35);
+      box-shadow: 0 0 0 4px rgba(249,115,22,.12);
+    }
+    .btn{
+      padding:11px 14px;
+      border-radius:12px;
+      border:1px solid rgba(249,115,22,.35);
+      background: linear-gradient(180deg, rgba(249,115,22,.95), rgba(249,115,22,.72));
+      color:#0b0b0b;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow: 0 12px 26px rgba(0,0,0,.35);
+      transition:.15s ease;
+      white-space:nowrap;
+    }
+    .btn:hover{ transform: translateY(-1px); }
+    .btn.ghost{
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      border-color: rgba(255,255,255,.12);
+      box-shadow:none;
+      font-weight:700;
+    }
+
+    .row2{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-top:12px;
+      flex-wrap:wrap;
+    }
+    .filters{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      color: rgba(249,250,251,.92);
+      font-size:12px;
+      user-select:none;
+    }
+    .chip input{ accent-color: var(--primary); }
+
+    .sortWrap{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .sortWrap span{
+      color: var(--muted);
+      font-size:12px;
+    }
+
+    /* Results */
+    .resultsHeader{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin:18px 0 10px;
+    }
+    .resultsHeader h2{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.2px;
+    }
+    .muted{ color: var(--muted); font-size:12px; }
+
+    .cards{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:12px;
+    }
+    .hotelCard{
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(17,17,17,.78);
+      box-shadow: var(--shadow-soft);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      min-height: 240px;
+    }
+    .img{
+      height:110px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(59,130,246,.35), transparent 55%),
+        radial-gradient(circle at 80% 30%, rgba(249,115,22,.35), transparent 60%),
+        linear-gradient(180deg, rgba(2,6,23,.9), rgba(2,6,23,.55));
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .hotelBody{
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      flex:1;
+    }
+    .hTop{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .hName{
+      margin:0;
+      font-size:14px;
+      line-height:1.25;
+    }
+    .hArea{
+      margin:2px 0 0;
+      color: var(--muted);
+      font-size:12px;
+    }
+    .rating{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 9px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .rating b{
+      color: var(--primary-soft);
+      font-size:12px;
+    }
+    .amenities{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .tag{
+      font-size:11px;
+      padding:5px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      color: rgba(249,250,251,.90);
+    }
+    .bottom{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:auto;
+    }
+    .price{
+      display:flex;
+      flex-direction:column;
+      line-height:1.15;
+    }
+    .price strong{ font-size:16px; }
+    .price span{ font-size:11px; color:var(--muted); }
+    .btnSmall{
+      padding:9px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      cursor:pointer;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .btnSmall.primary{
+      border-color: rgba(249,115,22,.35);
+      background: rgba(249,115,22,.16);
+    }
+
+    .note{
+      margin-top:14px;
+      padding:12px;
+      border-radius:14px;
+      border:1px dashed rgba(255,255,255,.14);
+      background: rgba(255,255,255,.03);
+      color: rgba(249,250,251,.90);
+      font-size:12px;
+    }
+
+    /* Mobile */
+    .mobileTop{
+      display:none;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:14px 16px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      background: rgba(2,6,23,.92);
+      position:sticky;
+      top:0;
+      z-index:50;
+      backdrop-filter: blur(10px);
+    }
+    .hamburger{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      border-radius:12px;
+      padding:10px 12px;
+      cursor:pointer;
+      font-weight:800;
+    }
+    .drawerBackdrop{
+      display:none;
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.55);
+      z-index:60;
+    }
+    .drawer{
+      position:fixed;
+      top:0; left:-290px;
+      width:290px; height:100%;
+      background:#020617;
+      border-right:1px solid rgba(255,255,255,.08);
+      z-index:70;
+      padding:18px 14px;
+      transition:left .2s ease;
+      overflow:auto;
+    }
+    .drawer.open{ left:0; }
+    .drawerBackdrop.show{ display:block; }
+
+    @media (max-width: 980px){
+      .cards{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid{ grid-template-columns: 1fr 1fr; }
+      .grid > div:last-child{ grid-column: 1 / -1; }
+      .grid .btn{ width:100%; }
+    }
+    @media (max-width: 760px){
+      .layout{ grid-template-columns: 1fr; }
+      .sidebar{ display:none; }
+      .mobileTop{ display:flex; }
+      .main{ padding:16px; }
+      .cards{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Mobile Top Bar -->
+  <div class="mobileTop">
+    <button class="hamburger" id="openNavBtn" type="button">☰</button>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="brand-logo" aria-hidden="true">F</div>
+      <div>
+        <div style="font-weight:900;line-height:1;">FlyLoop</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.2;">Hotels</div>
+      </div>
+    </div>
+    <span class="pill orange">Beta</span>
+  </div>
+
+  <!-- Mobile Drawer -->
+  <div class="drawerBackdrop" id="drawerBackdrop"></div>
+  <aside class="drawer" id="drawer" aria-label="Mobile navigation">
+    <div class="brand">
+      <div class="brand-logo">F</div>
+      <div>
+        <h1>FlyLoop</h1>
+        <p>Member dashboard</p>
+      </div>
+    </div>
+    <nav>
+      <a class="navlink" href="dashboard.html">Overview <span class="pill">Home</span></a>
+      <a class="navlink" href="flights.html">Flights <span class="pill">Deals</span></a>
+      <a class="navlink active" href="hotels.html">Hotels <span class="pill orange">New</span></a>
+      <a class="navlink" href="destinations.html">Destinations <span class="pill">Guide</span></a>
+      <a class="navlink" href="account.html">Account <span class="pill">Profile</span></a>
+      <a class="navlink" href="settings.html">Settings <span class="pill">Prefs</span></a>
+    </nav>
+    <div style="margin-top:14px;">
+      <a class="navlink" href="index.html">Logout <span class="pill">Exit</span></a>
+    </div>
+  </aside>
+
+  <div class="layout">
+
+    <!-- Desktop Sidebar -->
+    <aside class="sidebar" aria-label="Dashboard navigation">
+      <div class="brand">
+        <div class="brand-logo">F</div>
+        <div>
+          <h1>FlyLoop</h1>
+          <p>Member dashboard</p>
+        </div>
+      </div>
+
+      <nav>
+        <a class="navlink" href="dashboard.html">Overview <span class="pill">Home</span></a>
+        <a class="navlink" href="flights.html">Flights <span class="pill">Deals</span></a>
+        <a class="navlink active" href="hotels.html">Hotels <span class="pill orange">New</span></a>
+        <a class="navlink" href="destinations.html">Destinations <span class="pill">Guide</span></a>
+        <a class="navlink" href="account.html">Account <span class="pill">Profile</span></a>
+        <a class="navlink" href="settings.html">Settings <span class="pill">Prefs</span></a>
+      </nav>
+
+      <div style="margin-top:14px;">
+        <a class="navlink" href="index.html">Logout <span class="pill">Exit</span></a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h2 class="pageTitle">Hotels</h2>
+          <p class="sub">Search stays, compare prices, and save favorites.</p>
+        </div>
+        <span class="pill orange" id="statusPill" style="display:none;">Ready</span>
+      </div>
+
+      <!-- Search -->
+      <section class="card" aria-label="Hotel search">
+        <div class="grid">
+          <div>
+            <label for="city">City</label>
+            <input class="field" id="city" placeholder="e.g., Paris, Rome, Zurich" />
+          </div>
+          <div>
+            <label for="checkin">Check-in</label>
+            <input class="field" id="checkin" type="date" />
+          </div>
+          <div>
+            <label for="checkout">Check-out</label>
+            <input class="field" id="checkout" type="date" />
+          </div>
+          <div>
+            <label for="guests">Guests</label>
+            <select class="field" id="guests">
+              <option value="1">1 guest</option>
+              <option value="2" selected>2 guests</option>
+              <option value="3">3 guests</option>
+              <option value="4">4 guests</option>
+              <option value="5">5 guests</option>
+            </select>
+          </div>
+          <div>
+            <button class="btn" id="searchBtn" type="button">Search hotels</button>
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="filters" role="group" aria-label="Filters">
+            <span class="chip"><input id="fFreeCancel" type="checkbox" /> Free cancellation</span>
+            <span class="chip"><input id="fBreakfast" type="checkbox" /> Breakfast included</span>
+            <span class="chip"><input id="f4plus" type="checkbox" /> 4★ and up</span>
+            <span class="chip"><input id="fCenter" type="checkbox" /> City center</span>
+          </div>
+
+          <div class="sortWrap">
+            <span>Sort</span>
+            <select class="field" id="sort" style="padding:9px 10px;border-radius:12px;">
+              <option value="rec" selected>Recommended</option>
+              <option value="priceAsc">Price (low → high)</option>
+              <option value="priceDesc">Price (high → low)</option>
+              <option value="ratingDesc">Rating (high → low)</option>
+            </select>
+
+            <button class="btn ghost" id="resetBtn" type="button">Reset</button>
+          </div>
+        </div>
+
+        <div class="note">
+          <b>Demo mode:</b> These results are sample data so the page looks “real” now.
+          When you add a backend, replace <code>getDemoHotels()</code> with your API call and map the response to the same card format.
+        </div>
+      </section>
+
+      <!-- Results -->
+      <div class="resultsHeader">
+        <h2 id="resultsTitle">Suggested hotels</h2>
+        <div class="muted" id="resultsMeta">Showing 6 demo stays</div>
+      </div>
+
+      <section class="cards" id="cards" aria-label="Hotel results"></section>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      const $ = (id) => document.getElementById(id);
+
+      function setStatus(msg, show = true) {
+        const pill = $("statusPill");
+        if (!pill) return;
+        pill.style.display = show ? "inline-flex" : "none";
+        pill.textContent = msg;
+      }
+
+      // Mobile drawer
+      const drawer = $("drawer");
+      const backdrop = $("drawerBackdrop");
+      const openBtn = $("openNavBtn");
+
+      function openDrawer() {
+        drawer.classList.add("open");
+        backdrop.classList.add("show");
+      }
+      function closeDrawer() {
+        drawer.classList.remove("open");
+        backdrop.classList.remove("show");
+      }
+      if (openBtn) openBtn.addEventListener("click", openDrawer);
+      if (backdrop) backdrop.addEventListener("click", closeDrawer);
+      window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDrawer(); });
+
+      // Demo data
+      function getDemoHotels(city) {
+        const base = (city || "Your city").trim() || "Your city";
+        return [
+          { name: `${base} Central Boutique`, area: "City Center", rating: 9.1, stars: 4, price: 189, cancel: true, breakfast: true, center: true, tags: ["Free Wi-Fi", "Gym", "Quiet rooms"] },
+          { name: `Grand ${base} Riverside`, area: "Riverside", rating: 8.7, stars: 5, price: 255, cancel: true, breakfast: false, center: false, tags: ["Spa", "River views", "Concierge"] },
+          { name: `${base} Metro Stay`, area: "Near transit", rating: 8.2, stars: 3, price: 121, cancel: false, breakfast: false, center: false, tags: ["Near subway", "Fast check-in", "Work desk"] },
+          { name: `${base} Old Town Suites`, area: "Historic district", rating: 9.0, stars: 4, price: 210, cancel: true, breakfast: true, center: true, tags: ["Kitchenette", "Walkable", "Local vibe"] },
+          { name: `Avenue Hotel ${base}`, area: "Shopping district", rating: 8.5, stars: 4, price: 165, cancel: false, breakfast: true, center: true, tags: ["Breakfast", "Soundproof", "Late checkout"] },
+          { name: `${base} Budget Smart`, area: "Value zone", rating: 7.9, stars: 3, price: 95, cancel: true, breakfast: false, center: false, tags: ["Best value", "Clean", "24/7 desk"] },
+        ];
+      }
+
+      function money(n) {
+        const v = Number(n || 0);
+        return "$" + v.toFixed(0);
+      }
+
+      function render(hotels) {
+        const cards = $("cards");
+        cards.innerHTML = hotels.map(h => `
+          <article class="hotelCard">
+            <div class="img" aria-hidden="true"></div>
+            <div class="hotelBody">
+              <div class="hTop">
+                <div>
+                  <h3 class="hName">${escapeHtml(h.name)}</h3>
+                  <p class="hArea">${escapeHtml(h.area)} • ${"★".repeat(h.stars)}${"☆".repeat(Math.max(0,5-h.stars))}</p>
+                </div>
+                <div class="rating" title="Guest rating">
+                  <b>${h.rating.toFixed(1)}</b>
+                  <span> / 10</span>
+                </div>
+              </div>
+
+              <div class="amenities">
+                ${h.tags.slice(0,4).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("")}
+              </div>
+
+              <div class="bottom">
+                <div class="price">
+                  <strong>${money(h.price)}</strong>
+                  <span>per night • taxes may apply</span>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <button class="btnSmall" type="button" data-action="save">♡ Save</button>
+                  <button class="btnSmall primary" type="button" data-action="deal">View deal</button>
+                </div>
+              </div>
+            </div>
+          </article>
+        `).join("");
+
+        // simple click handlers
+        cards.querySelectorAll("button[data-action='save']").forEach(btn => {
+          btn.addEventListener("click", () => {
+            btn.textContent = (btn.textContent.includes("Save") ? "✓ Saved" : "♡ Save");
+            btn.classList.toggle("primary");
+          });
+        });
+        cards.querySelectorAll("button[data-action='deal']").forEach(btn => {
+          btn.addEventListener("click", () => {
+            setStatus("Demo: connect backend for real booking links.");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          });
+        });
+      }
+
+      function escapeHtml(s){
+        return String(s ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function applyFilters(all) {
+        const freeCancel = $("fFreeCancel").checked;
+        const breakfast  = $("fBreakfast").checked;
+        const fourPlus   = $("f4plus").checked;
+        const center     = $("fCenter").checked;
+
+        return all.filter(h => {
+          if (freeCancel && !h.cancel) return false;
+          if (breakfast  && !h.breakfast) return false;
+          if (fourPlus   && h.stars < 4) return false;
+          if (center     && !h.center) return false;
+          return true;
+        });
+      }
+
+      function applySort(list) {
+        const sort = $("sort").value;
+        const arr = [...list];
+        if (sort === "priceAsc") arr.sort((a,b) => a.price - b.price);
+        if (sort === "priceDesc") arr.sort((a,b) => b.price - a.price);
+        if (sort === "ratingDesc") arr.sort((a,b) => b.rating - a.rating);
+        return arr;
+      }
+
+      function runSearch() {
+        setStatus("Searching…");
+        const city = $("city").value.trim();
+        const all = getDemoHotels(city);
+        const filtered = applyFilters(all);
+        const sorted = applySort(filtered);
+
+        $("resultsTitle").textContent = city ? `Hotels in ${city}` : "Suggested hotels";
+        $("resultsMeta").textContent = `Showing ${sorted.length} result(s) • demo data`;
+
+        render(sorted);
+        setStatus("Ready");
+      }
+
+      function reset() {
+        $("city").value = "";
+        $("checkin").value = "";
+        $("checkout").value = "";
+        $("guests").value = "2";
+        $("sort").value = "rec";
+        $("fFreeCancel").checked = false;
+        $("fBreakfast").checked = false;
+        $("f4plus").checked = false;
+        $("fCenter").checked = false;
+
+        $("resultsTitle").textContent = "Suggested hotels";
+        $("resultsMeta").textContent = "Showing 6 demo stays";
+        render(getDemoHotels(""));
+        setStatus("Ready", false);
+      }
+
+      // events
+      $("searchBtn").addEventListener("click", runSearch);
+      $("resetBtn").addEventListener("click", reset);
+      ["fFreeCancel","fBreakfast","f4plus","fCenter","sort"].forEach(id => {
+        $(id).addEventListener("change", runSearch);
+      });
+
+      // init
+      render(getDemoHotels(""));
+    })();
+  </script>
+</body>
+</html>
