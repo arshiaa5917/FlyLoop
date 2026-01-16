@@ -559,15 +559,30 @@ input:focus, select:focus{
   .row2 .form-row:last-child{ grid-column: auto; }
 }
 
-/* hide the concept note + description line */
-.sub { display: none !important; }
-h1 { visibility: hidden; position: relative; }
-h1::after {
-  content: "Live flight search";
-  visibility: visible;
-  position: absolute;
-  left: 0;
-  top: 0;
+
+
+/* ===== FIX: airport dropdown not showing / not clickable ===== */
+
+.card,
+.grid,
+.content {
+  overflow: visible !important;
 }
 
+.combo {
+  position: relative;
+  z-index: 1000;
+}
+
+.combo-panel {
+  z-index: 99999 !important;
+}
+
+.combo-clear {
+  z-index: 100000 !important;
+}
+
+.combo-item {
+  pointer-events: auto;
+}
 
