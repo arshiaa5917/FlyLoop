@@ -1,1 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Review Flight – FlyLoop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="assets/flights.css" />
+</head>
+<body>
+  <div class="layout">
+    <main class="content" style="padding-top:30px;">
+      <div class="eyebrow">Checkout</div>
+      <h1>Review your flight</h1>
+
+      <section class="card" aria-label="Flight review">
+        <h3 style="margin-top:0;">Trip details</h3>
+
+        <div class="pill" id="reviewRoute">—</div>
+        <div class="pill" id="reviewMeta" style="margin-top:10px;">—</div>
+        <div class="pill" id="reviewRaw" style="margin-top:10px;">—</div>
+
+        <div class="actions" style="margin-top:16px;">
+          <a class="btn-outline" href="flights.html">Back to search</a>
+          <button class="btn-primary" id="toCheckoutBtn" type="button">Continue to checkout</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const PENDING_KEY = "flyloop_pending_flight";
+    const pending = JSON.parse(localStorage.getItem(PENDING_KEY) || "null");
+
+    const routeEl = document.getElementById("reviewRoute");
+    const metaEl  = document.getElementById("reviewMeta");
+    const rawEl   = document.getElementById("reviewRaw");
+    const btn     = document.getElementById("toCheckoutBtn");
+
+    if (!pending) {
+      routeEl.textContent = "No flight selected. Please go back and choose a flight.";
+      metaEl.style.display = "none";
+      rawEl.style.display = "none";
+      btn.disabled = true;
+    } else {
+      routeEl.textContent = `Route: ${pending.origin || "—"} → ${pending.destination || "—"}`;
+      metaEl.textContent  = `Departure: ${pending.departDate || "—"} • Cabin: ${pending.cabin || "ECONOMY"} • Passengers: ${pending.adults || 1} • Price: ${pending.priceText || "CAD —"}`;
+      rawEl.textContent   = `Details: ${pending.rawSummary || ""}`;
+    }
+
+    btn.addEventListener("click", () => {
+      window.location.href = "flight-checkout.html";
+    });
+  </script>
+</body>
+</html>
 
