@@ -401,6 +401,24 @@ if (addHotelCheckbox) {
   });
 }
 
+ //////////// new////////
+<section class="card" id="checkoutCard" style="display:none;" aria-label="Checkout">
+  <div class="results-head">
+    <h3 style="margin:0;">Checkout (Demo)</h3>
+    <div class="pill">Not a real purchase</div>
+  </div>
+
+  <div class="pill" id="checkoutSummary" style="margin-top:10px;">
+    Select an item to continue.
+  </div>
+
+  <div class="actions" style="margin-top:12px;">
+    <button class="btn-outline" id="checkoutBackBtn" type="button">Back</button>
+    <button class="btn-primary" id="checkoutPlaceBtn" type="button">Place booking (Demo)</button>
+    <span class="pill" id="checkoutStatus" style="display:none;"></span>
+  </div>
+</section>
+//////////////
 
       // Keyboard support (left/right arrows)
       const tablist = document.querySelector(".top-tabs");
