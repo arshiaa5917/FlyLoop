@@ -1,0 +1,35 @@
+/* assets/review.css */
+.review-wrap{
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 28px 18px 60px;
+}
+
+.review-grid{
+  display:grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 16px;
+}
+
+@media (max-width: 900px){
+  .review-grid{ grid-template-columns: 1fr; }
+}
+
+.review-row{
+  display:flex;
+  justify-content:space-between;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(148,163,184,.18);
+}
+
+.review-row:last-child{ border-bottom: 0; }
+
+.review-k{ opacity:.8; font-size: 13px; }
+.review-v{ font-weight: 800; }
+
+.review-total{
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing:.2px;
+}
