@@ -1,243 +1,215 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Flights – FlyLoop</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="FlyLoop flight search concept page (UI + API-ready layout)." />
+(() => {
+  const AIRPORTS = window.AIRPORTS || [];
 
-  <link rel="stylesheet" href="assets/flights.css" />
-</head>
+  // helpers
+  const $ = (id) => document.getElementById(id);
+  const normalizeIata = (v) => String(v || "").trim().toUpperCase();
+  const isIata3 = (v) => /^[A-Z]{3}$/.test(v);
 
-<body>
-  <!-- Mobile top bar -->
-  <header class="mobile-topbar" aria-label="Mobile header">
-    <div class="mobile-topbar-inner">
-      <button class="hamburger" id="openNavBtn" type="button"
-              aria-label="Open menu" aria-controls="sidebarNav" aria-expanded="false">
-        <span class="hamburger-icon" aria-hidden="true"><span></span></span>
-        Menu
-      </button>
+  const escapeHtml = (s) =>
+    String(s ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
 
-      <div class="sidebar-logo" style="margin:0;">
-        <img src="logo.png?v=2" alt="FlyLoop logo" />
-        <span>FLYLOOP</span>
-      </div>
-    </div>
-  </header>
+  function setStatus(msg, show = true) {
+    const pill = $("statusPill");
+    if (!pill) return;
+    pill.style.display = show ? "inline-flex" : "none";
+    pill.textContent = msg;
+  }
 
-  <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+  // ----- dropdown / combo -----
+  function airportLabel(a) {
+    return `${a.city} — ${a.name} (${a.code})`;
+  }
+  function airportMeta(a) {
+    return `${a.country}`;
+  }
 
-  <div class="layout">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebarNav" aria-label="Dashboard navigation">
-      <button class="sidebar-close" id="closeNavBtn" type="button" aria-label="Close menu">
-        Close ✕
-      </button>
+  function filterAirports(q) {
+    const s = String(q || "").trim().toLowerCase();
+    if (!s) return AIRPORTS.slice(0, 80);
+    return AIRPORTS
+      .filter((a) => (`${a.code} ${a.city} ${a.name} ${a.country}`).toLowerCase().includes(s))
+      .slice(0, 80);
+  }
 
-      <div class="sidebar-logo">
-        <img src="logo.png?v=2" alt="FlyLoop logo" />
-        <span>FLYLOOP</span>
-      </div>
+  function setupCombo({ wrapSelector, inputId, clearBtnId, hiddenId, defaultCode }) {
+    const wrap = document.querySelector(wrapSelector);
+    const input = $(inputId);
+    const clearBtn = $(clearBtnId);
+    const hidden = $(hiddenId);
 
-      <div class="sidebar-title">Dashboard</div>
+    if (!wrap || !input || !clearBtn || !hidden) return;
 
-      <nav class="sidebar-nav" aria-label="Dashboard pages">
-        <a class="sidebar-link" href="dashboard.html#overview">
-          <span class="label">Overview</span>
-          <small>Trips &amp; plan</small>
-        </a>
+    const panel = wrap.querySelector(".combo-panel");
+    const list = wrap.querySelector(".combo-list");
+    const empty = wrap.querySelector(".combo-empty");
 
-        <a class="sidebar-link" href="dashboard.html#account">
-          <span class="label">Account</span>
-          <small>Profile &amp; billing</small>
-        </a>
+    let activeIndex = -1;
+    let current = [];
 
-        <a class="sidebar-link active" href="flights.html" aria-current="page">
-          <span class="label">Flights</span>
-          <small>Live search</small>
-        </a>
-
-        <a class="sidebar-link" href="dashboard.html#settings">
-          <span class="label">Settings</span>
-          <small>Preferences</small>
-        </a>
-      </nav>
-
-      <div class="sidebar-footer">
-        Logged in as <strong>demo@flyloop.com</strong><br />
-        <a href="login.html" class="logout-link">Log out</a>
-      </div>
-    </aside>
-
-    <!-- Main content -->
-    <main class="content">
-      <div class="eyebrow">Flights</div>
-      <h1>Live flight search</h1>
-
-      <!-- Top tabs -->
-      <div class="top-tabs" role="tablist" aria-label="Product tabs">
-        <button class="tab-btn active" id="tabFlights" type="button" role="tab" aria-selected="true">
-          ✈️ Flights
-        </button>
-        <button class="tab-btn" id="tabHotels" type="button" role="tab" aria-selected="false">
-          🛏️ Hotels
-        </button>
-        <button class="tab-btn" id="tabCars" type="button" role="tab" aria-selected="false">
-          🚗 Cars
-        </button>
-      </div>
-
-      <div class="grid">
-        <!-- Search -->
-        <section class="card" aria-label="Flight search">
-          <h3>Search</h3>
-
-          <div class="mini-row">
-            <select id="tripType" class="mini-select" aria-label="Trip type">
-              <option value="oneway" selected>One way</option>
-              <option value="roundtrip">Round trip (UI only)</option>
-            </select>
-
-            <select id="adults" class="mini-select" aria-label="Adults">
-              <option value="1" selected>1 Adult</option>
-              <option value="2">2 Adults</option>
-              <option value="3">3 Adults</option>
-              <option value="4">4 Adults</option>
-            </select>
-
-            <select id="cabin" class="mini-select" aria-label="Cabin">
-              <option value="ECONOMY" selected>Economy</option>
-              <option value="PREMIUM_ECONOMY">Premium</option>
-              <option value="BUSINESS">Business</option>
-              <option value="FIRST">First</option>
-            </select>
-          </div>
-
-          <form id="flightForm" novalidate>
-            <!-- From / Swap / To -->
-            <div class="swap-row">
-              <div class="form-row">
-                <label for="fromText">From</label>
-
-                <div class="combo" data-combo="origin">
-                  <input id="fromText" class="combo-input" type="text"
-                         placeholder="Type city or IATA (YYZ)" autocomplete="off" />
-                  <button class="combo-clear" id="fromClear" type="button" aria-label="Clear origin">✕</button>
-
-                  <div class="combo-panel" role="listbox" aria-label="Origin airports">
-                    <div class="combo-list"></div>
-                    <div class="combo-empty">No matches.</div>
-                  </div>
-                </div>
-
-                <input id="fromIata" type="hidden" value="YYZ" />
-              </div>
-
-              <button class="swap-btn" id="swapBtn" type="button" aria-label="Swap origin and destination">⇄</button>
-
-              <div class="form-row">
-                <label for="toText">To</label>
-
-                <div class="combo" data-combo="destination">
-                  <input id="toText" class="combo-input" type="text"
-                         placeholder="Type city or IATA (MIA)" autocomplete="off" />
-                  <button class="combo-clear" id="toClear" type="button" aria-label="Clear destination">✕</button>
-
-                  <div class="combo-panel" role="listbox" aria-label="Destination airports">
-                    <div class="combo-list"></div>
-                    <div class="combo-empty">No matches.</div>
-                  </div>
-                </div>
-
-                <input id="toIata" type="hidden" value="MIA" />
-              </div>
-            </div>
-
-            <!-- Date + options -->
-            <div class="row2">
-              <div class="form-row depart-col">
-                <label for="departDate">Departure date</label>
-                <input id="departDate" type="date" value="2026-03-12" />
-              </div>
-
-              <div class="form-row options-col">
-                <label>Options</label>
-                <div class="checks">
-                  <label class="check"><input id="nearbyFrom" type="checkbox"> Nearby airports</label>
-                  <label class="check"><input id="addHotel" type="checkbox"> Add a hotel</label>
-                </div>
-              </div>
-            </div>
-
-            <div class="actions">
-              <button class="btn-primary" type="submit">Search</button>
-              <button class="btn-outline" id="clearBtn" type="button">Clear</button>
-              <span id="statusPill" class="pill" style="display:none;"></span>
-            </div>
-          </form>
-        </section>
-
-        <!-- Results -->
-        <section class="card" id="resultsCard" aria-label="Results">
-          <div class="results-head">
-            <h3 style="margin:0;">Results</h3>
-
-            <div class="sort-inline">
-              <label for="sortSelect" class="sort-label">Sort</label>
-              <select id="sortSelect" class="mini-select">
-                <option value="best" selected>Best</option>
-                <option value="price">Cheapest</option>
-                <option value="duration">Fastest</option>
-                <option value="depart">Depart time</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="summary-row" id="summaryRow" style="display:none;">
-            <button class="summary-pill active" type="button" data-preset="best">Best <span id="bestMeta">—</span></button>
-            <button class="summary-pill" type="button" data-preset="price">Cheapest <span id="cheapMeta">—</span></button>
-            <button class="summary-pill" type="button" data-preset="duration">Fastest <span id="fastMeta">—</span></button>
-          </div>
-
-          <div class="results" id="flightResults">
-            <div class="pill">Search to see results.</div>
-          </div>
-        </section>
-
-        <!-- Package (optional) -->
-        <section class="card" id="packageCard" style="display:none;" aria-label="Package">
-          <h3>Package (+ Hotel)</h3>
-          <div class="pill">UI placeholder — later: hotel search + combined price.</div>
-          <div id="hotelResults" class="results" style="margin-top:10px;"></div>
-        </section>
-      </div>
-    </main>
-  </div>
-
-  <!-- Scripts -->
-  <script src="assets/airports.js"></script>
-
-  <!-- IMPORTANT: replace this with your real JS file name -->
-  <script src="assets/flights.js"></script>
-
-  <!-- Date min guard -->
-  <script>
-    function toISODateLocal(d = new Date()) {
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, "0");
-      const day = String(d.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
+    function open() {
+      panel.classList.add("open");
+      render(input.value);
+    }
+    function close() {
+      panel.classList.remove("open");
+      activeIndex = -1;
     }
 
-    const departDate = document.getElementById("departDate");
-    const today = toISODateLocal();
-
-    departDate.min = today;
-
-    if (departDate.value && departDate.value < today) {
-      departDate.value = today;
+    function choose(a) {
+      hidden.value = a.code;
+      input.value = airportLabel(a);
+      input.focus({ preventScroll: true });
+      input.select();
+      close();
     }
-  </script>
-</body>
-</html>
+
+    function render(q) {
+      current = filterAirports(q);
+      list.innerHTML = "";
+      activeIndex = -1;
+
+      if (!current.length) {
+        empty.style.display = "block";
+        return;
+      }
+      empty.style.display = "none";
+
+      current.forEach((a) => {
+        const div = document.createElement("div");
+        div.className = "combo-item";
+        div.innerHTML = `
+          <div class="left">
+            <div class="name">${escapeHtml(airportLabel(a))}</div>
+            <div class="meta">${escapeHtml(airportMeta(a))}</div>
+          </div>
+          <div class="code">${escapeHtml(a.code)}</div>
+        `;
+        div.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+          choose(a);
+        });
+        list.appendChild(div);
+      });
+    }
+
+    input.addEventListener("focus", () => {
+      open();
+      requestAnimationFrame(() => input.select());
+    });
+
+    // key fix: clear hidden when typing so we don't submit stale IATA
+    input.addEventListener("input", () => {
+      hidden.value = "";
+      if (!panel.classList.contains("open")) open();
+      render(input.value);
+    });
+
+    input.addEventListener("keydown", (e) => {
+      const items = Array.from(list.querySelectorAll(".combo-item"));
+      if (!panel.classList.contains("open") && (e.key === "ArrowDown" || e.key === "Enter")) {
+        open();
+        e.preventDefault();
+        return;
+      }
+      if (!items.length) return;
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        activeIndex = Math.min(activeIndex + 1, items.length - 1);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        activeIndex = Math.max(activeIndex - 1, 0);
+      } else if (e.key === "Enter") {
+        if (activeIndex >= 0 && current[activeIndex]) {
+          e.preventDefault();
+          choose(current[activeIndex]);
+        }
+        return;
+      } else if (e.key === "Escape") {
+        close();
+        return;
+      } else {
+        return;
+      }
+
+      items.forEach((el, i) => el.classList.toggle("active", i === activeIndex));
+      if (activeIndex >= 0) items[activeIndex].scrollIntoView({ block: "nearest" });
+    });
+
+    clearBtn.addEventListener("click", () => {
+      input.value = "";
+      hidden.value = "";
+      input.focus({ preventScroll: true });
+      open();
+    });
+
+    document.addEventListener("mousedown", (e) => {
+      if (!wrap.contains(e.target)) close();
+    });
+
+    // init default
+    hidden.value = defaultCode;
+    const found = AIRPORTS.find((a) => a.code === defaultCode);
+    input.value = found ? airportLabel(found) : defaultCode;
+  }
+
+  setupCombo({
+    wrapSelector: '[data-combo="origin"]',
+    inputId: "fromText",
+    clearBtnId: "fromClear",
+    hiddenId: "fromIata",
+    defaultCode: "YYZ",
+  });
+
+  setupCombo({
+    wrapSelector: '[data-combo="destination"]',
+    inputId: "toText",
+    clearBtnId: "toClear",
+    hiddenId: "toIata",
+    defaultCode: "MIA",
+  });
+
+  // swap
+  $("swapBtn")?.addEventListener("click", () => {
+    const fromI = $("fromIata");
+    const toI = $("toIata");
+    const tmp = fromI.value;
+    fromI.value = toI.value;
+    toI.value = tmp;
+
+    const f = AIRPORTS.find((a) => a.code === fromI.value);
+    const t = AIRPORTS.find((a) => a.code === toI.value);
+    $("fromText").value = f ? airportLabel(f) : fromI.value;
+    $("toText").value = t ? airportLabel(t) : toI.value;
+  });
+
+  // submit (just to prove it works; backend may still 401)
+  $("flightForm")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    let origin = normalizeIata($("fromIata").value);
+    let destination = normalizeIata($("toIata").value);
+
+    const typedFrom = normalizeIata($("fromText").value);
+    const typedTo = normalizeIata($("toText").value);
+
+    if (!isIata3(origin) && isIata3(typedFrom)) origin = typedFrom;
+    if (!isIata3(destination) && isIata3(typedTo)) destination = typedTo;
+
+    const date = String($("departDate").value || "").trim();
+
+    if (!isIata3(origin)) return setStatus("Pick a valid origin (IATA).", true);
+    if (!isIata3(destination)) return setStatus("Pick a valid destination (IATA).", true);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return setStatus("Pick a valid date.", true);
+
+    setStatus(`Submitting: ${origin} → ${destination} on ${date}`, true);
+
+    // Your backend call can stay here; right now Amadeus is returning 401 anyway.
+  });
+})();
