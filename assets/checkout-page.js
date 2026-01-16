@@ -5,7 +5,7 @@
   const CREDITS_KEY = "flyloop_credits";
 
   // ✅ IMPORTANT: put your real orders page file here
-  const ORDERS_PAGE = "my-orders.html"; // <-- change if yours is different
+  const ORDERS_PAGE = "my-booked-flights.html"; // <-- change if yours is different
 
   const $ = (id) => document.getElementById(id);
 
