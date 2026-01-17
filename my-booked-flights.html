@@ -5,30 +5,179 @@
   <title>My Orders – FlyLoop</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="assets/flights.css" />
+
+  <!-- Orders page layout overrides + nicer UI -->
+  <style>
+    /* flights.css assumes a sidebar layout. This page has none. */
+    .layout { display: block !important; }
+    .content {
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 28px 20px 50px;
+    }
+
+    .page-head {
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+      margin-bottom: 16px;
+    }
+
+    .section-title{
+      font-size: 18px;
+      font-weight: 750;
+      letter-spacing: .2px;
+      margin: 34px 0 14px;
+      opacity: .92;
+    }
+
+    .orders-card { padding: 16px; }
+
+    /* list spacing */
+    .orders-list { display:flex; flex-direction:column; gap: 12px; }
+
+    /* Professional order row */
+    .order-row{
+      border: 1px solid rgba(148,163,184,.25);
+      border-radius: 18px;
+      padding: 14px 14px;
+      background: rgba(2,6,23,.30);
+      box-shadow: 0 14px 30px rgba(0,0,0,.35);
+    }
+
+    .order-grid{
+      display:grid;
+      grid-template-columns: 1.2fr 1fr auto;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .order-route{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      font-weight: 850;
+      letter-spacing:.2px;
+    }
+
+    .status-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,.28);
+      background: rgba(255,255,255,.03);
+      font-size: 12px;
+      opacity:.92;
+      font-weight: 700;
+      text-transform: none;
+    }
+
+    .order-meta{
+      margin-top: 8px;
+      display:flex;
+      flex-direction:column;
+      gap: 4px;
+      opacity: .88;
+      font-size: 13px;
+      line-height: 1.25rem;
+    }
+
+    .order-times{
+      display:flex;
+      flex-direction:column;
+      gap: 8px;
+      padding-top: 2px;
+      opacity:.92;
+    }
+    .time-line{
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      gap:10px;
+      font-weight: 750;
+      letter-spacing:.2px;
+    }
+    .time-line small{
+      font-weight: 600;
+      opacity:.75;
+    }
+
+    .order-right{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap: 10px;
+      min-width: 160px;
+    }
+
+    .price-pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,.25);
+      background: rgba(255,255,255,.03);
+      font-weight: 850;
+      letter-spacing:.2px;
+      white-space: nowrap;
+    }
+
+    .row-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    /* make canceled look subdued */
+    .order-row.is-canceled{
+      opacity: .72;
+      filter: saturate(.85);
+    }
+
+    /* Responsive: stack nicely */
+    @media (max-width: 860px){
+      .order-grid{ grid-template-columns: 1fr; }
+      .order-right{ align-items:flex-start; min-width: 0; }
+      .row-actions{ justify-content:flex-start; }
+    }
+  </style>
 </head>
+
 <body>
   <div class="layout">
-    <main class="content" style="padding-top:30px;">
-      <div class="eyebrow">Dashboard</div>
-      <h1>My Orders</h1>
+    <main class="content">
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">Dashboard</div>
+          <h1 style="margin:6px 0 0;">My Orders</h1>
+        </div>
+      </div>
 
-      <!-- ✅ ACTIVE FLIGHTS -->
-      <section class="card" aria-label="Active flights">
-        <h3 style="margin-bottom:12px;">Active flights</h3>
-        <div class="results" id="orders-active">
+      <!-- Active flights -->
+      <section class="card orders-card" aria-label="Active flights">
+        <div class="section-title" style="margin:0 0 14px;">Active flights</div>
+        <div class="orders-list" id="orders-active">
           <div class="pill">Loading…</div>
         </div>
       </section>
 
-      <!-- ✅ CANCELED FLIGHTS (BOTTOM) -->
-      <section class="card" aria-label="Canceled flights" style="margin-top:24px;">
-        <h3 style="margin-bottom:12px;">Canceled flights</h3>
-        <div class="results" id="orders-canceled">
+      <!-- Canceled title OUTSIDE the card (as you requested) -->
+      <div class="section-title">Canceled flights</div>
+
+      <section class="card orders-card" aria-label="Canceled flights">
+        <div class="orders-list" id="orders-canceled">
           <div class="pill">No canceled flights.</div>
         </div>
       </section>
 
-      <div class="actions" style="margin-top:16px;">
+      <div class="actions" style="margin-top:22px;">
         <a class="btn-outline" href="dashboard.html#overview">Back to Dashboard</a>
         <a class="btn-primary" href="flights.html">Book another flight</a>
       </div>
@@ -37,8 +186,15 @@
 
   <script>
     const ORDERS_KEY = "flyloop_orders";
+
     const activeEl = document.getElementById("orders-active");
     const canceledEl = document.getElementById("orders-canceled");
+
+    let orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
+
+    function saveOrders() {
+      localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+    }
 
     function escapeHtml(s){
       return String(s ?? "")
@@ -49,112 +205,107 @@
         .replaceAll("'","&#039;");
     }
 
-    function loadOrders() {
-      return JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
+    function priceText(o){
+      if (o.priceText) return o.priceText;
+      if (typeof o.price === "number") return `CAD ${o.price.toFixed(2)}`;
+      return "CAD —";
     }
 
-    function saveOrders(orders) {
-      localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
-    }
+    function renderOrderRow(o, canCancel){
+      const route = `${o.origin || "—"} → ${o.destination || "—"}`;
+      const status = o.status || "Booked";
+      const date = o.departDate || "—";
+      const departTime = o.departTime || "—";
+      const arriveTime = o.arriveTime || "—";
+      const cabin = o.cabin || "ECONOMY";
+      const pax = o.adults || 1;
+      const id = o.id || "—";
 
-    function renderSection(list, targetEl, isCanceledSection) {
-      if (!targetEl) return;
+      const canceledClass = (status === "Canceled") ? "is-canceled" : "";
 
-      if (!list.length) {
-        targetEl.innerHTML = `<div class="pill">${
-          isCanceledSection ? "No canceled flights." : "No active flights."
-        }</div>`;
-        return;
-      }
-
-      targetEl.innerHTML = list.map(o => {
-        const route = `${o.origin || "—"} → ${o.destination || "—"}`;
-        const date = o.departDate || "—";
-        const departTime = o.departTime || "—";
-        const arriveTime = o.arriveTime || "—";
-        const price = o.priceText || (typeof o.price === "number" ? `CAD ${o.price.toFixed(2)}` : "CAD —");
-        const id = o.id || "—";
-        const status = o.status || "Booked";
-
-        return `
-          <div class="hotel-item" style="${isCanceledSection ? "opacity:.65;" : ""}">
-            <div class="hotel-top">
-              <div>
-                <div class="hotel-name">
-                  ${escapeHtml(route)}
-                  <span class="pill" style="margin-left:8px;">${escapeHtml(status)}</span>
-                </div>
-
-                <div class="hotel-sub">
-                  ${escapeHtml(date)} • ${escapeHtml(departTime)} → ${escapeHtml(arriveTime)}
-                </div>
-
-                <div class="hotel-sub">
-                  Cabin: ${escapeHtml(o.cabin || "ECONOMY")} • Pax: ${escapeHtml(o.adults || 1)}
-                </div>
-
-                <div class="hotel-sub">
-                  Order: ${escapeHtml(id)}
-                </div>
-
-                ${
-                  !isCanceledSection ? `
-                  <div class="hotel-actions" style="margin-top:12px;">
-                    <button
-                      class="btn-outline"
-                      type="button"
-                      data-action="cancel"
-                      data-id="${escapeHtml(id)}">
-                      Cancel
-                    </button>
-                  </div>
-                  ` : ""
-                }
+      return `
+        <div class="order-row ${canceledClass}" data-order-id="${escapeHtml(id)}">
+          <div class="order-grid">
+            <div>
+              <div class="order-route">
+                <span>${escapeHtml(route)}</span>
+                <span class="status-pill">${escapeHtml(status)}</span>
               </div>
 
-              <div class="pill">${escapeHtml(price)}</div>
+              <div class="order-meta">
+                <div>${escapeHtml(date)}</div>
+                <div>Cabin: <strong>${escapeHtml(cabin)}</strong> • Pax: <strong>${escapeHtml(pax)}</strong></div>
+                <div>Order: <strong>${escapeHtml(id)}</strong></div>
+              </div>
+            </div>
+
+            <div class="order-times">
+              <div class="time-line">
+                <span>${escapeHtml(departTime)}</span>
+                <small>depart</small>
+              </div>
+              <div class="time-line">
+                <span>${escapeHtml(arriveTime)}</span>
+                <small>arrive</small>
+              </div>
+            </div>
+
+            <div class="order-right">
+              <div class="price-pill">${escapeHtml(priceText(o))}</div>
+
+              ${canCancel ? `
+                <div class="row-actions">
+                  <button class="btn-outline" type="button" data-action="cancel" data-id="${escapeHtml(id)}">
+                    Cancel
+                  </button>
+                </div>
+              ` : ""}
             </div>
           </div>
-        `;
-      }).join("");
+        </div>
+      `;
     }
 
-    function render() {
-      const orders = loadOrders().filter(o => (o.orderType || "flight") === "flight");
+    function render(){
+      const flightOrders = orders.filter(o => (o.orderType || "flight") === "flight");
+      const active = flightOrders.filter(o => (o.status || "Booked") !== "Canceled");
+      const canceled = flightOrders.filter(o => (o.status || "") === "Canceled");
 
-      const active = orders.filter(o => String(o.status || "Booked") !== "Canceled");
-      const canceled = orders.filter(o => String(o.status || "") === "Canceled");
+      if (!active.length){
+        activeEl.innerHTML = `<div class="pill">No active bookings.</div>`;
+      } else {
+        activeEl.innerHTML = active.map(o => renderOrderRow(o, true)).join("");
+      }
 
-      renderSection(active, activeEl, false);
-      renderSection(canceled, canceledEl, true);
+      if (!canceled.length){
+        canceledEl.innerHTML = `<div class="pill">No canceled flights.</div>`;
+      } else {
+        canceledEl.innerHTML = canceled.map(o => renderOrderRow(o, false)).join("");
+      }
     }
 
-    // ✅ Cancel handler only on ACTIVE section
-    activeEl.addEventListener("click", (e) => {
+    // Event delegation for cancel (cleaner than inline onclick)
+    document.addEventListener("click", (e) => {
       const btn = e.target.closest('button[data-action="cancel"]');
       if (!btn) return;
 
       const id = btn.getAttribute("data-id");
       if (!id) return;
 
-      const ok = window.confirm("Are u sure u wanna cancel?");
+      const ok = confirm("Are you sure you want to cancel?");
       if (!ok) return;
 
-      const orders = loadOrders();
-      const idx = orders.findIndex(o => String(o.id || "") === String(id));
-      if (idx === -1) return;
+      orders = orders.map(o =>
+        o.id === id ? { ...o, status: "Canceled", canceledAt: new Date().toISOString() } : o
+      );
 
-      orders[idx].status = "Canceled";
-      orders[idx].canceledAt = new Date().toISOString();
-
-      saveOrders(orders);
+      saveOrders();
       render();
 
-      // ✅ scroll to canceled section after cancel
-      canceledEl.scrollIntoView({ behavior: "smooth" });
+      // smooth scroll to canceled section
+      canceledEl.scrollIntoView({ behavior: "smooth", block: "start" });
     });
 
-    // Initial render
     render();
   </script>
 </body>
