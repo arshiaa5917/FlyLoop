@@ -647,24 +647,46 @@ input:focus, select:focus{
    CONTINUE + AIRLINE LOGOS + CLEANUP
    Paste this at the VERY END of flights.css
    ========================================================= */
-
 /* Airline logo block (replaces TS/UA/GP codes) */
 .airline-logo{
   width:44px;
   height:44px;
-  border-radius:12px;
-  object-fit:contain;
-  background: rgba(255,255,255,.06);
-  border:1px solid rgba(148,163,184,.22);
-  padding:6px;
+  border-radius:999px;
+  background: rgba(2,6,23,.65);
+  border:1px solid rgba(148,163,184,.20);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+
+  flex:0 0 44px;          /* ✅ prevents shrink */
 }
+
+.airline-logo img{
+  width:78%;
+  height:78%;
+  object-fit:contain;
+  filter: saturate(1.1) contrast(1.08);
+}
+
+/* Optional: if any logo looks “too dark”, uncomment this */
+/*
+.airline-logo img{
+  filter: saturate(1.1) contrast(1.08) brightness(1.05);
+}
+*/
+
 .airline-stack{
   display:flex;
   align-items:center;
   gap:12px;
   min-width:0;
 }
+
 .airline-meta{min-width:0}
+
 .airline-meta .airline-name{
   font-weight:900;
   letter-spacing:-.01em;
@@ -672,13 +694,14 @@ input:focus, select:focus{
   overflow:hidden;
   text-overflow:ellipsis;
 }
+
 .airline-meta .airline-code{
   opacity:.7;
   font-size:.82rem;
   margin-top:2px;
 }
 
-/* Fix duplicated .checks definition earlier – keep the "input-like" version */
+/* ✅ Good: keep the input-like checks version */
 .checks{
   display:flex;
   gap:18px;
