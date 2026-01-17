@@ -940,3 +940,7 @@ input:focus, select:focus{
   .timeline{grid-template-columns:1fr;}
   .midline .line{display:none;}
 }
+.flight-left{
+  align-items:flex-start;   /* instead of center */
+  padding-top:4px;          /* subtle optical alignment */
+}
