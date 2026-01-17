@@ -728,3 +728,65 @@ input:focus, select:focus{
 @media (max-width:900px){
   .flight-row{padding:16px 14px;}
 }
+/* ===== Flight row: airline/logo layout polish ===== */
+
+.flight-left{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  min-width:0;
+}
+
+/* logo + airline name */
+.airline-stack{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+
+.airline-logo{
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  object-fit:contain;
+  background: rgba(2,6,23,.55);
+  border:1px solid rgba(148,163,184,.18);
+  padding:6px;
+  flex:0 0 auto;
+}
+
+.airline-meta{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  line-height:1.15;
+}
+
+.airline-name{
+  font-weight:950;
+  font-size:1.02rem;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:140px;
+}
+
+.airline-code{
+  color: var(--muted);
+  font-size:.78rem;
+  margin-top:4px;
+}
+
+/* flight number line */
+.flight-number{
+  color: var(--muted);
+  font-size:.82rem;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* ===== Details toggle (use class, not inline style) ===== */
+.details-panel{ display:none; }
+.flight-row.details-open .details-panel{ display:block; }
