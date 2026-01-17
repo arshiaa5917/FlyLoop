@@ -643,3 +643,88 @@ input:focus, select:focus{
   }
 }
 
+/* =========================================================
+   CONTINUE + AIRLINE LOGOS + CLEANUP
+   Paste this at the VERY END of flights.css
+   ========================================================= */
+
+/* Airline logo block (replaces TS/UA/GP codes) */
+.airline-logo{
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  object-fit:contain;
+  background: rgba(255,255,255,.06);
+  border:1px solid rgba(148,163,184,.22);
+  padding:6px;
+}
+.airline-stack{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+.airline-meta{min-width:0}
+.airline-meta .airline-name{
+  font-weight:900;
+  letter-spacing:-.01em;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.airline-meta .airline-code{
+  opacity:.7;
+  font-size:.82rem;
+  margin-top:2px;
+}
+
+/* Fix duplicated .checks definition earlier – keep the "input-like" version */
+.checks{
+  display:flex;
+  gap:18px;
+  align-items:center;
+  flex-wrap:wrap;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid rgba(75,85,99,.9);
+  background:#020617;
+  min-height:46px;
+}
+
+/* Continue button pinned bottom-right INSIDE results card */
+#resultsCard{position:relative;}
+.results-continue{
+  position: sticky;          /* stays visible when you scroll within page */
+  bottom: 14px;
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  align-items:center;
+  margin-top:14px;
+  padding-top:10px;
+  background: linear-gradient(180deg, rgba(17,17,17,0), rgba(17,17,17,.92) 45%, rgba(17,17,17,.98));
+  border-top:1px solid rgba(148,163,184,.12);
+}
+.results-continue .btn-primary{
+  min-width:160px;
+}
+@media (max-width:900px){
+  .results-continue{
+    bottom: 10px;
+  }
+}
+
+/* Make sure flight row left column looks nice with logo */
+.flight-left{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.flight-left .flight-number{
+  margin-top:0; /* don’t push down when logo exists */
+}
+
+/* (Optional) slightly reduce padding in mobile flight rows */
+@media (max-width:900px){
+  .flight-row{padding:16px 14px;}
+}
