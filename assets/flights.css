@@ -944,3 +944,38 @@ input:focus, select:focus{
   align-items:flex-start;   /* instead of center */
   padding-top:4px;          /* subtle optical alignment */
 }
+
+
+
+
+/* =========================================
+   FINAL FLIGHT ROW ALIGNMENT & HIERARCHY FIX
+   ========================================= */
+
+/* 1️⃣ Airline block alignment */
+.flight-left{
+  align-items:flex-start;
+  padding-top:4px;
+}
+
+/* 2️⃣ De-emphasize flight numbers */
+.flight-number{
+  opacity:.55;
+  font-size:.78rem;
+  margin-top:4px;
+}
+
+/* 3️⃣ Normalize timeline height */
+.flight-middle{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-height:120px;
+}
+
+/* 4️⃣ Purchase column separation */
+.flight-right{
+  border-left:1px solid rgba(148,163,184,.14);
+  padding-left:16px;
+}
+
