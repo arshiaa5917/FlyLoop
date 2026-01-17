@@ -26,11 +26,8 @@
   </div>
 
   <script>
-    // ✅ MUST match checkout-page.js
     const ORDERS_KEY = "flyloop_orders";
     const ordersEl = document.getElementById("orders");
-
-    const orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
 
     function escapeHtml(s){
       return String(s ?? "")
@@ -41,21 +38,34 @@
         .replaceAll("'","&#039;");
     }
 
-    // Show only flights (in case you add hotels/packages later)
-    const flightOrders = orders.filter(o => (o.orderType || "flight") === "flight");
+    function loadOrders() {
+      return JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
+    }
 
-    if (!flightOrders.length) {
-      ordersEl.innerHTML = `<div class="pill">No orders yet.</div>`;
-    } else {
+    function saveOrders(orders) {
+      localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+    }
+
+    function render() {
+      const orders = loadOrders();
+
+      // show only flights (safe for future hotels/packages)
+      const flightOrders = orders.filter(o => (o.orderType || "flight") === "flight");
+
+      if (!flightOrders.length) {
+        ordersEl.innerHTML = `<div class="pill">No orders yet.</div>`;
+        return;
+      }
+
       ordersEl.innerHTML = flightOrders.map(o => {
         const route = `${o.origin || "—"} → ${o.destination || "—"}`;
         const date = o.departDate || "—";
-
         const departTime = o.departTime || "—";
         const arriveTime = o.arriveTime || "—";
-
         const price = o.priceText || (typeof o.price === "number" ? `CAD ${o.price.toFixed(2)}` : "CAD —");
-        const id = o.id || "—";
+        const id = o.id || "";
+        const status = o.status || "Booked";
+        const isCanceled = String(status).toLowerCase() === "canceled";
 
         return `
           <div class="hotel-item">
@@ -63,7 +73,7 @@
               <div>
                 <div class="hotel-name">
                   ${escapeHtml(route)}
-                  <span class="pill" style="margin-left:8px;">${escapeHtml(o.status || "Booked")}</span>
+                  <span class="pill" style="margin-left:8px;">${escapeHtml(status)}</span>
                 </div>
 
                 <div class="hotel-sub">
@@ -75,7 +85,18 @@
                 </div>
 
                 <div class="hotel-sub">
-                  Order: ${escapeHtml(id)}
+                  Order: ${escapeHtml(id || "—")}
+                </div>
+
+                <div class="hotel-actions" style="margin-top:12px;">
+                  <button
+                    class="btn-outline"
+                    type="button"
+                    data-action="cancel"
+                    data-id="${escapeHtml(id)}"
+                    ${(!id || isCanceled) ? "disabled" : ""}>
+                    ${isCanceled ? "Canceled" : "Cancel"}
+                  </button>
                 </div>
               </div>
 
@@ -85,6 +106,31 @@
         `;
       }).join("");
     }
+
+    // ✅ cancel click handler (works for all cards)
+    ordersEl.addEventListener("click", (e) => {
+      const btn = e.target.closest('button[data-action="cancel"]');
+      if (!btn) return;
+
+      const id = btn.getAttribute("data-id");
+      if (!id) return;
+
+      const ok = window.confirm("Are u sure u wanna cancel?");
+      if (!ok) return;
+
+      const orders = loadOrders();
+      const idx = orders.findIndex(o => String(o.id || "") === String(id));
+      if (idx === -1) return;
+
+      orders[idx].status = "Canceled";
+      orders[idx].canceledAt = new Date().toISOString();
+
+      saveOrders(orders);
+      render();
+    });
+
+    // initial render
+    render();
   </script>
 </body>
 </html>
