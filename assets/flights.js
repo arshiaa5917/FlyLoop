@@ -1,4 +1,4 @@
-/* assets/flights.js — Skyscanner-style rendering + working combo + submit */
+/* assets/flights.js — Skyscanner-style rendering + working combo + submit + airline logos + continue */
 
 (() => {
   const AIRPORTS = window.AIRPORTS || [];
@@ -70,10 +70,57 @@
     return `o_${Math.random().toString(16).slice(2)}_${Date.now()}`;
   }
 
+  // ---------- Airline logo/name mapping ----------
+  // Put logo files here: /assets/airlines/ua.png , /assets/airlines/ts.png , etc
+  const AIRLINE_MAP = {
+    UA: { name: "United Airlines", logo: "assets/airlines/ua.png" },
+    TS: { name: "Air Transat", logo: "assets/airlines/ts.png" },
+    AC: { name: "Air Canada", logo: "assets/airlines/ac.png" },
+    AA: { name: "American Airlines", logo: "assets/airlines/aa.png" },
+    DL: { name: "Delta Air Lines", logo: "assets/airlines/dl.png" },
+    WS: { name: "WestJet", logo: "assets/airlines/ws.png" },
+  };
+
+  function getAirlineInfo(codeOrName) {
+    const raw = String(codeOrName || "").trim();
+    const code = raw.toUpperCase();
+    if (AIRLINE_MAP[code]) return { code, ...AIRLINE_MAP[code] };
+
+    // If API gave a name instead of a code, keep it as name
+    const looksLikeCode = /^[A-Z0-9]{2,3}$/.test(code);
+    const name = looksLikeCode ? code : raw || "Airline";
+    // fallback logo path based on code (if exists)
+    const fallbackLogo = looksLikeCode ? `assets/airlines/${code.toLowerCase()}.png` : "";
+    return { code: looksLikeCode ? code : "", name, logo: fallbackLogo };
+  }
+
+  function airlineLogoHtml(codeOrName) {
+    const info = getAirlineInfo(codeOrName);
+    const alt = info.code ? `${info.name} (${info.code})` : info.name;
+
+    // We render the logo if we have a path; if it 404s, we hide the image and show initials
+    const initials = (info.code || info.name || "FL").slice(0, 2).toUpperCase();
+
+    return `
+      <div class="airline-stack">
+        ${
+          info.logo
+            ? `<img class="airline-logo" src="${escapeHtml(info.logo)}" alt="${escapeHtml(alt)}"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';" />`
+            : ""
+        }
+        <div class="pill" style="display:${info.logo ? "none" : "inline-flex"}; width:44px; height:44px; align-items:center; justify-content:center; font-weight:900;">
+          ${escapeHtml(initials)}
+        </div>
+        <div class="airline-meta">
+          <div class="airline-name">${escapeHtml(info.name)}</div>
+          <div class="airline-code">${escapeHtml(info.code ? `${info.code}` : "")}</div>
+        </div>
+      </div>
+    `;
+  }
+
   // ---------- normalize offers into consistent model ----------
-  // Supports:
-  //  A) demo: { airline, currency, total, stops, segments:[{from,to,departure/arrival,...}] }
-  //  B) Amadeus-ish: { price:{total,currency}, itineraries:[{segments:[{departure:{iataCode,at}, arrival:{iataCode,at}, carrierCode, number}]}] }
   function normalizeOffer(raw) {
     const currency =
       raw.currency ||
@@ -100,7 +147,7 @@
         departAt: s.departure || s.departureAt || s.departure?.at || s.departAt || "",
         arriveAt: s.arrival || s.arrivalAt || s.arrival?.at || s.arriveAt || "",
         carrier: s.carrier || s.carrierCode || s.marketingCarrier || raw.airline || "",
-        flightNumber: s.flightNumber || s.number || s.flightNo || ""
+        flightNumber: s.flightNumber || s.number || s.flightNo || "",
       }));
     }
 
@@ -112,23 +159,21 @@
         departAt: s.departure?.at || s.departureAt || "",
         arriveAt: s.arrival?.at || s.arrivalAt || "",
         carrier: s.carrierCode || s.marketingCarrierCode || "",
-        flightNumber: s.number || ""
+        flightNumber: s.number || "",
       }));
     }
 
     const origin = segments[0]?.from || (raw.origin || raw.from || "").toUpperCase();
-    const destination = segments[segments.length - 1]?.to || (raw.destination || raw.to || "").toUpperCase();
+    const destination =
+      segments[segments.length - 1]?.to || (raw.destination || raw.to || "").toUpperCase();
 
     const departAt = segments[0]?.departAt || raw.departure || raw.departureAt || "";
     const arriveAt = segments[segments.length - 1]?.arriveAt || raw.arrival || raw.arrivalAt || "";
 
     const durationMins = departAt && arriveAt ? minsBetween(departAt, arriveAt) : null;
 
-    const stopsCount =
-      raw.stops != null ? Number(raw.stops) : Math.max(0, segments.length - 1);
-
-    const stopsLabel =
-      stopsCount === 0 ? "Direct" : `${stopsCount} stop${stopsCount > 1 ? "s" : ""}`;
+    const stopsCount = raw.stops != null ? Number(raw.stops) : Math.max(0, segments.length - 1);
+    const stopsLabel = stopsCount === 0 ? "Direct" : `${stopsCount} stop${stopsCount > 1 ? "s" : ""}`;
 
     const stopAirports =
       segments.length > 1 ? segments.slice(0, -1).map((s) => s.to).filter(Boolean) : [];
@@ -149,7 +194,7 @@
       "—";
 
     const flightNums = segments
-      .map((s) => (s.carrier && s.flightNumber) ? `${s.carrier}${s.flightNumber}` : "")
+      .map((s) => (s.carrier && s.flightNumber ? `${s.carrier}${s.flightNumber}` : ""))
       .filter(Boolean);
 
     return {
@@ -171,15 +216,28 @@
       layovers,
       airline,
       flightNums,
-      segments
+      segments,
     };
   }
 
   // ---------- UI state ----------
   let currentOffers = [];
   let selectedOfferId = null;
-  let preset = "best";     // best | price | duration
-  let sortMode = "best";   // best | price | duration | depart
+  let preset = "best"; // best | price | duration
+  let sortMode = "best"; // best | price | duration | depart
+
+  // Continue button (bottom-right)
+  const continueBtn = $("flightContinueBtn");
+  const continuePill = $("flightContinuePill");
+  function setContinueVisible(on) {
+    if (!continueBtn) return;
+    continueBtn.disabled = !on;
+    // show/hide area by toggling container if you added .results-continue wrapper
+    const container = continueBtn.closest(".results-continue") || continueBtn.parentElement;
+    if (container) container.style.display = on ? "flex" : "none";
+    if (continuePill) continuePill.style.display = "none";
+  }
+  setContinueVisible(false);
 
   function bestScore(o) {
     const p = Number(o.total);
@@ -193,12 +251,14 @@
 
     // preset pills base ordering
     if (preset === "price") arr.sort((a, b) => Number(a.total) - Number(b.total));
-    else if (preset === "duration") arr.sort((a, b) => (a.durationMins ?? 999999) - (b.durationMins ?? 999999));
+    else if (preset === "duration")
+      arr.sort((a, b) => (a.durationMins ?? 999999) - (b.durationMins ?? 999999));
     else arr.sort((a, b) => bestScore(a) - bestScore(b));
 
     // dropdown override
     if (sortMode === "price") arr.sort((a, b) => Number(a.total) - Number(b.total));
-    else if (sortMode === "duration") arr.sort((a, b) => (a.durationMins ?? 999999) - (b.durationMins ?? 999999));
+    else if (sortMode === "duration")
+      arr.sort((a, b) => (a.durationMins ?? 999999) - (b.durationMins ?? 999999));
     else if (sortMode === "depart") arr.sort((a, b) => String(a.departAt).localeCompare(String(b.departAt)));
 
     return arr;
@@ -209,32 +269,33 @@
     const cheap = [...items].sort((a, b) => Number(a.total) - Number(b.total))[0];
     const fast = [...items].sort((a, b) => (a.durationMins ?? 999999) - (b.durationMins ?? 999999))[0];
 
-    $("summaryRow").style.display = "flex";
-    $("bestMeta").textContent = best ? ` ${best.currency} ${Number(best.total).toFixed(2)}` : " —";
-    $("cheapMeta").textContent = cheap ? ` ${cheap.currency} ${Number(cheap.total).toFixed(2)}` : " —";
-    $("fastMeta").textContent = fast && fast.durationMins != null ? ` ${fast.duration}` : " —";
+    if ($("summaryRow")) $("summaryRow").style.display = "flex";
+    if ($("bestMeta")) $("bestMeta").textContent = best ? ` ${best.currency} ${Number(best.total).toFixed(2)}` : " —";
+    if ($("cheapMeta")) $("cheapMeta").textContent = cheap ? ` ${cheap.currency} ${Number(cheap.total).toFixed(2)}` : " —";
+    if ($("fastMeta")) $("fastMeta").textContent = fast && fast.durationMins != null ? ` ${fast.duration}` : " —";
   }
 
   function renderDetailsHtml(o) {
     const segs = o.segments || [];
     if (!segs.length) return `<div class="pill">No segment details.</div>`;
 
-    const rows = segs.map((s, idx) => {
-      const dep = fmtTime(s.departAt);
-      const arr = fmtTime(s.arriveAt);
-      const code = (s.carrier && s.flightNumber) ? `${s.carrier}${s.flightNumber}` : "—";
-      const from = s.from || "—";
-      const to = s.to || "—";
+    const rows = segs
+      .map((s, idx) => {
+        const dep = fmtTime(s.departAt);
+        const arr = fmtTime(s.arriveAt);
+        const code = s.carrier && s.flightNumber ? `${s.carrier}${s.flightNumber}` : "—";
+        const from = s.from || "—";
+        const to = s.to || "—";
 
-      let lay = "";
-      if (idx < segs.length - 1) {
-        const layMins = minsBetween(s.arriveAt, segs[idx + 1]?.departAt);
-        if (layMins != null && layMins > 0) {
-          lay = `<div class="layover">Layover in <strong>${escapeHtml(to)}</strong>: ${escapeHtml(fmtDuration(layMins))}</div>`;
+        let lay = "";
+        if (idx < segs.length - 1) {
+          const layMins = minsBetween(s.arriveAt, segs[idx + 1]?.departAt);
+          if (layMins != null && layMins > 0) {
+            lay = `<div class="layover">Layover in <strong>${escapeHtml(to)}</strong>: ${escapeHtml(fmtDuration(layMins))}</div>`;
+          }
         }
-      }
 
-      return `
+        return `
         <div class="seg-row">
           <div class="seg-code">${escapeHtml(code)}</div>
           <div class="seg-route">
@@ -243,7 +304,8 @@
         </div>
         ${lay}
       `;
-    }).join("");
+      })
+      .join("");
 
     return `
       <div class="details-inner">
@@ -255,19 +317,23 @@
 
   function renderFlights(flights) {
     const flightResults = $("flightResults");
+    if (!flightResults) return;
+
     flightResults.innerHTML = "";
 
     flights.forEach((o) => {
       const first = o.segments?.[0];
-      const last  = o.segments?.[o.segments.length - 1];
+      const last = o.segments?.[o.segments.length - 1];
 
       const origin = first?.from || o.origin || "—";
       const destination = last?.to || o.destination || "—";
 
-      const airline = o.airline || "—";
-      const flightNums = (o.flightNums && o.flightNums.length)
-        ? o.flightNums.join(" · ")
-        : (first?.carrier && first?.flightNumber ? `${first.carrier}${first.flightNumber}` : "—");
+      const flightNums =
+        o.flightNums && o.flightNums.length
+          ? o.flightNums.join(" · ")
+          : first?.carrier && first?.flightNumber
+          ? `${first.carrier}${first.flightNumber}`
+          : "—";
 
       const price = fmtMoney(o.currency, o.total);
       const selected = o.id === selectedOfferId;
@@ -276,7 +342,7 @@
         <div class="flight-row ${selected ? "is-selected" : ""}" data-offer-id="${escapeHtml(o.id)}">
 
           <div class="flight-left">
-            <div class="airline">${escapeHtml(airline)}</div>
+            ${airlineLogoHtml(o.airline)}
             <div class="flight-number">${escapeHtml(flightNums)}</div>
           </div>
 
@@ -300,8 +366,18 @@
             </div>
 
             <div class="submeta">
-              ${o.stopAirports?.length ? `<span>Via: ${escapeHtml(o.stopAirports.join(" · "))}</span>` : `<span>Nonstop</span>`}
-              ${o.layovers?.some(x => x.mins != null) ? `<span>Layovers: ${escapeHtml(o.layovers.map(l => `${l.at} ${fmtDuration(l.mins)}`).join(" · "))}</span>` : ""}
+              ${
+                o.stopAirports?.length
+                  ? `<span>Via: ${escapeHtml(o.stopAirports.join(" · "))}</span>`
+                  : `<span>Nonstop</span>`
+              }
+              ${
+                o.layovers?.some((x) => x.mins != null)
+                  ? `<span>Layovers: ${escapeHtml(
+                      o.layovers.map((l) => `${l.at} ${fmtDuration(l.mins)}`).join(" · ")
+                    )}</span>`
+                  : ""
+              }
             </div>
           </div>
 
@@ -316,7 +392,6 @@
           <div class="details-panel" style="display:none;">
             ${renderDetailsHtml(o)}
           </div>
-
         </div>
       `;
     });
@@ -335,7 +410,7 @@
     if (!row) return;
 
     const id = row.getAttribute("data-offer-id");
-    const offer = currentOffers.find(o => o.id === id);
+    const offer = currentOffers.find((o) => o.id === id);
     if (!offer) return;
 
     const action = btn.getAttribute("data-action");
@@ -344,6 +419,7 @@
       selectedOfferId = offer.id;
       renderWithSort();
       setStatus("Selected a flight ✓", true);
+      setContinueVisible(true);
       return;
     }
 
@@ -355,16 +431,53 @@
     }
   });
 
+  // Continue button -> go to review page (YOU must have flight-review.html)
+  // If your file has a different name, change it here.
+  const DRAFT_KEY = "flyloop_checkout_draft";
+  continueBtn?.addEventListener("click", () => {
+    if (!selectedOfferId) return;
+
+    const offer = currentOffers.find((o) => o.id === selectedOfferId);
+    if (!offer) return;
+
+    // store the selected offer + search settings so review page can render
+    const payload = {
+      orderType: "flight",
+      selectedAt: Date.now(),
+      id: offer.id,
+      origin: offer.origin,
+      destination: offer.destination,
+      departDate: $("departDate")?.value || "",
+      departTime: offer.departTime,
+      arriveTime: offer.arriveTime,
+      cabin: $("cabin")?.value || "ECONOMY",
+      adults: $("adults")?.value || "1",
+      airline: offer.airline,
+      flightNums: offer.flightNums,
+      currency: offer.currency,
+      total: offer.total,
+      priceText: fmtMoney(offer.currency, offer.total),
+      segments: offer.segments,
+    };
+
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
+    window.location.href = "flight-review.html";
+  });
+
   // ---------- dropdown / combo ----------
-  function airportLabel(a) { return `${a.city} — ${a.name} (${a.code})`; }
-  function airportMeta(a) { return `${a.country}`; }
+  function airportLabel(a) {
+    return `${a.city} — ${a.name} (${a.code})`;
+  }
+  function airportMeta(a) {
+    return `${a.country}`;
+  }
 
   function filterAirports(q) {
     const s = String(q || "").trim().toLowerCase();
     if (!s) return AIRPORTS.slice(0, 80);
-    return AIRPORTS
-      .filter((a) => (`${a.code} ${a.city} ${a.name} ${a.country}`).toLowerCase().includes(s))
-      .slice(0, 80);
+    return AIRPORTS.filter((a) =>
+      `${a.code} ${a.city} ${a.name} ${a.country}`.toLowerCase().includes(s)
+    ).slice(0, 80);
   }
 
   function setupCombo({ wrapSelector, inputId, clearBtnId, hiddenId, defaultCode }) {
@@ -382,8 +495,14 @@
     let activeIndex = -1;
     let current = [];
 
-    function open() { panel.classList.add("open"); render(input.value); }
-    function close() { panel.classList.remove("open"); activeIndex = -1; }
+    function open() {
+      panel.classList.add("open");
+      render(input.value);
+    }
+    function close() {
+      panel.classList.remove("open");
+      activeIndex = -1;
+    }
 
     function choose(a) {
       hidden.value = a.code;
@@ -398,7 +517,10 @@
       list.innerHTML = "";
       activeIndex = -1;
 
-      if (!current.length) { empty.style.display = "block"; return; }
+      if (!current.length) {
+        empty.style.display = "block";
+        return;
+      }
       empty.style.display = "none";
 
       current.forEach((a) => {
@@ -411,7 +533,10 @@
           </div>
           <div class="code">${escapeHtml(a.code)}</div>
         `;
-        div.addEventListener("mousedown", (e) => { e.preventDefault(); choose(a); });
+        div.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+          choose(a);
+        });
         list.appendChild(div);
       });
     }
@@ -421,7 +546,7 @@
       requestAnimationFrame(() => input.select());
     });
 
-    // key fix: clear hidden when typing (prevents stale IATA)
+    // clear hidden when typing (prevents stale IATA)
     input.addEventListener("input", () => {
       hidden.value = "";
       if (!panel.classList.contains("open")) open();
@@ -431,17 +556,28 @@
     input.addEventListener("keydown", (e) => {
       const items = Array.from(list.querySelectorAll(".combo-item"));
       if (!panel.classList.contains("open") && (e.key === "ArrowDown" || e.key === "Enter")) {
-        open(); e.preventDefault(); return;
+        open();
+        e.preventDefault();
+        return;
       }
       if (!items.length) return;
 
-      if (e.key === "ArrowDown") { e.preventDefault(); activeIndex = Math.min(activeIndex + 1, items.length - 1); }
-      else if (e.key === "ArrowUp") { e.preventDefault(); activeIndex = Math.max(activeIndex - 1, 0); }
-      else if (e.key === "Enter") {
-        if (activeIndex >= 0 && current[activeIndex]) { e.preventDefault(); choose(current[activeIndex]); }
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        activeIndex = Math.min(activeIndex + 1, items.length - 1);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        activeIndex = Math.max(activeIndex - 1, 0);
+      } else if (e.key === "Enter") {
+        if (activeIndex >= 0 && current[activeIndex]) {
+          e.preventDefault();
+          choose(current[activeIndex]);
+        }
         return;
-      } else if (e.key === "Escape") { close(); return; }
-      else return;
+      } else if (e.key === "Escape") {
+        close();
+        return;
+      } else return;
 
       items.forEach((el, i) => el.classList.toggle("active", i === activeIndex));
       if (activeIndex >= 0) items[activeIndex].scrollIntoView({ block: "nearest" });
@@ -464,14 +600,28 @@
     input.value = found ? airportLabel(found) : defaultCode;
   }
 
-  setupCombo({ wrapSelector: '[data-combo="origin"]', inputId: "fromText", clearBtnId: "fromClear", hiddenId: "fromIata", defaultCode: "YYZ" });
-  setupCombo({ wrapSelector: '[data-combo="destination"]', inputId: "toText", clearBtnId: "toClear", hiddenId: "toIata", defaultCode: "MIA" });
+  setupCombo({
+    wrapSelector: '[data-combo="origin"]',
+    inputId: "fromText",
+    clearBtnId: "fromClear",
+    hiddenId: "fromIata",
+    defaultCode: "YYZ",
+  });
+  setupCombo({
+    wrapSelector: '[data-combo="destination"]',
+    inputId: "toText",
+    clearBtnId: "toClear",
+    hiddenId: "toIata",
+    defaultCode: "MIA",
+  });
 
   // swap
   $("swapBtn")?.addEventListener("click", () => {
     const fromI = $("fromIata");
     const toI = $("toIata");
-    const tmp = fromI.value; fromI.value = toI.value; toI.value = tmp;
+    const tmp = fromI.value;
+    fromI.value = toI.value;
+    toI.value = tmp;
 
     const f = AIRPORTS.find((a) => a.code === fromI.value);
     const t = AIRPORTS.find((a) => a.code === toI.value);
@@ -479,28 +629,11 @@
     $("toText").value = t ? airportLabel(t) : toI.value;
   });
 
-  // tabs (UI only)
-  function setTab(activeId) {
-    ["tabFlights", "tabHotels", "tabCars"].forEach(id => {
-      const el = $(id);
-      if (!el) return;
-      const isActive = id === activeId;
-      el.classList.toggle("active", isActive);
-      el.setAttribute("aria-selected", isActive ? "true" : "false");
-    });
-
-    if (activeId !== "tabFlights") setStatus("UI only: Flights is implemented. Hotels/Cars next.", true);
-    else setStatus("", false);
-  }
-  $("tabFlights")?.addEventListener("click", () => setTab("tabFlights"));
-  $("tabHotels")?.addEventListener("click", () => setTab("tabHotels"));
-  $("tabCars")?.addEventListener("click", () => setTab("tabCars"));
-
   // summary pills
-  document.querySelectorAll(".summary-pill").forEach(btn => {
+  document.querySelectorAll(".summary-pill").forEach((btn) => {
     btn.addEventListener("click", () => {
       preset = btn.getAttribute("data-preset") || "best";
-      document.querySelectorAll(".summary-pill").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".summary-pill").forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       renderWithSort();
     });
@@ -517,6 +650,7 @@
     e.preventDefault();
 
     selectedOfferId = null;
+    setContinueVisible(false);
 
     let origin = normalizeIata($("fromIata")?.value);
     let destination = normalizeIata($("toIata")?.value);
@@ -537,19 +671,22 @@
 
     setStatus("Searching…", true);
     $("flightResults").innerHTML = `<div class="pill">Loading…</div>`;
-    $("summaryRow").style.display = "none";
+    if ($("summaryRow")) $("summaryRow").style.display = "none";
 
     try {
-      // Backend accepts origin/destination (your serverless used that earlier)
-      const url =
-        `/api/flights?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&date=${encodeURIComponent(date)}&adults=${encodeURIComponent(adults)}&cabin=${encodeURIComponent(cabin)}`;
+      const url = `/api/flights?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(
+        destination
+      )}&date=${encodeURIComponent(date)}&adults=${encodeURIComponent(adults)}&cabin=${encodeURIComponent(cabin)}`;
 
       const res = await fetch(url, { headers: { Accept: "application/json" } });
 
       const text = await res.text();
       let data = {};
-      try { data = text ? JSON.parse(text) : {}; }
-      catch { data = { error: text }; }
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        data = { error: text };
+      }
 
       if (!res.ok) {
         setStatus(data?.error ? data.error : `API error (${res.status})`, true);
@@ -571,7 +708,7 @@
       // default selection states
       preset = "best";
       sortMode = $("sortSelect")?.value || "best";
-      document.querySelectorAll(".summary-pill").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".summary-pill").forEach((b) => b.classList.remove("active"));
       document.querySelector('.summary-pill[data-preset="best"]')?.classList.add("active");
 
       computeMeta(currentOffers);
@@ -590,13 +727,14 @@
   // clear
   $("clearBtn")?.addEventListener("click", () => {
     setStatus("", false);
-    $("summaryRow").style.display = "none";
+    if ($("summaryRow")) $("summaryRow").style.display = "none";
     $("flightResults").innerHTML = `<div class="pill">Results cleared.</div>`;
     currentOffers = [];
     selectedOfferId = null;
+    setContinueVisible(false);
   });
 
-  // mobile sidebar (optional; safe)
+  // mobile sidebar
   const sidebar = $("sidebarNav");
   const overlay = $("sidebarOverlay");
   const openBtn = $("openNavBtn");
@@ -619,5 +757,7 @@
   openBtn?.addEventListener("click", openNav);
   closeBtn?.addEventListener("click", closeNav);
   overlay?.addEventListener("click", closeNav);
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeNav(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeNav();
+  });
 })();
