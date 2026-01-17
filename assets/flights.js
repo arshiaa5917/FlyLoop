@@ -74,11 +74,11 @@
   // Put logo files here: /assets/airlines/ua.png , /assets/airlines/ts.png , etc
   const AIRLINE_MAP = {
     UA: { name: "United Airlines", logo: "assets/airlines/ua.png" },
-    TS: { name: "Air Transat", logo: "assets/airlines/ts.png" },
-    AC: { name: "Air Canada", logo: "assets/airlines/ac.png" },
-    AA: { name: "American Airlines", logo: "assets/airlines/aa.png" },
-    DL: { name: "Delta Air Lines", logo: "assets/airlines/dl.png" },
-    WS: { name: "WestJet", logo: "assets/airlines/ws.png" },
+    TS: { name: "Air Transat", logo: "assets/airlines/ts.jpg" },
+    AC: { name: "Air Canada", logo: "assets/airlines/ac.jpg" },
+    AA: { name: "American Airlines", logo: "assets/airlines/aa.jpg" },
+    DL: { name: "Delta Air Lines", logo: "assets/airlines/dl.jpeg" },
+    WS: { name: "WestJet", logo: "assets/airlines/wj.png" },
   };
 
   function getAirlineInfo(codeOrName) {
