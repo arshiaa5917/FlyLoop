@@ -388,10 +388,10 @@
             </button>
             <button class="details-btn" type="button" data-action="details">Details</button>
           </div>
+         <div class="details-panel">
+         ${renderDetailsHtml(o)}
+         </div>
 
-          <div class="details-panel" style="display:none;">
-            ${renderDetailsHtml(o)}
-          </div>
         </div>
       `;
     });
@@ -424,11 +424,12 @@
     }
 
     if (action === "details") {
-      const panel = row.querySelector(".details-panel");
-      const open = panel.style.display !== "none";
-      panel.style.display = open ? "none" : "block";
-      btn.textContent = open ? "Details" : "Hide details";
-    }
+  // Toggle open state via class (more reliable than inline styles)
+  const isOpen = row.classList.toggle("details-open");
+  btn.textContent = isOpen ? "Hide details" : "Details";
+  return;
+}
+
   });
 
   // Continue button -> go to review page (YOU must have flight-review.html)
