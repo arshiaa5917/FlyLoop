@@ -585,4 +585,61 @@ input:focus, select:focus{
 .combo-item {
   pointer-events: auto;
 }
+/* ==========================
+   Mobile sidebar UX fixes
+   ========================== */
+@media (max-width: 900px) {
+
+  /* Sidebar should sit on top of everything */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: min(86vw, 360px);
+    z-index: 1002;
+
+    /* Make it solid so page content doesn't show "inside" it */
+    background: rgba(6, 10, 18, 0.98);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(148,163,184,.22);
+    box-shadow: 0 20px 70px rgba(0,0,0,.7);
+
+    /* slide closed by default */
+    transform: translateX(-105%);
+    transition: transform .22s ease;
+  }
+
+  /* Overlay covers whole screen */
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1001;
+    background: rgba(0,0,0,.55);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s ease;
+  }
+
+  /* When open */
+  body.nav-open .sidebar {
+    transform: translateX(0);
+  }
+  body.nav-open .sidebar-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Lock scroll behind the menu */
+  body.nav-open {
+    overflow: hidden;
+    touch-action: none;
+  }
+
+  /* Make content full width on mobile */
+  .layout {
+    display: block !important;
+  }
+}
 
