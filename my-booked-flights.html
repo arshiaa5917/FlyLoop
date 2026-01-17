@@ -6,24 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="assets/flights.css" />
 
-  <!-- Orders page layout overrides + nicer UI -->
+  <!-- Orders UI polish + desktop layout override (no empty right side) -->
   <style>
-    /* flights.css assumes a sidebar layout. This page has none. */
-    .layout { display: block !important; }
-    .content {
-      max-width: 1050px;
-      margin: 0 auto;
-      padding: 28px 20px 50px;
-    }
-
-    .page-head {
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:16px;
-      flex-wrap:wrap;
-      margin-bottom: 16px;
-    }
+    /* Without this, flights.css may reserve space for sidebar even when you want a centered page */
+    .content { max-width: 1050px; margin: 0 auto; padding: 28px 20px 50px; }
+    .orders-card { padding: 16px; }
+    .orders-list { display:flex; flex-direction:column; gap:12px; }
 
     .section-title{
       font-size: 18px;
@@ -33,16 +21,10 @@
       opacity: .92;
     }
 
-    .orders-card { padding: 16px; }
-
-    /* list spacing */
-    .orders-list { display:flex; flex-direction:column; gap: 12px; }
-
-    /* Professional order row */
     .order-row{
       border: 1px solid rgba(148,163,184,.25);
       border-radius: 18px;
-      padding: 14px 14px;
+      padding: 14px;
       background: rgba(2,6,23,.30);
       box-shadow: 0 14px 30px rgba(0,0,0,.35);
     }
@@ -66,15 +48,13 @@
     .status-pill{
       display:inline-flex;
       align-items:center;
-      gap:6px;
       padding: 5px 10px;
       border-radius: 999px;
       border: 1px solid rgba(148,163,184,.28);
       background: rgba(255,255,255,.03);
       font-size: 12px;
-      opacity:.92;
       font-weight: 700;
-      text-transform: none;
+      opacity:.92;
     }
 
     .order-meta{
@@ -97,15 +77,11 @@
     .time-line{
       display:flex;
       align-items:center;
-      justify-content:flex-start;
       gap:10px;
       font-weight: 750;
       letter-spacing:.2px;
     }
-    .time-line small{
-      font-weight: 600;
-      opacity:.75;
-    }
+    .time-line small{ font-weight:600; opacity:.75; }
 
     .order-right{
       display:flex;
@@ -128,20 +104,13 @@
       white-space: nowrap;
     }
 
-    .row-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
+    .row-actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
 
-    /* make canceled look subdued */
     .order-row.is-canceled{
       opacity: .72;
       filter: saturate(.85);
     }
 
-    /* Responsive: stack nicely */
     @media (max-width: 860px){
       .order-grid{ grid-template-columns: 1fr; }
       .order-right{ align-items:flex-start; min-width: 0; }
@@ -151,26 +120,88 @@
 </head>
 
 <body>
+  <!-- Mobile top bar (same as flights page) -->
+  <header class="mobile-topbar" aria-label="Mobile header">
+    <div class="mobile-topbar-inner">
+      <button class="hamburger" id="openNavBtn" type="button"
+              aria-label="Open menu" aria-controls="sidebarNav" aria-expanded="false">
+        <span class="hamburger-icon" aria-hidden="true"><span></span></span>
+        Menu
+      </button>
+
+      <div class="sidebar-logo" style="margin:0;">
+        <img src="logo.png?v=2" alt="FlyLoop logo" />
+        <span>FLYLOOP</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
   <div class="layout">
-    <main class="content">
-      <div class="page-head">
-        <div>
-          <div class="eyebrow">Dashboard</div>
-          <h1 style="margin:6px 0 0;">My Orders</h1>
-        </div>
+    <!-- Sidebar (added to Orders page) -->
+    <aside class="sidebar" id="sidebarNav" aria-label="Dashboard navigation">
+      <button class="sidebar-close" id="closeNavBtn" type="button" aria-label="Close menu">
+        Close ✕
+      </button>
+
+      <div class="sidebar-logo">
+        <img src="logo.png?v=2" alt="FlyLoop logo" />
+        <span>FLYLOOP</span>
       </div>
 
-      <!-- Active flights -->
-      <section class="card orders-card" aria-label="Active flights">
+      <div class="sidebar-title">Dashboard</div>
+
+      <nav class="sidebar-nav" aria-label="Dashboard pages">
+        <a class="sidebar-link" href="dashboard.html#overview">
+          <span class="label">Overview</span>
+          <small>Trips &amp; plan</small>
+        </a>
+
+        <a class="sidebar-link" href="dashboard.html#account">
+          <span class="label">Account</span>
+          <small>Profile &amp; billing</small>
+        </a>
+
+        <a class="sidebar-link" href="flights.html">
+          <span class="label">Flights</span>
+          <small>Live search</small>
+        </a>
+
+        <a class="sidebar-link active" href="my-orders.html" aria-current="page">
+          <span class="label">My Orders</span>
+          <small>Bookings</small>
+        </a>
+
+        <a class="sidebar-link" href="dashboard.html#settings">
+          <span class="label">Settings</span>
+          <small>Preferences</small>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        Logged in as <strong>demo@flyloop.com</strong><br />
+        <a href="login.html" class="logout-link">Log out</a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="content">
+      <div class="eyebrow">Dashboard</div>
+      <h1 style="margin:6px 0 0;">My Orders</h1>
+
+      <!-- Active -->
+      <section class="card orders-card" aria-label="Active flights" style="margin-top:16px;">
         <div class="section-title" style="margin:0 0 14px;">Active flights</div>
         <div class="orders-list" id="orders-active">
           <div class="pill">Loading…</div>
         </div>
       </section>
 
-      <!-- Canceled title OUTSIDE the card (as you requested) -->
+      <!-- Title OUTSIDE box (your requirement) -->
       <div class="section-title">Canceled flights</div>
 
+      <!-- Canceled -->
       <section class="card orders-card" aria-label="Canceled flights">
         <div class="orders-list" id="orders-canceled">
           <div class="pill">No canceled flights.</div>
@@ -185,8 +216,45 @@
   </div>
 
   <script>
-    const ORDERS_KEY = "flyloop_orders";
+    /* --------------------------
+       Sidebar open/close (shared)
+       -------------------------- */
+    (function initSidebar() {
+      const openBtn = document.getElementById("openNavBtn");
+      const closeBtn = document.getElementById("closeNavBtn");
+      const overlay = document.getElementById("sidebarOverlay");
+      const sidebar = document.getElementById("sidebarNav");
 
+      function openNav() {
+        document.body.classList.add("nav-open");
+        if (openBtn) openBtn.setAttribute("aria-expanded", "true");
+        if (overlay) overlay.setAttribute("aria-hidden", "false");
+      }
+
+      function closeNav() {
+        document.body.classList.remove("nav-open");
+        if (openBtn) openBtn.setAttribute("aria-expanded", "false");
+        if (overlay) overlay.setAttribute("aria-hidden", "true");
+      }
+
+      if (openBtn) openBtn.addEventListener("click", openNav);
+      if (closeBtn) closeBtn.addEventListener("click", closeNav);
+      if (overlay) overlay.addEventListener("click", closeNav);
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeNav();
+      });
+
+      // Prevent clicks inside sidebar from closing
+      if (sidebar) {
+        sidebar.addEventListener("click", (e) => e.stopPropagation());
+      }
+    })();
+
+    /* --------------------------
+       Orders (Active + Canceled)
+       -------------------------- */
+    const ORDERS_KEY = "flyloop_orders";
     const activeEl = document.getElementById("orders-active");
     const canceledEl = document.getElementById("orders-canceled");
 
@@ -220,7 +288,6 @@
       const cabin = o.cabin || "ECONOMY";
       const pax = o.adults || 1;
       const id = o.id || "—";
-
       const canceledClass = (status === "Canceled") ? "is-canceled" : "";
 
       return `
@@ -271,20 +338,16 @@
       const active = flightOrders.filter(o => (o.status || "Booked") !== "Canceled");
       const canceled = flightOrders.filter(o => (o.status || "") === "Canceled");
 
-      if (!active.length){
-        activeEl.innerHTML = `<div class="pill">No active bookings.</div>`;
-      } else {
-        activeEl.innerHTML = active.map(o => renderOrderRow(o, true)).join("");
-      }
+      activeEl.innerHTML = active.length
+        ? active.map(o => renderOrderRow(o, true)).join("")
+        : `<div class="pill">No active bookings.</div>`;
 
-      if (!canceled.length){
-        canceledEl.innerHTML = `<div class="pill">No canceled flights.</div>`;
-      } else {
-        canceledEl.innerHTML = canceled.map(o => renderOrderRow(o, false)).join("");
-      }
+      canceledEl.innerHTML = canceled.length
+        ? canceled.map(o => renderOrderRow(o, false)).join("")
+        : `<div class="pill">No canceled flights.</div>`;
     }
 
-    // Event delegation for cancel (cleaner than inline onclick)
+    // Cancel handler (confirm + move to canceled + scroll)
     document.addEventListener("click", (e) => {
       const btn = e.target.closest('button[data-action="cancel"]');
       if (!btn) return;
@@ -302,7 +365,6 @@
       saveOrders();
       render();
 
-      // smooth scroll to canceled section
       canceledEl.scrollIntoView({ behavior: "smooth", block: "start" });
     });
 
