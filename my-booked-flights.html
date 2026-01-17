@@ -12,9 +12,19 @@
       <div class="eyebrow">Dashboard</div>
       <h1>My Orders</h1>
 
-      <section class="card" aria-label="Orders">
-        <div class="results" id="orders">
+      <!-- ✅ ACTIVE FLIGHTS -->
+      <section class="card" aria-label="Active flights">
+        <h3 style="margin-bottom:12px;">Active flights</h3>
+        <div class="results" id="orders-active">
           <div class="pill">Loading…</div>
+        </div>
+      </section>
+
+      <!-- ✅ CANCELED FLIGHTS (BOTTOM) -->
+      <section class="card" aria-label="Canceled flights" style="margin-top:24px;">
+        <h3 style="margin-bottom:12px;">Canceled flights</h3>
+        <div class="results" id="orders-canceled">
+          <div class="pill">No canceled flights.</div>
         </div>
       </section>
 
@@ -27,7 +37,8 @@
 
   <script>
     const ORDERS_KEY = "flyloop_orders";
-    const ordersEl = document.getElementById("orders");
+    const activeEl = document.getElementById("orders-active");
+    const canceledEl = document.getElementById("orders-canceled");
 
     function escapeHtml(s){
       return String(s ?? "")
@@ -46,29 +57,27 @@
       localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
     }
 
-    function render() {
-      const orders = loadOrders();
+    function renderSection(list, targetEl, isCanceledSection) {
+      if (!targetEl) return;
 
-      // show only flights (safe for future hotels/packages)
-      const flightOrders = orders.filter(o => (o.orderType || "flight") === "flight");
-
-      if (!flightOrders.length) {
-        ordersEl.innerHTML = `<div class="pill">No orders yet.</div>`;
+      if (!list.length) {
+        targetEl.innerHTML = `<div class="pill">${
+          isCanceledSection ? "No canceled flights." : "No active flights."
+        }</div>`;
         return;
       }
 
-      ordersEl.innerHTML = flightOrders.map(o => {
+      targetEl.innerHTML = list.map(o => {
         const route = `${o.origin || "—"} → ${o.destination || "—"}`;
         const date = o.departDate || "—";
         const departTime = o.departTime || "—";
         const arriveTime = o.arriveTime || "—";
         const price = o.priceText || (typeof o.price === "number" ? `CAD ${o.price.toFixed(2)}` : "CAD —");
-        const id = o.id || "";
+        const id = o.id || "—";
         const status = o.status || "Booked";
-        const isCanceled = String(status).toLowerCase() === "canceled";
 
         return `
-          <div class="hotel-item">
+          <div class="hotel-item" style="${isCanceledSection ? "opacity:.65;" : ""}">
             <div class="hotel-top">
               <div>
                 <div class="hotel-name">
@@ -85,19 +94,22 @@
                 </div>
 
                 <div class="hotel-sub">
-                  Order: ${escapeHtml(id || "—")}
+                  Order: ${escapeHtml(id)}
                 </div>
 
-                <div class="hotel-actions" style="margin-top:12px;">
-                  <button
-                    class="btn-outline"
-                    type="button"
-                    data-action="cancel"
-                    data-id="${escapeHtml(id)}"
-                    ${(!id || isCanceled) ? "disabled" : ""}>
-                    ${isCanceled ? "Canceled" : "Cancel"}
-                  </button>
-                </div>
+                ${
+                  !isCanceledSection ? `
+                  <div class="hotel-actions" style="margin-top:12px;">
+                    <button
+                      class="btn-outline"
+                      type="button"
+                      data-action="cancel"
+                      data-id="${escapeHtml(id)}">
+                      Cancel
+                    </button>
+                  </div>
+                  ` : ""
+                }
               </div>
 
               <div class="pill">${escapeHtml(price)}</div>
@@ -107,8 +119,18 @@
       }).join("");
     }
 
-    // ✅ cancel click handler (works for all cards)
-    ordersEl.addEventListener("click", (e) => {
+    function render() {
+      const orders = loadOrders().filter(o => (o.orderType || "flight") === "flight");
+
+      const active = orders.filter(o => String(o.status || "Booked") !== "Canceled");
+      const canceled = orders.filter(o => String(o.status || "") === "Canceled");
+
+      renderSection(active, activeEl, false);
+      renderSection(canceled, canceledEl, true);
+    }
+
+    // ✅ Cancel handler only on ACTIVE section
+    activeEl.addEventListener("click", (e) => {
       const btn = e.target.closest('button[data-action="cancel"]');
       if (!btn) return;
 
@@ -127,9 +149,12 @@
 
       saveOrders(orders);
       render();
+
+      // ✅ scroll to canceled section after cancel
+      canceledEl.scrollIntoView({ behavior: "smooth" });
     });
 
-    // initial render
+    // Initial render
     render();
   </script>
 </body>
