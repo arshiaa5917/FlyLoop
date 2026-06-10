@@ -424,7 +424,7 @@
         0 0 0 1px rgba(249, 115, 22, 0.4),
         0 20px 50px rgba(0, 0, 0, 0.9);
       position: relative;
-      transform: translateY(-3px);
+      transform: none;
     }
 
     .plan-card.featured::before {
@@ -509,7 +509,15 @@
       box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9);
     }
 
-    .plan-cta { margin-top: 8px; }
+    .plan-cta {
+      margin-top: auto;
+      padding-top: 8px;
+    }
+
+    .plan-cta .btn-primary,
+    .plan-cta .btn-outline {
+      width: 100%;
+    }
 
     /* FOOTER */
     footer {
