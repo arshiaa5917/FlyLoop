@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta
     name="description"
-    content="See how FlyLoop works as a travel subscription concept: pick a membership, build trips with monthly payments, and redeem escapes through your dashboard."
+    content="See how FlyLoop works: choose a membership, request trips, get flights, hotels, stays up to 14 days, and 24/7 trip and visa advisor support."
   />
 
   <style>
@@ -399,6 +399,69 @@
 
     .steps li { margin-bottom: 8px; }
 
+    .step-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .step-card {
+      min-height: 100%;
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      background: linear-gradient(180deg, rgba(17, 24, 39, 0.95), rgba(10, 10, 10, 0.95));
+      box-shadow: var(--shadow-soft);
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--primary), var(--accent-red));
+      color: #0B0B0F;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .step-card h3 {
+      font-size: 1.02rem;
+      margin-bottom: 8px;
+    }
+
+    .step-card p {
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+
+    .support-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .support-list div {
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+    }
+
+    .support-list strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .support-list span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
     .highlight-box {
       background: var(--surface);
       border-radius: 16px;
@@ -432,6 +495,7 @@
     @media (max-width: 820px) {
       .two-col,
       .hero-layout { grid-template-columns: minmax(0, 1fr); }
+      .step-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 720px) {
@@ -491,87 +555,79 @@
       <div>
         <h1>How FlyLoop Works</h1>
         <p class="hero-sub" style="margin-bottom: 18px;">
-          Imagine you’re the customer. Instead of saving once a year and hunting
-          for flights, you treat travel like Netflix: a predictable subscription
-          that quietly builds your next escape in the background.
+          FlyLoop turns travel planning into a simple membership. Choose your
+          plan, request your trip, and let FlyLoop organize the key pieces:
+          flights, hotels, eligible stays, and support when you need it.
         </p>
 
-        <h2>Your journey as a member</h2>
-        <ul class="steps">
-          <li>
-            <strong>1. You land on the site.</strong><br>
-            You see three membership tiers — Basic (2 trips/year), Standard (3 trips/year),
-            and Premium (5 trips/year) — with clear prices and destinations.
-          </li>
-          <li>
-            <strong>2. You create an account &amp; choose a plan.</strong><br>
-            After clicking <em>Join</em>, you would normally sign up, add your card,
-            and confirm your subscription. From that moment, your “travel credits”
-            or eligibility start building.
-          </li>
-          <li>
-            <strong>3. Your subscription runs quietly each month.</strong><br>
-            Instead of one big, painful payment, a small monthly amount goes toward
-            your trips. Think: “$99/month” instead of “$900 at once.”
-          </li>
-          <li>
-            <strong>4. You log in to your dashboard.</strong><br>
-            Inside your account, you’d see your plan, how many trips you’re entitled
-            to, and which destinations are currently available.
-          </li>
-          <li>
-            <strong>5. You browse available trip windows.</strong><br>
-            The platform shows you future dates and destinations that match your
-            plan: Los Angeles in March, Montreal in April, Cancun in October, etc.
-          </li>
-          <li>
-            <strong>6. You redeem a trip.</strong><br>
-            When you’re ready, you choose a destination and date. FlyLoop
-            (in a real version) would then handle the flight booking, hotel,
-            and basic transfers.
-          </li>
-          <li>
-            <strong>7. You receive your itinerary.</strong><br>
-            A few days later, you get your flight details, hotel confirmation, and
-            a simple suggested itinerary so you don’t have to overthink the trip.
-          </li>
-          <li>
-            <strong>8. You travel.</strong><br>
-            You fly, stay, explore, and return knowing that your subscription is
-            still running — quietly building your next escape.
-          </li>
-          <li>
-            <strong>9. You manage your membership.</strong><br>
-            You can view upcoming eligibility, see past trips, and — if this was live —
-            request changes, pauses, upgrades, or plan switches from your account.
-          </li>
-        </ul>
+        <h2>Your member journey</h2>
+        <div class="step-grid" aria-label="FlyLoop member journey">
+          <article class="step-card">
+            <div class="step-number">1</div>
+            <h3>Choose a membership</h3>
+            <p>Pick Basic, Standard or Premium based on how many trips you want each year.</p>
+          </article>
+
+          <article class="step-card">
+            <div class="step-number">2</div>
+            <h3>Select your destination</h3>
+            <p>Browse the FlyLoop city list and choose where you want your next trip to go.</p>
+          </article>
+
+          <article class="step-card">
+            <div class="step-number">3</div>
+            <h3>Request your travel window</h3>
+            <p>Share your preferred dates so FlyLoop can match flights, hotels and availability.</p>
+          </article>
+
+          <article class="step-card">
+            <div class="step-number">4</div>
+            <h3>Get your trip organized</h3>
+            <p>Flights, hotels and stays up to 14 days are planned together under your membership.</p>
+          </article>
+
+          <article class="step-card">
+            <div class="step-number">5</div>
+            <h3>Travel with support</h3>
+            <p>24/7 trip and visa advisors help with questions, travel document reminders and updates.</p>
+          </article>
+
+          <article class="step-card">
+            <div class="step-number">6</div>
+            <h3>Keep the loop going</h3>
+            <p>After your trip, your membership continues toward your next eligible escape.</p>
+          </article>
+        </div>
 
         <div class="pill-row">
-          <span>Customer POV walkthrough</span>
-          <span>Subscription travel logic</span>
-          <span>Portfolio-ready explanation</span>
+          <span>Flights included</span>
+          <span>Hotels included</span>
+          <span>Stays up to 14 days</span>
+          <span>24/7 trip + visa advisors</span>
         </div>
       </div>
 
-      <aside class="highlight-box" aria-label="Behind the scenes product logic">
-        <div class="highlight-title">Behind the scenes (for your portfolio)</div>
+      <aside class="highlight-box" aria-label="FlyLoop membership support">
+        <div class="highlight-title">Built to reduce travel stress</div>
         <p style="margin-bottom: 10px;">
-          This page acts like a mini product spec. From a business and tech
-          point of view, this flow implies:
+          The goal is to make travel feel predictable and hassle-free. Instead of
+          comparing flights, hotels, dates and visa requirements on your own,
+          FlyLoop brings the main pieces into one membership experience.
         </p>
-        <ul class="steps">
-          <li>Recurring billing &amp; subscription management (Stripe, etc.).</li>
-          <li>A “credits” or eligibility system tied to plan + time.</li>
-          <li>An inventory/calendar of flights and hotels you control.</li>
-          <li>A booking engine that locks in trips once redeemed.</li>
-          <li>Rules for cancellations, pauses, and minimum commitment.</li>
-        </ul>
-        <p>
-          You can show this page in a pitch, CV, or portfolio to prove the idea
-          isn’t just a pretty UI — it has a clear customer journey and real
-          business logic behind it.
-        </p>
+        <div class="support-list">
+          <div>
+            <strong>One membership</strong>
+            <span>Trips, flights, hotels and support are connected through your plan.</span>
+          </div>
+          <div>
+            <strong>Clear inclusions</strong>
+            <span>All memberships include FlyLoop destinations and stays up to 14 days.</span>
+          </div>
+          <div>
+            <strong>Advisor support</strong>
+            <span>Trip and visa advisors are designed to be available around the clock.</span>
+          </div>
+        </div>
       </aside>
     </div>
   </section>
