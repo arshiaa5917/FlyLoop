@@ -80,6 +80,14 @@
       min-width: 0;
     }
 
+    .brand-home {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      color: inherit;
+    }
+
     .logo-mark {
       width: 36px;
       height: 36px;
@@ -522,12 +530,7 @@
 
   <aside class="sidebar" id="sidebar" aria-label="Mobile sidebar navigation">
     <div class="sidebar-header">
-      <div class="sidebar-brand">
-        <div class="logo-mark" style="animation:none;">
-          <img src="logo.png?v=2" alt="FlyLoop logo" />
-        </div>
-        <div class="sidebar-title">FlyLoop</div>
-      </div>
+      <a href="index.html" class="sidebar-brand" aria-label="FlyLoop home"><div class="logo-mark" style="animation:none;"><img src="logo.png?v=2" alt="FlyLoop logo" /></div><div class="sidebar-title">FlyLoop</div></a>
       <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">✕</button>
     </div>
 
@@ -547,10 +550,7 @@
     <div class="nav-left">
       <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">☰</button>
 
-      <div class="logo-mark">
-        <img src="logo.png?v=2" alt="FlyLoop logo" />
-      </div>
-      <div class="nav-title">FLYLOOP</div>
+      <a href="index.html" class="brand-home" aria-label="FlyLoop home"><div class="logo-mark"><img src="logo.png?v=2" alt="FlyLoop logo" /></div><div class="nav-title">FLYLOOP</div></a>
     </div>
 
     <nav class="nav-links">
