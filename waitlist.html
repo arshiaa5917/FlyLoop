@@ -532,11 +532,27 @@
           <div class="inline-cols">
             <div class="form-row">
               <label for="home-airport">Home airport</label>
-              <input id="home-airport" name="home_airport" type="text" placeholder="e.g. Toronto (YYZ)" />
+              <select id="home-airport" name="home_airport">
+                <option value="">Choose your home airport</option>
+                <option value="Toronto (YYZ)">Toronto (YYZ)</option>
+                <option value="Montreal (YUL)">Montreal (YUL)</option>
+                <option value="Vancouver (YVR)">Vancouver (YVR)</option>
+                <option value="Los Angeles (LAX)">Los Angeles (LAX)</option>
+                <option value="New York (JFK)">New York (JFK)</option>
+                <option value="Miami (MIA)">Miami (MIA)</option>
+                <option value="Cancun (CUN)">Cancun (CUN)</option>
+                <option value="Las Vegas (LAS)">Las Vegas (LAS)</option>
+              </select>
             </div>
             <div class="form-row">
               <label for="country">Country of residence</label>
-              <input id="country" name="country" type="text" placeholder="e.g. Canada" />
+              <select id="country" name="country">
+                <option value="">Choose your country</option>
+                <option value="Canada">Canada</option>
+                <option value="United States">United States</option>
+                <option value="Mexico">Mexico</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
           </div>
 
