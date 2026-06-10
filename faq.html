@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>FAQ – FlyLoop</title>
+  <title>FAQ &ndash; FlyLoop</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta
     name="description"
-    content="Frequently asked questions about the FlyLoop travel subscription concept: how it could work, what’s included, and how the business model might operate."
+    content="Frequently asked questions about FlyLoop memberships, included trips, hotels, destinations, and 24/7 trip and visa advisor support."
   />
 
   <style>
@@ -308,15 +308,81 @@
     p  { margin: 0; }
 
     /* FAQ */
+    .faq-hero {
+      max-width: 760px;
+      margin-bottom: 32px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(249, 115, 22, 0.35);
+      background: rgba(249, 115, 22, 0.08);
+      color: var(--primary-soft);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .intro {
+      color: var(--muted);
+      max-width: 680px;
+      margin-top: 10px;
+      font-size: 1rem;
+    }
+
+    .support-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 26px 0 34px;
+    }
+
+    .support-pill {
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      background: rgba(15, 23, 42, 0.7);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .support-pill strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.98rem;
+      margin-bottom: 4px;
+    }
+
+    .support-pill span {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
     .faq-item {
-      margin-bottom: 18px;
+      min-height: 100%;
+      padding: 20px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(180deg, rgba(17, 24, 39, 0.95), rgba(10, 10, 10, 0.95));
+      box-shadow: var(--shadow-soft);
       animation: fadeUp 0.6s ease-out both;
     }
 
     .faq-q {
       font-weight: 700;
       font-size: 1.02rem;
-      margin-bottom: 4px;
+      margin-bottom: 8px;
       color: var(--primary-soft);
     }
 
@@ -324,6 +390,8 @@
       color: var(--muted);
       font-size: 0.93rem;
     }
+
+    .faq-a p + p { margin-top: 10px; }
 
     .steps {
       margin-top: 8px;
@@ -351,6 +419,11 @@
       .menu-btn { display: inline-flex; }
       body.sidebar-open { overflow: hidden; }
       .nav-title { font-size: 0.85rem; letter-spacing: 0.14em; }
+      section { padding: 56px 0; }
+      .support-strip,
+      .faq-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -399,83 +472,115 @@
 
   <section>
     <div class="container">
-      <h1>Frequently Asked Questions</h1>
-      <p style="color: var(--muted); max-width: 620px; margin-bottom: 26px;">
-        This page is written like a real product FAQ, but it also doubles as a
-        way to explain the FlyLoop subscription concept clearly to anyone viewing
-        your portfolio or CV.
-      </p>
+      <div class="faq-hero">
+        <div class="eyebrow">Travel made simpler</div>
+        <h1>Frequently Asked Questions</h1>
+        <p class="intro">
+          FlyLoop is designed around one simple idea: make travel feel as easy
+          as a monthly membership. Flights, hotels, eligible stays and support
+          are planned together so members can spend less time organizing and
+          more time enjoying the trip.
+        </p>
+      </div>
 
-      <div class="faq-item">
-        <div class="faq-q">Is FlyLoop live right now?</div>
-        <div class="faq-a">
-          No. FlyLoop is currently a concept and portfolio piece that shows how a
-          subscription-based travel service <em>could</em> look and feel. It’s
-          meant for user testing, business planning and investor or recruiter
-          conversations rather than real bookings.
+      <div class="support-strip" aria-label="FlyLoop support highlights">
+        <div class="support-pill">
+          <strong>Flights + hotels included</strong>
+          <span>Every membership is planned around bundled travel essentials.</span>
+        </div>
+        <div class="support-pill">
+          <strong>Stays up to 14 days</strong>
+          <span>Members can use included stays for short breaks or longer trips.</span>
+        </div>
+        <div class="support-pill">
+          <strong>24/7 trip + visa advisors</strong>
+          <span>Support is part of the design, from planning questions to travel documents.</span>
         </div>
       </div>
 
-      <div class="faq-item">
-        <div class="faq-q">Would flights and hotels actually be included?</div>
-        <div class="faq-a">
-          In a real version, yes. Each plan would include flights, hotels,
-          stays up to 14 days, basic transfers and curated suggestions, negotiated using wholesale
-          travel rates and partner agreements. This site shows what that user
-          experience could look like before connecting a real booking engine.
+      <div class="faq-grid">
+        <div class="faq-item">
+          <div class="faq-q">Is FlyLoop available for real bookings right now?</div>
+          <div class="faq-a">
+            FlyLoop is currently being presented as a travel subscription concept.
+            The website shows the planned membership experience, destination
+            structure and booking flow before full live booking operations are
+            launched.
+          </div>
         </div>
-      </div>
 
-      <div class="faq-item">
-        <div class="faq-q">How would the three plans work?</div>
-        <div class="faq-a">
-          The concept has three core tiers:
-          <ul class="steps">
-            <li><strong>Basic Loop</strong> - 2 trips / year with flights, hotels and stays up to 14 days included.</li>
-            <li><strong>Standard Loop</strong> - 3 trips / year with flights, hotels and stays up to 14 days included.</li>
-            <li><strong>Premium Loop</strong> - 5 trips / year with flights, hotels and stays up to 14 days included.</li>
-          </ul>
-          All tiers would have access to the same destination list. The difference is the number of included trips, date flexibility, booking priority and hotel style when available.
+        <div class="faq-item">
+          <div class="faq-q">What is included with a membership?</div>
+          <div class="faq-a">
+            All memberships are designed to include flights, hotels, access to
+            every FlyLoop destination, stays up to 14 days, and 24/7 trip and
+            visa advisor support. The goal is to make travel feel organized,
+            predictable and hassle-free.
+          </div>
         </div>
-      </div>
 
-      <div class="faq-item">
-        <div class="faq-q">How do you stop people from joining, traveling once, and cancelling?</div>
-        <div class="faq-a">
-          Travel subscriptions usually rely on:
-          <ul class="steps">
-            <li>Minimum membership terms (e.g. 3–6 months before first use).</li>
-            <li>Trip credits that accumulate over time before redemption.</li>
-            <li>Loyalty rewards for long-term members.</li>
-            <li>Pause options instead of full cancellation.</li>
-          </ul>
-          Those same ideas can be built into FlyLoop’s model and tested using this
-          concept site before coding a full backend.
+        <div class="faq-item">
+          <div class="faq-q">How do the three plans work?</div>
+          <div class="faq-a">
+            <ul class="steps">
+              <li><strong>Basic Loop</strong> - 2 trips per year.</li>
+              <li><strong>Standard Loop</strong> - 3 trips per year.</li>
+              <li><strong>Premium Loop</strong> - 5 trips per year.</li>
+            </ul>
+            Each plan includes flights, hotels, stays up to 14 days and access
+            to all FlyLoop destinations. Higher tiers add more trips, more date
+            flexibility and stronger booking priority.
+          </div>
         </div>
-      </div>
 
-      <div class="faq-item">
-        <div class="faq-q">Can this model be profitable?</div>
-        <div class="faq-a">
-          Profit could come from negotiated rates, group departures, breakage
-          (not everyone uses all trips), and upsells like extra nights, room
-          upgrades or local tours. For a deeper portfolio piece, you can extend
-          this FAQ with simple unit economics or example P&amp;L scenarios.
+        <div class="faq-item">
+          <div class="faq-q">Which destinations are included?</div>
+          <div class="faq-a">
+            FlyLoop currently focuses on Toronto, Montreal, Vancouver, Los
+            Angeles, New York, Miami, Cancun and Las Vegas. Every membership tier
+            is designed to have access to the same destination list.
+          </div>
         </div>
-      </div>
 
-      <div class="faq-item">
-        <div class="faq-q">What would need to exist for FlyLoop to become real?</div>
-        <div class="faq-a">
-          At minimum:
-          <ul class="steps">
-            <li>Real authentication (sign-up, login, password, user accounts).</li>
-            <li>A database for users, memberships, trips, and bookings.</li>
-            <li>Payment integration (e.g. Stripe) for recurring billing.</li>
-            <li>A basic admin panel to manage destinations and inventory.</li>
-          </ul>
-          This FAQ plus the “How it works” page basically functions as a
-          lightweight product spec you can show to devs, mentors or investors.
+        <div class="faq-item">
+          <div class="faq-q">What do trip and visa advisors help with?</div>
+          <div class="faq-a">
+            Advisors are planned to be available 24/7 to help with trip
+            questions, destination guidance, travel document reminders, visa
+            preparation basics, booking updates and unexpected travel issues.
+            FlyLoop is designed to reduce the stress that usually comes with
+            planning and managing a trip.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Can members choose their travel dates?</div>
+          <div class="faq-a">
+            Members would request preferred dates inside their plan. FlyLoop
+            would then match those requests with available flights, hotel
+            partners and destination inventory. Premium members would receive
+            stronger priority when demand is high.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Can a membership be paused or cancelled?</div>
+          <div class="faq-a">
+            The planned membership model would include clear cancellation rules,
+            trip credit timing and pause options. The goal is to keep the
+            subscription flexible while still allowing FlyLoop to reserve flights,
+            hotels and advisor support reliably.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Why use FlyLoop instead of booking everything separately?</div>
+          <div class="faq-a">
+            FlyLoop is built for people who want travel to feel predictable.
+            Instead of comparing flights, hotels, dates and travel requirements
+            every time, members get one membership, curated destinations and
+            support before, during and after the trip.
+          </div>
         </div>
       </div>
     </div>
